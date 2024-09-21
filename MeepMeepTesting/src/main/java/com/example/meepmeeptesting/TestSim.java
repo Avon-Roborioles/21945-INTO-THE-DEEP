@@ -20,13 +20,13 @@ public class TestSim {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15).followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0)).forward(30).turn(Math.toRadians(90)).forward(30).turn(Math.toRadians(90)).forward(30).turn(Math.toRadians(90)).forward(30).turn(Math.toRadians(90)).build());
 
         //used for custom backgrounds
-        Image img = null;
-        try { img = ImageIO.read(new File("PATH TO IMAGE")); }
-        catch (IOException e) {}
-
-        meepMeep.setBackground(img);
+//        Image img = null;
+//        try { img = ImageIO.read(new File("PATH TO IMAGE")); }
+//        catch (IOException e) {}
+//
+//        meepMeep.setBackground(img);
 
         //wait until the new game field background is released to use this
-        //meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();
     }
 }
