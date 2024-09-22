@@ -25,7 +25,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.Utilities.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Utilities.RoadRunner.TankDrive;
 import org.firstinspires.ftc.teamcode.Utilities.RoadRunner.ThreeDeadWheelLocalizer;
-import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.Utilities.RoadRunner.TwoDeadWheelLocalizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
