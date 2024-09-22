@@ -17,6 +17,14 @@ public class Intake {
         MAX //max extension
     }
 
+    //enum commands for sample colors
+    public enum Sample_Colors{
+        YELLOW,
+        BLUE,
+        RED,
+        NONE
+    }
+
 
     //--------TELEOP COMMANDS------------
     public void init(HardwareMap hardwareMap){
@@ -47,6 +55,24 @@ public class Intake {
     //moves intake up or down to transfer
     public void transfer(Boolean isTrue){
 
+    }
+
+    //checks if a sample is collected by a valid color detection
+    public Boolean Full(){
+        boolean result = false;
+
+        //color detection logic
+
+        return result;
+    }
+
+    //returns color of sample, returns NONE if no color is detected
+    public Sample_Colors get_sample_color(){
+        Sample_Colors result = Sample_Colors.NONE;
+
+        //logic
+
+        return result;
     }
 
     public void getTelemetryBRIEF(Telemetry telemetry){

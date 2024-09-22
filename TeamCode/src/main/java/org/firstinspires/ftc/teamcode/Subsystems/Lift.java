@@ -29,4 +29,47 @@ public class Lift {
         MAX
     }
 
+    //--------TELEOP COMMANDS-------------
+    public void init(HardwareMap hardwareMap){
+
+    }
+
+    public void run_teleOp(GamepadEx driverOp){
+
+    }
+
+    //-------AUTO COMMANDS----------------
+
+    //quick command to control lift slides
+    public void set_lift(Lift_Poses pose){
+
+    }
+
+    //precise command to control lift slides
+    public void set_lift(double pose){
+
+    }
+
+    //rotates sample tray to score in baskets
+    public void score(Boolean isTrue){
+
+    }
+
+    //quick commands to control specimen claw
+    public void open_specimen_claw(){
+
+    }
+
+    public void close_specimen_claw(){
+
+    }
+
+    public void getTelemetryBRIEF(Telemetry telemetry){
+
+    }
+
+    public void getTelemetryFULL(Telemetry telemetry){
+
+    }
+
 }
