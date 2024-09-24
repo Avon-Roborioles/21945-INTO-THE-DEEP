@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.Autonomous.Right_Autos;
 //import needed libraires
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Utilities.RoadRunner.MecanumDrive;
 //TODO check if we're missing TrajectorySequence
 
-@Autonomous(name="3 Plus Sample Auto", group = "Right Autos")
+@Disabled
+//@Autonomous(name="3 Plus Sample Auto", group = "Right Autos")
 public class Right_3Plus_Sample_Auto extends AutoBase {
     public void runOpMode() throws InterruptedException{
         //important variables
