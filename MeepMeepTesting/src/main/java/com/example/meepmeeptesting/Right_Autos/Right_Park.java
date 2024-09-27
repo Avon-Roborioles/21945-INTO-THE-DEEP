@@ -1,18 +1,13 @@
-package com.example.meepmeeptesting;
+package com.example.meepmeeptesting.Right_Autos;
 
-//import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.example.meepmeeptesting.SimPoseStorage;
+
 import org.rowlandhall.meepmeep.MeepMeep;
-import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-public class TestSim {
+public class Right_Park {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -20,14 +15,13 @@ public class TestSim {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(SimPoseStorage.SpecimenPickup)
-                                .waitSeconds(2)
-
-                                //test code here
-
+                        drive.trajectorySequenceBuilder(SimPoseStorage.RightStartPose)
+                                .waitSeconds(1)
+                                .lineToLinearHeading(new Pose2d(SimPoseStorage.RightPark.getX()+19,SimPoseStorage.RightPark.getY(), SimPoseStorage.RightPark.getHeading()))
+                                .waitSeconds(.1)
+                                .lineToLinearHeading(SimPoseStorage.RightPark)
                                 .waitSeconds(20000)
                                 .build());
-
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();
     }

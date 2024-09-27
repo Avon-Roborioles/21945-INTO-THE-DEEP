@@ -1,7 +1,6 @@
 package com.example.meepmeeptesting.Left_Autos;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.example.meepmeeptesting.SimPoseStorage;
 
 import org.rowlandhall.meepmeep.MeepMeep;
@@ -20,28 +19,28 @@ public class Left_3Plus_Sample_Auto {
                                 .waitSeconds(1)
 
                                 //score first sample
-                                .lineToLinearHeading(SimPoseStorage.Sample1Field)
+                                .lineToLinearHeading(SimPoseStorage.LeftSample1)
                                 .waitSeconds(.7)
                                 .lineToLinearHeading(SimPoseStorage.BucketScore)
 
                                 .waitSeconds(.7)
 
                                 //score second sample
-                                .lineToLinearHeading(SimPoseStorage.Sample2Field)
+                                .lineToLinearHeading(SimPoseStorage.LeftSample2)
                                 .waitSeconds(.7)
                                 .lineToLinearHeading(SimPoseStorage.BucketScore)
 
                                 .waitSeconds(.7)
 
                                 //sample third sample
-                                .lineToLinearHeading(SimPoseStorage.Sample3Field)
+                                .lineToLinearHeading(SimPoseStorage.LeftSample3)
                                 .waitSeconds(.7)
                                 .lineToLinearHeading(SimPoseStorage.BucketScore)
 
                                 .waitSeconds(.7)
 
                                 //pit cycle 1
-                                .splineToLinearHeading(SimPoseStorage.PitSamples, SimPoseStorage.PitSamples.getHeading())
+                                .splineToLinearHeading(SimPoseStorage.LeftPitSamples, SimPoseStorage.LeftPitSamples.getHeading())
                                 .waitSeconds(1)
                                 .back(10)
                                 .waitSeconds(.1)
@@ -50,7 +49,7 @@ public class Left_3Plus_Sample_Auto {
                                 .waitSeconds(.7)
 
                                 //pit cycle 2
-                                .splineToLinearHeading(SimPoseStorage.PitSamples, SimPoseStorage.PitSamples.getHeading())
+                                .splineToLinearHeading(SimPoseStorage.LeftPitSamples, SimPoseStorage.LeftPitSamples.getHeading())
                                 .waitSeconds(1)
                                 .back(10)
                                 .waitSeconds(.1)
@@ -65,7 +64,7 @@ public class Left_3Plus_Sample_Auto {
 //                                .lineToConstantHeading(new Vector2d(-40,-26))
 //                                .waitSeconds(.01)
 //                                .splineToLinearHeading(SimPoseStorage.LeftPark, SimPoseStorage.LeftPark.getHeading())
-                                .waitSeconds(10)
+                                .waitSeconds(.1)
                                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();

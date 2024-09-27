@@ -19,21 +19,21 @@ public class Left_3Sample_Auto {
                                 .waitSeconds(1)
 
                                 //score first sample
-                                .lineToLinearHeading(SimPoseStorage.Sample1Field)
+                                .lineToLinearHeading(SimPoseStorage.LeftSample1)
                                 .waitSeconds(.7)
                                 .lineToLinearHeading(SimPoseStorage.BucketScore)
 
                                 .waitSeconds(.7)
 
                                 //score second sample
-                                .lineToLinearHeading(SimPoseStorage.Sample2Field)
+                                .lineToLinearHeading(SimPoseStorage.LeftSample2)
                                 .waitSeconds(.7)
                                 .lineToLinearHeading(SimPoseStorage.BucketScore)
 
                                 .waitSeconds(.7)
 
                                 //sample third sample
-                                .lineToLinearHeading(SimPoseStorage.Sample3Field)
+                                .lineToLinearHeading(SimPoseStorage.LeftSample3)
                                 .waitSeconds(.7)
                                 .lineToLinearHeading(SimPoseStorage.BucketScore)
 
