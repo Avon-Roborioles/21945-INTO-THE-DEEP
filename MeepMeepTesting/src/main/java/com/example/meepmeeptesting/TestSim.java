@@ -21,8 +21,11 @@ public class TestSim {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(SimPoseStorage.LeftStartPose)
-                                .waitSeconds(20000)
+                                .waitSeconds(2)
 
+                                //test code here
+
+                                .waitSeconds(20000)
                                 .build());
 
 
