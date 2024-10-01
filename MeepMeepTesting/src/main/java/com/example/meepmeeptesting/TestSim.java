@@ -20,7 +20,7 @@ public class TestSim {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(SimPoseStorage.SpecimenPickup)
+                        drive.trajectorySequenceBuilder(SimPoseStorage.SpecimenScore)
                                 .waitSeconds(2)
 
                                 //test code here

@@ -39,7 +39,7 @@ public class SimPoseStorage {
 
    public static Pose2d SpecimenPickup = new Pose2d(50,-57,Math.toRadians(90));
 
-   public static Pose2d SpecimenScore = new Pose2d(28,-9,Math.toRadians(0));
+   public static Pose2d SpecimenScore = new Pose2d(0,-33,Math.toRadians(-90));
 
    public static Pose2d RightPark = new Pose2d(29,-9.8, Math.toRadians(180-1e-6));
 }

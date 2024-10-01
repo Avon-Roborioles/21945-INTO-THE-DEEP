@@ -48,7 +48,7 @@ public class Right_3Sample_Auto {
 
                                     //get third sample
                                     .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.RightSample3)
+                                    .splineToLinearHeading(SimPoseStorage.RightSample3, SimPoseStorage.RightSample3.getHeading())
 
                                     //drop third sample in corner
                                     .waitSeconds(.7)
@@ -81,7 +81,7 @@ public class Right_3Sample_Auto {
 
                             //park
                                 .waitSeconds(.7)
-                                .lineToLinearHeading(SimPoseStorage.RightPark)
+                                .splineToLinearHeading(SimPoseStorage.RightPark, SimPoseStorage.RightPark.getHeading())
                                 .waitSeconds(1)
                                 .build());
 
