@@ -29,13 +29,15 @@
 
 - **Commit messages** should clearly explain what changes were made.
 - **Branches**:
-  - `master`: Production-ready code only.
+  - `master`: Competition-ready code only.
   - `development`: Ongoing work and testing.
-  - Create feature-specific branches when working on new functionality or testing.
+  - `Stephen-Odometry`: Stephen's Research with the SparkFun Odometry Sensor for Auto.
+  - `Jerry-Odometry`: Jerry's Efforts and learning towards using the typical 3-Odometry Setup.
+  - Create feature-specific branches from `development` when working on new functionality or testing.
 
 - **Pull Requests**: All major updates should be submitted via a pull request for review.
 
-- **Testing**: Test code thoroughly before merging into `main`.
+- **Testing**: Test code thoroughly before merging into `master`.
 
 ---
 
