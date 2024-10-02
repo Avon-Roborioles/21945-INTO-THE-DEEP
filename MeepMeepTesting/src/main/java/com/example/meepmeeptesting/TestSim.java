@@ -22,9 +22,8 @@ public class TestSim {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(SimPoseStorage.SpecimenScore)
                                 .waitSeconds(2)
-
                                 //test code here
-
+                                
                                 .waitSeconds(20000)
                                 .build());
 

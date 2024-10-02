@@ -39,8 +39,8 @@ public class Drivetrain {
         rightRear = hardwareMap.get(Motor.class, "rightRear");
 
         //helps orient the robot for the IMU, change whenever the control hub is rotated
-        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
-        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
         drivetrain = new MecanumDrive(leftFront, rightFront,leftRear, rightRear);
 
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);

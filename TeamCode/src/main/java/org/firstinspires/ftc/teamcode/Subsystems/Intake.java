@@ -9,13 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Intake {
     //motor & servo objects
 
+    //useful variables
 
-    //enum commands for slides positions
-    public enum Slides_Poses{
-        RETRACT, //fully in bot
-        STANDARD, //typical extension in pit
-        MAX //max extension
-    }
 
     //enum commands for sample colors
     public enum Sample_Colors{
@@ -42,20 +37,6 @@ public class Intake {
 
     }
 
-    //quick command to control slides
-    public void set_slides(Slides_Poses pose){
-
-    }
-
-    //precise command to control slides
-    public void set_slides(double pose){
-
-    }
-
-    //moves intake up or down to transfer
-    public void transfer(Boolean isTrue){
-
-    }
 
     //checks if a sample is collected by a valid color detection
     public Boolean Full(){
