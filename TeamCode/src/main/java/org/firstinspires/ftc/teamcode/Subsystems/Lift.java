@@ -5,26 +5,29 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-//robot subsystem for lift slides, scoring rotation, & specimen intake
+//robot subsystem for lift slides & specimen intake
 public class Lift {
     //motor & servo objects
 
     //absolute height positions
-    double down = 0;
-    double specimen = 0; //TODO
-    double basket1 = 0; //TODO
-    double basket2 = 0; //TODO
-    double rung1 = 0; //TODO
-    double rung2 = 0; //TODO
+    double downPose = 0;
+    double specimenPose = 0; //TODO
+    double basket1Pose = 0; //TODO
+    double basket2Pose = 0; //TODO
+    double rung1Pose = 0; //TODO
+    double rung2Pose = 0; //TODO
+
+    //other useful variables
 
     //enum commands for lift positions
     public enum Lift_Poses{
-        DOWN,
+        GROUND,
         SPECIMEN,
         BASKET1,
         BASKET2,
         RUNG1,
         RUNG2,
+        DRIVER_CONTROL,
         //Add HANG1 & HANG2 if needed
         MAX
     }
@@ -40,18 +43,13 @@ public class Lift {
 
     //-------AUTO COMMANDS----------------
 
-    //quick command to control lift slides
+    //quick command to control lift
     public void set_lift(Lift_Poses pose){
 
     }
 
-    //precise command to control lift slides
+    //precise command to control lift
     public void set_lift(double pose){
-
-    }
-
-    //rotates sample tray to score in baskets
-    public void score(Boolean isTrue){
 
     }
 

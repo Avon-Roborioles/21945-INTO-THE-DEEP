@@ -5,7 +5,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-//robot subsystem for active intake, horizontal slides, & transfer rotation(dump w/ servo)
+//robot subsystem for active intake
 public class Intake {
     //motor & servo objects
 
