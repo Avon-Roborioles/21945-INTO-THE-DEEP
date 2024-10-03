@@ -53,8 +53,13 @@ public class Arm {
     }
 
     //precise command to control arm
-    public void set_arm(double pose){
+    public void set_arm(int pose){
 
+    }
+
+    //update PID controller for arm in auto
+    public void update(){
+        
     }
 
 
