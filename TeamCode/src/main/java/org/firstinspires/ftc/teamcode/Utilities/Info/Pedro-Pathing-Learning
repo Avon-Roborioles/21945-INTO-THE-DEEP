@@ -1,0 +1,21 @@
+-----Notes Written by Stephen Onochie - October 2024-----
+
+*Email to Contact for Pedro-Pathing Questions
+scottsbots10158@gmail.com
+
+1) Pedro Pathing General Overview
+https://youtu.be/HI7eyLLpCgM?si=k9-jPhOipYutlmta
+    - Pedro Pathing is reactive as it can adjust on the fly compared to RoadRunner
+    - Paths are made with Bezier Curves (easy to change and get position from)
+    - Can constantly adjust heading on the fly (saves time)
+    - Paths are made with 4 Vectors in mind (centripetal, translational, heading, drive)
+    - Pedro-Pathing has the ability to actively hold positions on the fields (highly resistant to bumps/collisions)
+    - Can also use TeleOp Enhancements to reduce centripetal force
+
+
+2) Tuning Guide
+https://youtu.be/3EXX5_KwfVM?si=m2FTLV3hWIvxZgn7
+    *Prerequisites
+        - Must use an omnidirectional drivetrain (mecanum for the win lol)
+        - Must operate in radians and inches
+        - must weigh robot in kg (metric system for the win lol)
