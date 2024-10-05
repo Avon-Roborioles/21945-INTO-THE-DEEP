@@ -33,10 +33,14 @@ public class Drivetrain {
         imu = hardwareMap.get(IMU.class, "imu");
 
         //"DeviceName" MUST match name of motors in driver hub configuration
-        leftFront = hardwareMap.get(Motor.class, "leftFront");
-        rightFront = hardwareMap.get(Motor.class, "rightFront");
-        leftRear = hardwareMap.get(Motor.class, "leftRear");
-        rightRear = hardwareMap.get(Motor.class, "rightRear");
+        //leftFront = hardwareMap.get(Motor.class, "leftFront");
+        leftFront = new Motor(hardwareMap,"leftFront");
+        //rightFront = hardwareMap.get(Motor.class, "rightFront");
+        rightFront = new Motor(hardwareMap,"rightFront");
+        //leftRear = hardwareMap.get(Motor.class, "leftRear");
+        leftRear = new Motor(hardwareMap,"leftRear");
+        //rightRear = hardwareMap.get(Motor.class, "rightRear");
+        rightRear = new Motor(hardwareMap,"rightRear");
 
         //helps orient the robot for the IMU, change whenever the control hub is rotated
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -49,9 +53,9 @@ public class Drivetrain {
 
     public void run_fieldCentric(GamepadEx driverOp){
         //update Telemetry Variables
-        strafeSpeed = driverOp.getLeftX();
-        forwardSpeed = driverOp.getLeftY();
-        turnSpeed = driverOp.getRightY();
+        strafeSpeed = driverOp.getLeftX() * -1; //changed to negative to fix inverted controls
+        forwardSpeed = driverOp.getLeftY() * -1;
+        turnSpeed = driverOp.getRightX();
         gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
         //uses FTCLib Library to control all logic of Field Centric Driving

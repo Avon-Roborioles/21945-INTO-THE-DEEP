@@ -3,22 +3,21 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 
-@Disabled
-//@TeleOp(name="Main TeleOp")
+@TeleOp(name="Main TeleOp")
 public class Main_TeleOp extends LinearOpMode {
 
     //create subsystem objects
     private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
 
-
-    //FTClib object that encapsulates Gamepad 1 Controls with More Features
-    GamepadEx Driver1Op = new GamepadEx(gamepad1);
-
     @Override
     public void runOpMode() throws InterruptedException {
+        //FTClib object that encapsulates Gamepad 1 Controls with More Features
+        GamepadEx Driver1Op = new GamepadEx(gamepad1);
+
         //initialize subsystems
         drivetrain.init(hardwareMap);
 
