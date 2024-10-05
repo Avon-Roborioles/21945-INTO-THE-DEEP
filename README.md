@@ -9,7 +9,7 @@
 - **Language**: Java
 - **IDE**: Android Studio
 - **Version Control**: Git, GitHub
-- **Libraries**: FTC SDK, RoadRunner (Auto-Pathing), OpenCV (Computer Vision), FTCLib (Shortcuts), MeepMeep (Simulations)
+- **Libraries**: FTC SDK, Pedro-Pathing (New Auto-Pathing), OpenCV (Computer Vision), FTCLib (Shortcuts), MeepMeep (Simulations)
 
 ---
 
