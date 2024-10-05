@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization;
 
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.MathFunctions;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Vector;
 
 /**
@@ -128,6 +129,16 @@ public class Pose {
      *
      * @param pose the input Pose
      */
+
+    /**
+     * This returns a point object representing the pose
+     * CUSTOM CODE WRITTEN BY STEPHEN O. - TEAM 21945
+     * @return returns a point object representing the pose
+     */
+    public Point getPoint(){
+        return new Point(getX(), getY(), Point.CARTESIAN);
+    }
+
     public void add(Pose pose) {
         setX(x + pose.getX());
         setY(y + pose.getY());
