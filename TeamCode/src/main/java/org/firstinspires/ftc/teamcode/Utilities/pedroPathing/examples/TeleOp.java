@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -19,8 +18,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerCons
  * @version 1.0, 3/21/2024
  */
 @Disabled
-//@TeleOp(name = "Pedro Pathing TeleOp Enhancements", group = "Test")
-public class TeleOpEnhancements extends OpMode {
+//@TeleOp(name = "Pedro Pathing TeleOp Enhancements ", group = "Test")
+public class TeleOp extends OpMode {
     private Follower follower;
 
     private DcMotorEx leftFront;

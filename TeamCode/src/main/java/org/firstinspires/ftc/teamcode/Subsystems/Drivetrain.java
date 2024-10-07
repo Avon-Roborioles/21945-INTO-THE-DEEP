@@ -53,9 +53,9 @@ public class Drivetrain {
 
     public void run_fieldCentric(GamepadEx driverOp){
         //update Telemetry Variables
-        strafeSpeed = driverOp.getLeftX() * -1; //changed to negative to fix inverted controls
-        forwardSpeed = driverOp.getLeftY() * -1;
-        turnSpeed = driverOp.getRightX();
+        strafeSpeed = driverOp.getLeftX() ; //changed to negative to fix inverted controls
+        forwardSpeed = driverOp.getLeftY();
+        turnSpeed = driverOp.getRightX() * -1;
         gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
         //uses FTCLib Library to control all logic of Field Centric Driving
