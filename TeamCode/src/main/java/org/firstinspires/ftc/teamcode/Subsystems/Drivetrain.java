@@ -63,7 +63,9 @@ public class Drivetrain {
         );
 
         //driver feedback functions
-        
+        if(strafeSpeed > 0.8 || forwardSpeed > 0.8 || turnSpeed > 0.8){
+            feedback.alert_driver(driverOp);
+        }
 
     }
 

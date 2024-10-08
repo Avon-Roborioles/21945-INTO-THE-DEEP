@@ -32,7 +32,10 @@ public class Driver_Feedback {
         driverOp.gamepad.rumble(500);
     }
 
-    public void alert_drivers(GamepadEx driver1Op, GamepadEx driver2Op){}
+    public void alert_drivers(GamepadEx driver1Op, GamepadEx driver2Op){
+        driver1Op.gamepad.rumbleBlips(3);
+        driver2Op.gamepad.rumbleBlips(3);
+    }
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----Haptic FeedBack Data----");
