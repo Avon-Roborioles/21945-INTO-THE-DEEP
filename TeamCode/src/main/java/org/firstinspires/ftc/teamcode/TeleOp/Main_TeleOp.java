@@ -12,6 +12,7 @@ public class Main_TeleOp extends LinearOpMode {
 
     //create subsystem objects
     private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
+    private final org.firstinspires.ftc.teamcode.Subsystems.Driver_Feedback feedback = new Driver_Feedback();
 
     //Driver gamepad objects - set to static so subsystems can access controls
     public static GamepadEx Driver1Op;
@@ -25,12 +26,13 @@ public class Main_TeleOp extends LinearOpMode {
 
         //initialize subsystems
         drivetrain.init(hardwareMap);
+        feedback.init();
 
         waitForStart();
 
         //run drivetrain software in loop
         while(opModeIsActive()){
-            drivetrain.run_fieldCentric(Driver1Op);
+            drivetrain.run_fieldCentric(Driver1Op, feedback);
             drivetrain.getTelemetryFULL(telemetry);
             telemetry.update();
         }

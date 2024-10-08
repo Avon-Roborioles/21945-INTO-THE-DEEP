@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Subsystems.*;
 
 public class Drivetrain {
     //motor objects
@@ -46,7 +47,7 @@ public class Drivetrain {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
-    public void run_fieldCentric(GamepadEx driverOp){
+    public void run_fieldCentric(GamepadEx driverOp, Driver_Feedback feedback){
         //update Telemetry Variables
         strafeSpeed = driverOp.getLeftX() * -1; //changed to negative to fix inverted controls
         forwardSpeed = driverOp.getLeftY() * -1;
@@ -60,6 +61,10 @@ public class Drivetrain {
                 turnSpeed,
                 gyroAngle
         );
+
+        //driver feedback functions
+        
+
     }
 
     //most important info of drivetrain to reduce clutter
