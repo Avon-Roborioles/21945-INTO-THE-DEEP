@@ -32,14 +32,9 @@ public class Drivetrain {
     public void init(HardwareMap hardwareMap){
         imu = hardwareMap.get(IMU.class, "imu");
 
-        //"DeviceName" MUST match name of motors in driver hub configuration
-        //leftFront = hardwareMap.get(Motor.class, "leftFront");
         leftFront = new Motor(hardwareMap,"leftFront");
-        //rightFront = hardwareMap.get(Motor.class, "rightFront");
         rightFront = new Motor(hardwareMap,"rightFront");
-        //leftRear = hardwareMap.get(Motor.class, "leftRear");
         leftRear = new Motor(hardwareMap,"leftRear");
-        //rightRear = hardwareMap.get(Motor.class, "rightRear");
         rightRear = new Motor(hardwareMap,"rightRear");
 
         //helps orient the robot for the IMU, change whenever the control hub is rotated
@@ -91,4 +86,3 @@ public class Drivetrain {
         telemetry.addData("Gyro Angle (IMU): ", gyroAngle);
     }
 }
-
