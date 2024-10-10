@@ -79,7 +79,8 @@ public class OTOSLocalizer extends Localizer {
         // For the OTOS, left/right is the y axis and forward/backward is the x axis, with left being
         // positive y and forward being positive x. PI/2 radians is facing forward, and clockwise
         // rotation is negative rotation.
-        otos.setOffset(new SparkFunOTOS.Pose2D(0,0,Math.PI / 2));
+        //Below are Estimates I got when Liam M. initially installed the sensor for us - Stephen O. 10/10/24
+        otos.setOffset(new SparkFunOTOS.Pose2D(0,5.5,Math.PI / 2));
 
         // TODO: replace these with your tuned multipliers
         otos.setLinearScalar(1.0);
