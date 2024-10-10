@@ -18,9 +18,6 @@ public class Main_TeleOp extends LinearOpMode {
     public static GamepadEx Driver1Op;
     public static GamepadEx Driver2Op;
 
-    //Driver gamepad objects - set to static so subsystems can access controls
-    public static GamepadEx Driver1Op;
-    public static GamepadEx Driver2Op;
 
     @Override
     public void runOpMode() throws InterruptedException {
