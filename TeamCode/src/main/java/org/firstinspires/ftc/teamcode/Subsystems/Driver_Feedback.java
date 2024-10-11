@@ -29,23 +29,23 @@ public class Driver_Feedback {
     }
 
     public void alert_driver(GamepadEx driverOp, int strength){
-        Gamepad.RumbleEffect strength80;
-        Gamepad.RumbleEffect strength90;
+        Gamepad.RumbleEffect strength40;
+        Gamepad.RumbleEffect strength70;
         Gamepad.RumbleEffect strength100;
-        strength80 = new Gamepad.RumbleEffect.Builder()
-                .addStep(0.8, 0.0, 500)  //  Rumble right motor 80% for 500 mSec
+        strength40 = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.4, 0.0, 500)  //  Rumble right motor 80% for 500 mSec
                 .build();
-        strength90 = new Gamepad.RumbleEffect.Builder()
-                .addStep(0.9, 0.0, 500)  //  Rumble right motor 90% for 500 mSec
+        strength70 = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.7, 0.0, 500)  //  Rumble right motor 90% for 500 mSec
                 .build();
         strength100 = new Gamepad.RumbleEffect.Builder()
                 .addStep(1.0, 0.0, 500)  //  Rumble right motor 100% for 500 mSec
                 .build();
 
         if (strength == 80) {
-            driverOp.gamepad.runRumbleEffect(strength80);
+            driverOp.gamepad.runRumbleEffect(strength40);
         } else if (strength == 90) {
-            driverOp.gamepad.runRumbleEffect(strength90);
+            driverOp.gamepad.runRumbleEffect(strength70);
         } else if (strength == 100) {
             driverOp.gamepad.runRumbleEffect(strength100);
         } else {

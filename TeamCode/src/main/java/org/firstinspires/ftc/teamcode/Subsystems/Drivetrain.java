@@ -28,6 +28,7 @@ public class Drivetrain {
     double forwardSpeed = 0;
     double turnSpeed = 0;
     double gyroAngle = 0;
+    int strength = 0;
 
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap){
@@ -63,8 +64,17 @@ public class Drivetrain {
         );
 
         //driver feedback functions
-        if(strafeSpeed > 0.8 || forwardSpeed > 0.8 || turnSpeed > 0.8){
-            feedback.alert_driver(driverOp);
+        if(strafeSpeed == 1 || forwardSpeed == 1 || turnSpeed == 1){
+            strength = 100;
+            feedback.alert_driver(driverOp, strength);
+        } else if (strafeSpeed > 0.9 || forwardSpeed > 0.9 || turnSpeed > 0.9) {
+            strength = 70;
+            feedback.alert_driver(driverOp, strength);
+        } else if (strafeSpeed > 0.8 || forwardSpeed > 0.8 || turnSpeed > 0.8) {
+            strength = 40;
+            feedback.alert_driver(driverOp, strength);
+        } else {
+            strength = 0;
         }
 
     }
@@ -91,5 +101,8 @@ public class Drivetrain {
         telemetry.addData("Forward Speed: ", turnSpeed);
         telemetry.addData("Turn Speed: ", turnSpeed);
         telemetry.addData("Gyro Angle (IMU): ", gyroAngle);
+
+        telemetry.addLine("---Drivetrain Feedback Data---");
+        telemetry.addData("Feedback Strength: ", strength);
     }
 }
