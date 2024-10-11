@@ -42,9 +42,9 @@ public class Driver_Feedback {
                 .addStep(1.0, 0.0, 500)  //  Rumble right motor 100% for 500 mSec
                 .build();
 
-        if (strength == 80) {
+        if (strength == 40) {
             driverOp.gamepad.runRumbleEffect(strength40);
-        } else if (strength == 90) {
+        } else if (strength == 70) {
             driverOp.gamepad.runRumbleEffect(strength70);
         } else if (strength == 100) {
             driverOp.gamepad.runRumbleEffect(strength100);
