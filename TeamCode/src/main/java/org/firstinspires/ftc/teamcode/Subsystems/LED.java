@@ -11,7 +11,7 @@ public class LED {
     //All LED objects
 
     //----------TELEOP COMMANDS------------------
-    public void init(){
+    public void init(HardwareMap hardwareMap){
 
     }
 
