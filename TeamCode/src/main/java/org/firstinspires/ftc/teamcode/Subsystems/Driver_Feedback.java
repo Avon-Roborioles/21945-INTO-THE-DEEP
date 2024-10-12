@@ -9,29 +9,34 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Driver_Feedback {
-    Gamepad.RumbleEffect customRumbleEffect;    // Use to build a custom rumble sequence.
-
-    final double HALF_TIME = 60.0;              // Wait this many seconds before rumble-alert for half-time.
-    final double TRIGGER_THRESHOLD  = 0.75;     // Squeeze more than 3/4 to get rumble.
     ElapsedTime teleOpTimer;                    // used to determine when endgame has started
     boolean Driver1Alert = false;
     boolean Driver2Alert = false;
 
-    //starts the end-game timer to alert drivers
+    /**
+     * creates the end-game timer to alert drivers
+     */
     public void init(){
         teleOpTimer = new ElapsedTime(90);
     }
 
-    //start teleOp timer
+
+   /**
+    * starts the Endgame Timer
+    */
     public void startTimer(){
         teleOpTimer.startTime();
 
     }
 
+    /**
+     *alerts the specifed driver with a percise amount of strength; mainly used for subsystem aerts
+     */
     public void alert_driver(GamepadEx driverOp, int strength){
         Gamepad.RumbleEffect strength40;
         Gamepad.RumbleEffect strength70;
         Gamepad.RumbleEffect strength100;
+
         strength40 = new Gamepad.RumbleEffect.Builder()
                 .addStep(0.4, 0.0, 500)  //  Rumble right motor 80% for 500 mSec
                 .build();
@@ -53,18 +58,28 @@ public class Driver_Feedback {
         }
     }
 
+
+    /**
+     * alerts the specifed driver with a half-second (500ms) rumble
+     */
     public void alert_driver(GamepadEx driverOp){
         driverOp.gamepad.rumble(500);
     }
 
+
+    /**
+     * alerts both driver with 3 rumbles on both gamepads
+     */
     public void alert_drivers(GamepadEx driver1Op, GamepadEx driver2Op){
         driver1Op.gamepad.rumbleBlips(3);
         driver2Op.gamepad.rumbleBlips(3);
     }
 
-    public void getTelemetry(Telemetry telemetry){
-        telemetry.addLine("----Haptic FeedBack Data----");
-        telemetry.addData("Time Left: ", teleOpTimer.toString());
 
+    /**
+    @return Time left from the endgame timer since started by the primary driver
+     */
+    public String getTimer(){
+        return teleOpTimer.toString();
     }
 }
