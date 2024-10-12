@@ -28,11 +28,39 @@ public class Driver_Feedback {
 
     }
 
+    public void alert_driver(GamepadEx driverOp, int strength){
+        Gamepad.RumbleEffect strength40;
+        Gamepad.RumbleEffect strength70;
+        Gamepad.RumbleEffect strength100;
+        strength40 = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.4, 0.0, 500)  //  Rumble right motor 80% for 500 mSec
+                .build();
+        strength70 = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.7, 0.0, 500)  //  Rumble right motor 90% for 500 mSec
+                .build();
+        strength100 = new Gamepad.RumbleEffect.Builder()
+                .addStep(1.0, 0.0, 500)  //  Rumble right motor 100% for 500 mSec
+                .build();
+
+        if (strength == 40) {
+            driverOp.gamepad.runRumbleEffect(strength40);
+        } else if (strength == 70) {
+            driverOp.gamepad.runRumbleEffect(strength70);
+        } else if (strength == 100) {
+            driverOp.gamepad.runRumbleEffect(strength100);
+        } else {
+            driverOp.gamepad.rumble(500);
+        }
+    }
+
     public void alert_driver(GamepadEx driverOp){
         driverOp.gamepad.rumble(500);
     }
 
-    public void alert_drivers(GamepadEx driver1Op, GamepadEx driver2Op){}
+    public void alert_drivers(GamepadEx driver1Op, GamepadEx driver2Op){
+        driver1Op.gamepad.rumbleBlips(3);
+        driver2Op.gamepad.rumbleBlips(3);
+    }
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----Haptic FeedBack Data----");

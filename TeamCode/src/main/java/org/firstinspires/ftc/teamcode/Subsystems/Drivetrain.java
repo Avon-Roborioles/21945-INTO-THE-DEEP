@@ -28,6 +28,7 @@ public class Drivetrain {
     double forwardSpeed = 0;
     double turnSpeed = 0;
     double gyroAngle = 0;
+    int strength = 0;
 
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap){
@@ -62,8 +63,25 @@ public class Drivetrain {
                 gyroAngle
         );
 
+        //absolute values of driver inputs used for haptic feedback functions
+        double strafeAbsolute = Math.abs(strafeSpeed);
+        double forwardAbsolute = Math.abs(forwardSpeed);
+        double turnAbsolute = Math.abs(turnSpeed);
+
+
         //driver feedback functions
-        
+        if(strafeAbsolute == 1 || forwardAbsolute == 1 || turnAbsolute == 1){
+            strength = 100;
+            feedback.alert_driver(driverOp, strength);
+        } else if (strafeAbsolute > 0.9 || forwardAbsolute > 0.9 || turnAbsolute > 0.9) {
+            strength = 70;
+            feedback.alert_driver(driverOp, strength);
+        } else if (strafeAbsolute > 0.8 || forwardAbsolute > 0.8 || turnAbsolute > 0.8) {
+            strength = 40;
+            feedback.alert_driver(driverOp, strength);
+        } else {
+            strength = 0;
+        }
 
     }
 
@@ -89,5 +107,8 @@ public class Drivetrain {
         telemetry.addData("Forward Speed: ", turnSpeed);
         telemetry.addData("Turn Speed: ", turnSpeed);
         telemetry.addData("Gyro Angle (IMU): ", gyroAngle);
+
+        telemetry.addLine("---Drivetrain Feedback Data---");
+        telemetry.addData("Feedback Strength: ", strength);
     }
 }
