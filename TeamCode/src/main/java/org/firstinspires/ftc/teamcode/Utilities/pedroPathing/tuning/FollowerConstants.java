@@ -67,10 +67,10 @@ public class FollowerConstants {
 
     // Drive PIDF coefficients
     public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = new CustomFilteredPIDFCoefficients(
-            0.025,
+            0.0045,
             0,
-            0.00001,
-            0.6,
+            0.0001,
+            0.65,
             0);
 
     // Feed forward constant added on to the drive PIDF
