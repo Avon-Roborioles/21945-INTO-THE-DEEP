@@ -13,11 +13,11 @@ public class Main_TeleOp extends LinearOpMode {
     //create subsystem objects
     private final org.firstinspires.ftc.teamcode.Subsystems.Driver_Feedback feedback = new Driver_Feedback();
     private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
-//    private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
-//    private final org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
-//    private final org.firstinspires.ftc.teamcode.Subsystems.Lift lift = new Lift();
-//    private final org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
-//    private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
+    //private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
+    //private final org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
+    //private final org.firstinspires.ftc.teamcode.Subsystems.Lift lift = new Lift();
+    //private final org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
+    //private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
 
     //Driver gamepad objects - set to static so subsystems can access controls
     public static GamepadEx Driver1Op;
@@ -32,11 +32,11 @@ public class Main_TeleOp extends LinearOpMode {
         //initialize subsystems
         feedback.init();
         drivetrain.init(hardwareMap);
-//        arm.init(hardwareMap);
-//        intake.init(hardwareMap);
-//        lift.init(hardwareMap);
-//        vision.init(hardwareMap);
-//        lighting.init(hardwareMap);
+        //arm.init(hardwareMap);
+        //intake.init(hardwareMap);
+        //lift.init(hardwareMap);
+        //vision.init(hardwareMap);
+        //lighting.init(hardwareMap);
 
 
         waitForStart();
