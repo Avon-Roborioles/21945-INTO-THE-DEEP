@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.tunin
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Drawing;
@@ -30,9 +32,14 @@ public class ForwardTuner extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
 
+    public static GamepadEx Driver1Op;
+
     private Telemetry telemetryA;
 
     public static double DISTANCE = 30;
+
+    private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
+
 
     /**
      * This initializes the PoseUpdater as well as the FTC Dashboard telemetry.
@@ -49,6 +56,10 @@ public class ForwardTuner extends OpMode {
 
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
+
+        Driver1Op = new GamepadEx(gamepad1);
+
+        drivetrain.init(hardwareMap);
     }
 
     /**
@@ -67,5 +78,7 @@ public class ForwardTuner extends OpMode {
         Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
+
+        drivetrain.run_fieldCentric(Driver1Op);
     }
 }

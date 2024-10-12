@@ -5,6 +5,7 @@
 */
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,6 +14,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
@@ -29,6 +31,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class SensorSparkFunOTOS extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
+    private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
+    public GamepadEx Driver1Op;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,6 +42,10 @@ public class SensorSparkFunOTOS extends LinearOpMode {
 
         // All the configuration for the OTOS is done in this helper method, check it out!
         configureOtos();
+
+        Driver1Op = new GamepadEx(gamepad1);
+        drivetrain.init(hardwareMap);
+
 
         // Wait for the start button to be pressed
         waitForStart();
@@ -47,13 +56,16 @@ public class SensorSparkFunOTOS extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
+            drivetrain.run_fieldCentric(Driver1Op);
+
+
             // Reset the tracking if the user requests it
-            if (gamepad1.y) {
+            if (Driver1Op.gamepad.y) {
                 myOtos.resetTracking();
             }
 
             // Re-calibrate the IMU if the user requests it
-            if (gamepad1.x) {
+            if (Driver1Op.gamepad.x) {
                 myOtos.calibrateImu();
             }
 
