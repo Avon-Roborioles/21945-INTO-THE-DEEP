@@ -41,7 +41,7 @@ public class Drivetrain {
 
         //helps orient the robot for the IMU, change whenever the control hub is rotated
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
+        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.LEFT; //RIGHT
         drivetrain = new MecanumDrive(leftFront, rightFront,leftRear, rightRear);
 
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
@@ -50,8 +50,8 @@ public class Drivetrain {
 
     public void run_fieldCentric(GamepadEx driverOp, Driver_Feedback feedback){
         //update Telemetry Variables
-        strafeSpeed = driverOp.getLeftX() ; //changed to negative to fix inverted controls
-        forwardSpeed = driverOp.getLeftY();
+        strafeSpeed = driverOp.getLeftX() * -1; //changed to negative to fix inverted controls
+        forwardSpeed = driverOp.getLeftY() * -1;
         turnSpeed = driverOp.getRightX() * -1;
         gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
@@ -82,29 +82,6 @@ public class Drivetrain {
         } else {
             strength = 0;
         }
-
-    }
-
-    //drivetrain teleOp with no feedback
-    public void run_fieldCentric(GamepadEx driverOp){
-        //update Telemetry Variables
-        strafeSpeed = driverOp.getLeftX() ; //changed to negative to fix inverted controls
-        forwardSpeed = driverOp.getLeftY();
-        turnSpeed = driverOp.getRightX() * -1;
-        gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
-        //uses FTCLib Library to control all logic of Field Centric Driving
-        drivetrain.driveFieldCentric(
-                strafeSpeed,
-                forwardSpeed,
-                turnSpeed,
-                gyroAngle
-        );
-
-        //absolute values of driver inputs used for haptic feedback functions
-        double strafeAbsolute = Math.abs(strafeSpeed);
-        double forwardAbsolute = Math.abs(forwardSpeed);
-        double turnAbsolute = Math.abs(turnSpeed);
 
     }
 

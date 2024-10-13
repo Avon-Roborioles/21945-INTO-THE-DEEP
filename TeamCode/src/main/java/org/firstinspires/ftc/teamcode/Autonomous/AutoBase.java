@@ -7,15 +7,17 @@ import org.firstinspires.ftc.teamcode.Subsystems.*;
 
 
 public class AutoBase extends LinearOpMode {
-    //subsystem objects - intake, lift, slides, vision, etc
+    //subsystem objects - arm, intake, lift, etc
 
+    //blank runOpMode() method included only to keep LinearOpMode
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException {}
 
-    }
 
     //used by auto programs to init subsystems
     public void init_classes(){
 
     }
+
+
 }

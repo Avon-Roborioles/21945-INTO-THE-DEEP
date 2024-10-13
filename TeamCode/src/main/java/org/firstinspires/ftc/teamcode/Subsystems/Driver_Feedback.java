@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+//imported libraries needed
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 public class Driver_Feedback {
-    ElapsedTime teleOpTimer;                    // used to determine when endgame has started
+    //useful objects & variables
+    ElapsedTime endgameTimer;
     boolean Driver1Alert = false;
     boolean Driver2Alert = false;
 
@@ -17,15 +15,14 @@ public class Driver_Feedback {
      * creates the end-game timer to alert drivers
      */
     public void init(){
-        teleOpTimer = new ElapsedTime(90);
+        endgameTimer = new ElapsedTime(90);
     }
-
 
    /**
     * starts the Endgame Timer
     */
     public void startTimer(){
-        teleOpTimer.startTime();
+        endgameTimer.startTime();
 
     }
 
@@ -80,6 +77,6 @@ public class Driver_Feedback {
     @return Time left from the endgame timer since started by the primary driver
      */
     public String getTimer(){
-        return teleOpTimer.toString();
+        return endgameTimer.toString();
     }
 }
