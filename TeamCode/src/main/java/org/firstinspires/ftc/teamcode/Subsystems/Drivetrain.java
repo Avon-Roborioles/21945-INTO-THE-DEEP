@@ -41,7 +41,7 @@ public class Drivetrain {
 
         //helps orient the robot for the IMU, change whenever the control hub is rotated
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
+        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.LEFT; //RIGHT
         drivetrain = new MecanumDrive(leftFront, rightFront,leftRear, rightRear);
 
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
@@ -52,7 +52,7 @@ public class Drivetrain {
         //update Telemetry Variables
         strafeSpeed = driverOp.getLeftX() * -1; //changed to negative to fix inverted controls
         forwardSpeed = driverOp.getLeftY() * -1;
-        turnSpeed = driverOp.getRightX();
+        turnSpeed = driverOp.getRightX() * -1;
         gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
         //uses FTCLib Library to control all logic of Field Centric Driving
