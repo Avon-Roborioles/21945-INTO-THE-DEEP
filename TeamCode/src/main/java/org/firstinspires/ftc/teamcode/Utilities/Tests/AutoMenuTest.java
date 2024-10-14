@@ -1,56 +1,32 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
+//import needed classes
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 
-@TeleOp
-public class AutoMenuTest extends OpMode {
-    public enum AutoPath {
-        UP,
-        DOWN
-    }
-    AutoPath selectedPath = AutoPath.UP;
-    boolean BoardScore = true;
-
-    ToggleButtonReader d_up,d_down;
+@Autonomous
+public class AutoMenuTest extends AutoBase {
     @Override
-    public void init() {
-        GamepadEx gamepad = new GamepadEx(gamepad1);
+    public void runOpMode() throws InterruptedException {
+        //create follower & Input Gamepad
+        GamepadEx driverOp;
 
-        //controls for auto path
-        d_up = new ToggleButtonReader(
-                gamepad, GamepadKeys.Button.DPAD_UP
-        );
+        //important variables
 
-        d_down = new ToggleButtonReader(
-                gamepad, GamepadKeys.Button.DPAD_DOWN
-        );
-    }
-    @Override
-    public void loop() {
-        //menu code
-        if(d_up.getState()){ //Auto Path selection
-            selectedPath = AutoPath.UP;
-        } else {
-            selectedPath = AutoPath.DOWN;
-        }
+        //initialize subsystems
+        init_classes();
+        driverOp = new GamepadEx(gamepad1);
 
-        BoardScore = d_down.getState(); //Board Score Selection
+        // call build paths method
 
-        //menu
-        telemetry.addLine("Select the Auto Path by Toggling the D-pad Up Button");
-        telemetry.addData("Current Auto Path Selected: ", selectedPath);
-        telemetry.addLine(" ");
-        telemetry.addLine("Select Board Scoring by Toggling the D-pad Down Button");
-        telemetry.addData("Selected Board Score Status: ", BoardScore);
+
+        runMenu(driverOp);
         telemetry.update();
 
-        //updates
-        d_up.readValue();
-        d_down.readValue();
+
+        waitForStart();
+
+
     }
 }
