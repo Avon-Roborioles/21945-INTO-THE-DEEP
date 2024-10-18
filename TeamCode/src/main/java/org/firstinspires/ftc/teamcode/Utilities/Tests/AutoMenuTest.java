@@ -9,21 +9,20 @@ import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 public class AutoMenuTest extends AutoBase {
     @Override
     public void runOpMode() throws InterruptedException {
-        //create follower & Input Gamepad
-        GamepadEx driverOp;
 
-        //important variables
+        //create follower & Input Gamepad
+        GamepadEx driverOp = new GamepadEx(gamepad1);
 
         //initialize subsystems
-        init_classes();
-        driverOp = new GamepadEx(gamepad1);
+        init_classes(driverOp);
 
         // call build paths method
 
-
-        runMenu(driverOp);
-        telemetry.update();
-
+        //show auto menu
+        while(opModeInInit()) {
+            runMenu();
+            telemetry.update();
+        }
 
         waitForStart();
 
