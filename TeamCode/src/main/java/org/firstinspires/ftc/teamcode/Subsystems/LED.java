@@ -91,8 +91,7 @@ public class LED {
                 blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
             case GRAY:
                 blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GRAY);
-            default:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
+            
         }
 
     }

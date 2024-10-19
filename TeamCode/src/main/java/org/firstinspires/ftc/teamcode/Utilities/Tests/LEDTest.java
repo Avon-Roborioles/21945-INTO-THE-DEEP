@@ -33,13 +33,32 @@ public class LEDTest extends LinearOpMode {
         //initialize lighting
         lighting.init(hardwareMap);
         //start breathing mode (LED Status for Robot Idle)
-        //lighting.setBreathingMode("RED");
 
         waitForStart();
 
         while(opModeIsActive()){
             //control lighting based on gamepad input
-
+            if(d_up.wasJustPressed()){
+                lighting.setConstantColor(LED.COLORS.PURPLE);
+            }
+            if(d_left.wasJustPressed()){
+                lighting.setConstantColor(LED.COLORS.RED);
+            }
+            if(d_right.wasJustPressed()){
+                lighting.setConstantColor(LED.COLORS.BLUE);
+            }
+            if(d_down.wasJustPressed()){
+                lighting.OFF();
+            }
+            if(b_button.wasJustPressed()){
+                lighting.setBreathingMode(LED.COLORS.RED);
+            }
+            if(x_button.wasJustPressed()){
+                lighting.setBreathingMode(LED.COLORS.BLUE);
+            }
+            if(y_button.wasJustPressed()){
+                lighting.setConstantColor(LED.COLORS.YELLOW);
+            }
 
             //telemetry
             telemetry.addLine("> Press Dpad Up for Constant Purple");
@@ -57,7 +76,10 @@ public class LEDTest extends LinearOpMode {
             d_up.readValue();
             d_left.readValue();
             d_right.readValue();
+            d_down.readValue();
+            b_button.readValue();
+            x_button.readValue();
+            y_button.readValue();
         }
-
     }
 }
