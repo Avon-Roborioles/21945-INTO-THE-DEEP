@@ -42,46 +42,81 @@ public class LED {
         AUTO
     }
 
+    public enum COLORS{
+        RED,
+        BLUE,
+        YELLOW,
+        GREEN,
+        PURPLE,
+        GRAY,
+        OFF
+    }
+
     //All LED objects
 
     //----------TELEOP COMMANDS------------------
     public void init(HardwareMap hardwareMap){
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+    }
+
+    public void setRainbow(){
         displayKind = DisplayKind.AUTO;
 
-        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
         blinkinLedDriver.setPattern(pattern);
-
-        display = telemetry.addData("Display Kind: ", displayKind.toString());
-        patternName = telemetry.addData("Pattern: ", pattern.toString());
-
-        ledCycleDeadline = new Deadline(LED_PERIOD, TimeUnit.SECONDS);
-        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
+//        display = telemetry.addData("Display Kind: ", displayKind.toString());
+//        patternName = telemetry.addData("Pattern: ", pattern.toString());
+//
+//        ledCycleDeadline = new Deadline(LED_PERIOD, TimeUnit.SECONDS);
+//        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
     }
 
-    public void run_teleOp(){
-
-    }
 
     //----------AUTO COMMANDS---------------------
 
-    //set all lighting to constant purple
-    public void setConstantMode(){
+    /**set all lighting to constant purple
+     * - PURPLE, RED, YELLOW, BLUE, GREEN, GRAY
+     */
+    public void setConstantColor(COLORS color){
+        switch(color){
+            case PURPLE:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
+            case RED:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            case YELLOW:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+            case BLUE:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.AQUA);
+            case GREEN:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+            case GRAY:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GRAY);
+            default:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
+        }
 
     }
 
     //sets all lighting to breathing effect
-    public void setBreathingMode(){
+    public void setBreathingMode(COLORS color){
+        switch(color){
+            case RED:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+            case BLUE:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+        }
 
     }
 
     //turn off all lighting
     public void OFF(){
-
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
     }
 
     public void getTelemetry(Telemetry telemetry){
-
+        telemetry.addLine("----LED Lighting Data----");
+        telemetry.addData("Lighting Connection: ", blinkinLedDriver.getConnectionInfo());
+        telemetry.addData("Other Info: ", blinkinLedDriver.toString());
     }
 
 }

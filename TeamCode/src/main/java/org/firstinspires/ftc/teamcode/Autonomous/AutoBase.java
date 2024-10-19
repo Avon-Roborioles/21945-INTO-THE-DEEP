@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Utilities.Tests.AutoMenuTestBASIC;
 public class AutoBase extends LinearOpMode {
     //subsystem objects - arm, intake, lift, etc
     protected org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
-    protected org.firstinspires.ftc.teamcode.Subsystems.AutoMenu menu = new AutoMenu();
 
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down;
@@ -42,7 +41,7 @@ public class AutoBase extends LinearOpMode {
     }
 
     /**
-     * Runs the AutoMenu Program to input Auto Pathing Selections
+     * Runs the Auto Menu Program to input Auto Pathing Selections
      */
     public void runMenu(){
         //menu code
