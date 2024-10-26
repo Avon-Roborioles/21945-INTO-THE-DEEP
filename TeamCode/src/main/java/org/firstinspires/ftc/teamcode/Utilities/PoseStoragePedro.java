@@ -50,7 +50,7 @@ public class PoseStoragePedro {
 
     public static Pose SpecimenScore = new Pose(0+72,-33+72,Math.toRadians(-90));
 
-    public static Pose RightPark = new Pose(29+72,-9.8+72, Math.toRadians(180-1e-6));
+    public static Pose RightPark = new Pose(23+72,-9.8+72, Math.toRadians(180-1e-6)); //x is 29
 
 
     //useful points to hold during auto - allows us to keep our stance against aggressive bots

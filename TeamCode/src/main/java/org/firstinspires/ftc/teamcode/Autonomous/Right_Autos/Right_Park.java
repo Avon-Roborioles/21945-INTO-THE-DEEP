@@ -1,29 +1,102 @@
 package org.firstinspires.ftc.teamcode.Autonomous.Right_Autos;
 
-//import needed libraires
-import com.acmerobotics.roadrunner.Pose2d;
+//import needed libraries
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
-import org.firstinspires.ftc.teamcode.Utilities.RoadRunner.MecanumDrive;
-//TODO check if we're missing TrajectorySequence
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierCurve;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
+import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 
-@Disabled
-//@Autonomous(name="Right Park", group = "Right Autos")
+@Autonomous(name="Right Park", group = "Right Autos")
 public class Right_Park extends AutoBase {
-    public void runOpMode() throws InterruptedException{
-        //important variables
 
-        //initialize subsystems
-        init_classes();
+    //important variables
+    PathChain startToEnd;
+    PathChain park;
+    PathChain endToStart;
+    Pose startPose = PoseStoragePedro.RightStartPose;
+    Pose parkPose = PoseStoragePedro.RightPark;
+    Follower bot;
+
+    //Finite State Machine (FSM) variables
+    public enum State {
+        START,
+        PARK,
+        END
+    }
+    public State currentState;
+
+    //add all paths/auto objectives here
+    public void buildPaths(){
+        startToEnd = bot.pathBuilder()
+                .addPath(new BezierLine(startPose.getPoint(), new Pose(parkPose.getX()+15, parkPose.getY(),parkPose.getHeading()).getPoint()))
+                .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
+                .build();
+
+        park = bot.pathBuilder()
+                .addPath(new BezierLine(new Pose(parkPose.getX()+13, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
+                .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
+                .setPathEndVelocityConstraint(10) //sets constant velocity for last path
+                .build();
+
+        endToStart = bot.pathBuilder()
+                .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX()+13, parkPose.getY(),parkPose.getHeading()).getPoint()))
+                .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
+                .addPath(new BezierLine(new Pose(parkPose.getX()+15, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
+                .setConstantHeadingInterpolation(startPose.getHeading())
+                .build();
+    };
+
+    public void runOpMode() throws InterruptedException{
+        bot = new Follower(hardwareMap);
 
         //TODO - vision.init_sample_detection(SAMPLE.COLOR - ALLIANCE COLOR)
 
-        //Create trajectory sequences
+        bot.setPose(startPose);
+
+        //        while(opModeInInit()){
+        //            runMenu();
+        //            telemetry.update();
+        //        }
 
         waitForStart();
 
+        buildPaths();
 
+        //starting path
+        currentState = State.START;
+        bot.followPath(startToEnd);
+
+
+        while(opModeIsActive()){
+            // FSM Auto Logic
+            switch(currentState){
+                case START:
+                    if(!bot.isBusy()){
+                        currentState = State.PARK;
+                        bot.followPath(park);
+                        break;
+                    }
+                case PARK:
+                    if(!bot.isBusy()){
+                        currentState = State.END;
+                        bot.followPath(endToStart);
+                        break;
+                    }
+                case END:
+                    if(!bot.isBusy()){
+                        break;
+                    }
+
+            }
+
+            bot.update();
+            telemetry.addData("Current State: ", currentState);
+            telemetry.update();
+        }
     }
-
 }
