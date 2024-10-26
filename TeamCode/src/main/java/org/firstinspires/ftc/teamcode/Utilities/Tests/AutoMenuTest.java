@@ -1,0 +1,31 @@
+package org.firstinspires.ftc.teamcode.Utilities.Tests;
+
+//import needed classes
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
+
+@Autonomous
+public class AutoMenuTest extends AutoBase {
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        //create follower & Input Gamepad
+        GamepadEx driverOp = new GamepadEx(gamepad1);
+
+        //initialize subsystems
+        init_classes(driverOp);
+
+        // call build paths method
+
+        //show auto menu
+        while(opModeInInit()) {
+            runMenu();
+            telemetry.update();
+        }
+
+        waitForStart();
+
+
+    }
+}
