@@ -15,9 +15,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Poin
 public class Right_Park extends AutoBase {
 
     //important variables
-    PathChain startToEnd;
-    PathChain park;
-    PathChain endToStart;
+    PathChain startToEnd, park;
     Pose startPose = PoseStoragePedro.RightStartPose;
     Pose parkPose = PoseStoragePedro.RightPark;
     Follower bot;
@@ -41,14 +39,15 @@ public class Right_Park extends AutoBase {
                 .addPath(new BezierLine(new Pose(parkPose.getX()+13, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
                 .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
                 .setPathEndVelocityConstraint(10) //sets constant velocity for last path
-                .build();
+                //.setPathEndTimeoutConstraint(3)
+                .waitSeconds(3, bot) //TODO custom waitSeconds method to make things easier - Test!!!
 
-        endToStart = bot.pathBuilder()
                 .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX()+13, parkPose.getY(),parkPose.getHeading()).getPoint()))
                 .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
                 .addPath(new BezierLine(new Pose(parkPose.getX()+15, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
                 .setConstantHeadingInterpolation(startPose.getHeading())
                 .build();
+
     };
 
     public void runOpMode() throws InterruptedException{
@@ -67,7 +66,7 @@ public class Right_Park extends AutoBase {
 
         buildPaths();
 
-        //starting path
+        //starting path & FSM
         currentState = State.START;
         bot.followPath(startToEnd);
 
@@ -84,18 +83,17 @@ public class Right_Park extends AutoBase {
                 case PARK:
                     if(!bot.isBusy()){
                         currentState = State.END;
-                        bot.followPath(endToStart);
-                        break;
-                    }
-                case END:
-                    if(!bot.isBusy()){
                         break;
                     }
 
             }
 
-            bot.update();
+            bot.update(); //controls Pedro-Pathing logic
+            PoseStoragePedro.currentPose = bot.getPose(); //updates currentPose variable
             telemetry.addData("Current State: ", currentState);
+            telemetry.addData("X Position: ", bot.getPose().getX());
+            telemetry.addData("Y Position: ", bot.getPose().getY());
+            telemetry.addData("Heading Position: ", bot.getPose().getHeading());
             telemetry.update();
         }
     }
