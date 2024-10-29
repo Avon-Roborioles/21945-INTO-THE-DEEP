@@ -5,17 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 
 @Autonomous(name="Right Park", group = "Right Autos")
 public class Right_Park extends AutoBase {
 
     //important variables
-    PathChain startToEnd, park;
+    PathChain start, park;
     Pose startPose = PoseStoragePedro.RightStartPose;
     Pose parkPose = PoseStoragePedro.RightPark;
     Follower bot;
@@ -30,7 +28,7 @@ public class Right_Park extends AutoBase {
 
     //add all paths/auto objectives here
     public void buildPaths(){
-        startToEnd = bot.pathBuilder()
+        start = bot.pathBuilder()
                 .addPath(new BezierLine(startPose.getPoint(), new Pose(parkPose.getX()+15, parkPose.getY(),parkPose.getHeading()).getPoint()))
                 .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
                 .build();
@@ -57,6 +55,12 @@ public class Right_Park extends AutoBase {
 
         bot.setPose(startPose);
 
+        //initialize subsystems
+        init_classes();
+
+        //TODO - vision.init_sample_detection(SAMPLE.COLOR - YELLOW)
+
+
         //TODO - Test
         //        while(opModeInInit()){
         //            runMenu();
@@ -69,7 +73,7 @@ public class Right_Park extends AutoBase {
 
         //starting path & FSM
         currentState = State.START;
-        bot.followPath(startToEnd);
+        bot.followPath(start);
 
 
         while(opModeIsActive()){
