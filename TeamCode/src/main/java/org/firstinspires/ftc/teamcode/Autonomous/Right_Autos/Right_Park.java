@@ -35,12 +35,12 @@ public class Right_Park extends AutoBase {
                 .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
                 .build();
 
-        park = bot.pathBuilder()
+        park = bot.pathBuilder() //TODO use pathBuilder(bot) to test waitSeconds
                 .addPath(new BezierLine(new Pose(parkPose.getX()+13, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
                 .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
                 .setPathEndVelocityConstraint(10) //sets constant velocity for last path
                 //.setPathEndTimeoutConstraint(3)
-                .waitSeconds(3, bot) //TODO custom waitSeconds method to make things easier - Test!!!
+                .waitSeconds(3) //TODO custom waitSeconds method to make things easier - Test!!!
 
                 .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX()+13, parkPose.getY(),parkPose.getHeading()).getPoint()))
                 .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
@@ -53,10 +53,11 @@ public class Right_Park extends AutoBase {
     public void runOpMode() throws InterruptedException{
         bot = new Follower(hardwareMap);
 
-        //TODO - vision.init_sample_detection(SAMPLE.COLOR - ALLIANCE COLOR)
+        //vision.init_sample_detection(SAMPLE.COLOR - ALLIANCE COLOR)
 
         bot.setPose(startPose);
 
+        //TODO - Test
         //        while(opModeInInit()){
         //            runMenu();
         //            telemetry.update();
@@ -85,7 +86,6 @@ public class Right_Park extends AutoBase {
                         currentState = State.END;
                         break;
                     }
-
             }
 
             bot.update(); //controls Pedro-Pathing logic

@@ -123,6 +123,7 @@ public class Follower {
     public static boolean useHeading = true;
     public static boolean useDrive = true;
 
+
     /**
      * This creates a new Follower given a HardwareMap.
      *
@@ -897,8 +898,9 @@ public class Follower {
      * @return returns a new PathBuilder object.
      */
     public PathBuilder pathBuilder() {
-        return new PathBuilder();
+        return new PathBuilder(this); //remove "this" if errors
     }
+
 
     /**
      * This writes out information about the various motion Vectors to the Telemetry specified.

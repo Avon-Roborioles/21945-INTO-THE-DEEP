@@ -20,6 +20,9 @@ public class PathBuilder {
 
     private ArrayList<PathCallback> callbacks = new ArrayList<>();
 
+    Follower bot; //reference to actual Pedro-Pathing bot
+
+
     /**
      * This is an empty constructor for the PathBuilder class so it can get started.
      * The PathBuilder allows for easier construction of PathChains.
@@ -30,6 +33,12 @@ public class PathBuilder {
      */
     public PathBuilder() {
     }
+
+    public PathBuilder(Follower follower) {
+        bot = follower;
+    }
+
+
 
     /**
      * This adds a Path to the PathBuilder.
@@ -211,9 +220,8 @@ public class PathBuilder {
      * CUSTOM CODE written by Stephen O. - 21945 Purple Roborioles
      * This allows Pedro-Pathing to have a native wait function. Not much to it.
      * @param seconds Number of seconds to wait
-     * @param bot Uses the current bot to get the current Pose
      */
-    public PathBuilder waitSeconds(double seconds, Follower bot){
+    public PathBuilder waitSeconds(double seconds){
         this.paths.add(new Path(new BezierPoint(new Point(bot.getPose()))));
         setPathEndTimeoutConstraint(seconds);
         return this;
