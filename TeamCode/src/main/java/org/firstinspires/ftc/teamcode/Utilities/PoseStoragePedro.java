@@ -12,7 +12,7 @@ public class PoseStoragePedro {
     //adding +72" to each coordinate converts RR Poses to PP Poses
 
     //dynamic pose variable to save current bot position from auto to teleOp (teleOp will use enhances from Pedro-Pathing)
-    public Pose CurrentPose = null;
+    public static Pose CurrentPose = null;
 
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90));

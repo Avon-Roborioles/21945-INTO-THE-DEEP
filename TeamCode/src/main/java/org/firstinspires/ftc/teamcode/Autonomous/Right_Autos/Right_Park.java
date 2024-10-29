@@ -89,7 +89,7 @@ public class Right_Park extends AutoBase {
             }
 
             bot.update(); //controls Pedro-Pathing logic
-            PoseStoragePedro.currentPose = bot.getPose(); //updates currentPose variable
+            PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
             telemetry.addData("Current State: ", currentState);
             telemetry.addData("X Position: ", bot.getPose().getX());
             telemetry.addData("Y Position: ", bot.getPose().getY());
