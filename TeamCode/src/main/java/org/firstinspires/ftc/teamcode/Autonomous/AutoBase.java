@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
-import org.firstinspires.ftc.teamcode.Utilities.Tests.AutoMenuTestBASIC;
 
 //this class is used by all auto programs to access subsystem controls & AutoMenu
 public class AutoBase extends LinearOpMode {
@@ -15,8 +14,13 @@ public class AutoBase extends LinearOpMode {
 
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down;
-    String[] startPoses = {"LEFT", "RIGHT"};
-    public String startPose = "Right"; //default is right (samples)
+
+    public enum AutoPoses {
+        LEFT,
+        RIGHT
+    }
+
+    public AutoPoses AutoPose = AutoPoses.RIGHT; //default is right (samples)
     public int cycleCount = 1; //number of times to go to pit
 
     //blank runOpMode() method included only to keep LinearOpMode
@@ -47,9 +51,9 @@ public class AutoBase extends LinearOpMode {
         //menu code
         if(d_up.getState()){
             //startPose selection
-            startPose = "Right";
+            AutoPose = AutoPoses.RIGHT;
         } else {
-            startPose = "Left";
+            AutoPose = AutoPoses.LEFT;
         }
 
         if(d_down.wasJustPressed()){
@@ -64,7 +68,7 @@ public class AutoBase extends LinearOpMode {
 
         //menu
         telemetry.addLine("Select the StartPose by Toggling the D-pad Up Button");
-        telemetry.addData("Current StartPose Selected: ", startPose);
+        telemetry.addData("Current StartPose Selected: ", AutoPose);
         telemetry.addLine(" ");
         telemetry.addLine("Select the # of Cycles by pressing the D-pad Down Button");
         telemetry.addData("Number of cycles: ", cycleCount);

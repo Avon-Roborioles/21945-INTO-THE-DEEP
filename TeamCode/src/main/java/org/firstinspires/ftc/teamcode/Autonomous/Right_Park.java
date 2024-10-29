@@ -1,24 +1,21 @@
-package org.firstinspires.ftc.teamcode.Autonomous.Left_Autos;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
-//import needed libraires
+//import needed libraries
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
-import org.firstinspires.ftc.teamcode.Autonomous.Right_Autos.Right_Park;
+
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 
-
-@Autonomous(name="Park Auto", group = "Left Autos")
-public class Left_Park extends AutoBase {
+@Autonomous(name="Right Park", group = "Right Autos")
+public class Right_Park extends AutoBase {
 
     //important variables
     PathChain start, park;
-    Pose startPose = PoseStoragePedro.LeftStartPose;
-    Pose parkPose = PoseStoragePedro.LeftPark;
+    Pose startPose = PoseStoragePedro.RightStartPose;
+    Pose parkPose = PoseStoragePedro.RightPark;
     Follower bot;
 
     //Finite State Machine (FSM) variables
@@ -27,29 +24,28 @@ public class Left_Park extends AutoBase {
         PARK,
         END
     }
-
     public State currentState;
-
 
     //add all paths/auto objectives here
     public void buildPaths(){
         start = bot.pathBuilder()
-                .addPath(new BezierLine(startPose.getPoint(), new Pose(parkPose.getX()-15, parkPose.getY(),parkPose.getHeading()).getPoint()))
+                .addPath(new BezierLine(startPose.getPoint(), new Pose(parkPose.getX()+15, parkPose.getY(),parkPose.getHeading()).getPoint()))
                 .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
                 .build();
 
-        park = bot.pathBuilder()
-                .addPath(new BezierLine(new Pose(parkPose.getX()-13, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
+        park = bot.pathBuilder() //TODO use pathBuilder(bot) to test waitSeconds
+                .addPath(new BezierLine(new Pose(parkPose.getX()+13, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
                 .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
                 .setPathEndVelocityConstraint(10) //sets constant velocity for last path
                 //.setPathEndTimeoutConstraint(3)
                 .waitSeconds(3) //TODO custom waitSeconds method to make things easier - Test!!!
 
-                .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX()-15, parkPose.getY(),parkPose.getHeading()).getPoint()))
+                .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX()+13, parkPose.getY(),parkPose.getHeading()).getPoint()))
                 .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
-                .addPath(new BezierLine(new Pose(parkPose.getX()-15, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
+                .addPath(new BezierLine(new Pose(parkPose.getX()+15, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
                 .setConstantHeadingInterpolation(startPose.getHeading())
                 .build();
+
     };
 
     public void runOpMode() throws InterruptedException{
@@ -64,12 +60,12 @@ public class Left_Park extends AutoBase {
 
         //TODO - vision.init_sample_detection(SAMPLE.COLOR - YELLOW)
 
+
         //TODO - Test
         //        while(opModeInInit()){
         //            runMenu();
         //            telemetry.update();
         //        }
-
 
         waitForStart();
 
@@ -79,8 +75,9 @@ public class Left_Park extends AutoBase {
         currentState = State.START;
         bot.followPath(start);
 
+
         while(opModeIsActive()){
-            //FSM Auto Logic
+            // FSM Auto Logic
             switch(currentState){
                 case START:
                     if(!bot.isBusy()){
@@ -88,7 +85,6 @@ public class Left_Park extends AutoBase {
                         bot.followPath(park);
                         break;
                     }
-
                 case PARK:
                     if(!bot.isBusy()){
                         currentState = State.END;
@@ -103,11 +99,6 @@ public class Left_Park extends AutoBase {
             telemetry.addData("Y Position: ", bot.getPose().getY());
             telemetry.addData("Heading Position: ", bot.getPose().getHeading());
             telemetry.update();
-
         }
-
-
-
     }
-
 }
