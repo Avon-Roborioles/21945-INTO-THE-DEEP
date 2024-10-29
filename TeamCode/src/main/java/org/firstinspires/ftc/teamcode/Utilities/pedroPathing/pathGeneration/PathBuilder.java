@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration;
 
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
-
 import java.util.ArrayList;
 
 /**
@@ -205,20 +203,6 @@ public class PathBuilder {
         this.callbacks.add(new PathCallback(t, runnable, PathCallback.PARAMETRIC, paths.size()-1));
         return this;
     }
-
-
-    /**
-     * CUSTOM CODE written by Stephen O. - 21945 Purple Roborioles
-     * This allows Pedro-Pathing to have a native wait function. Not much to it.
-     * @param seconds Number of seconds to wait
-     * @param bot Uses the current bot to get the current Pose
-     */
-    public PathBuilder waitSeconds(double seconds, Follower bot){
-        this.paths.add(new Path(new BezierPoint(new Point(bot.getPose()))));
-        setPathEndTimeoutConstraint(seconds);
-        return this;
-    }
-
 
     /**
      * This builds all the Path and callback information together into a PathChain.
