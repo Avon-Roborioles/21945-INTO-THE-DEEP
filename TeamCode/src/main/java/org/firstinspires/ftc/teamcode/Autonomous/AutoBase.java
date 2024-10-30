@@ -80,5 +80,9 @@ public class AutoBase extends LinearOpMode {
 
     }
 
+    public AutoPoses getAutoPose(){
+        return AutoPose;
+    }
+
 
 }
