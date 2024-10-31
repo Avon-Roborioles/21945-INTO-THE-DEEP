@@ -27,7 +27,7 @@ public class PoseStoragePedro {
 
     public static Pose LeftPitSamples = new Pose(-28+72,-9+72,Math.toRadians(0));
 
-    public static Pose LeftPark = new Pose(-42+72,1+72, Math.toRadians(0)); //y was -9.8+72
+    public static Pose LeftPark = new Pose(-30+72,65, Math.toRadians(0)); //y was -9.8+72
 
 
 

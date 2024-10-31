@@ -7,10 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 
-@Autonomous(name="Right Park", group = "Right Autos")
+@Autonomous(name="Auto Park", group = "Autos")
 public class Park extends AutoBase {
 
     //important variables
@@ -36,7 +37,7 @@ public class Park extends AutoBase {
         if(AutoPose == AutoPoses.LEFT){
             startPose = PoseStoragePedro.LeftStartPose;
             parkPose = PoseStoragePedro.LeftPark;
-            inverseConstant = -4;
+            inverseConstant = -8;
 
         } else {
             startPose = PoseStoragePedro.RightStartPose;
@@ -53,14 +54,14 @@ public class Park extends AutoBase {
                 .addPath(new BezierLine(new Pose(parkPose.getX() + inverseConstant, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
                 .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
                 .setPathEndVelocityConstraint(10) //sets constant velocity for last path
-                //.setPathEndTimeoutConstraint(3)
-                .waitSeconds(3) //TODO custom waitSeconds method to make things easier - Test!!!
-
-                .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX() + inverseConstant, parkPose.getY(),parkPose.getHeading()).getPoint()))
-                //.setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
-                .addPath(new BezierLine(new Pose(parkPose.getX() + inverseConstant, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
-                //.setConstantHeadingInterpolation(startPose.getHeading())
-                .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
+//                //.setPathEndTimeoutConstraint(3)
+//                .waitSeconds(3) // custom waitSeconds method to make things easier - Test!!!
+//
+//                .addPath(new BezierLine(parkPose.getPoint(), new Pose(parkPose.getX() + inverseConstant, parkPose.getY(),parkPose.getHeading()).getPoint()))
+//                //.setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
+//                .addPath(new BezierLine(new Pose(parkPose.getX() + inverseConstant, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
+//                //.setConstantHeadingInterpolation(startPose.getHeading())
+//                .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
                 .build();
 
     };
@@ -68,7 +69,6 @@ public class Park extends AutoBase {
     public void runOpMode() throws InterruptedException{
         bot = new Follower(hardwareMap);
 
-        //vision.init_sample_detection(SAMPLE.COLOR - ALLIANCE COLOR)
         startPose = PoseStoragePedro.LeftStartPose;
         parkPose = PoseStoragePedro.LeftPark;
 
@@ -77,10 +77,7 @@ public class Park extends AutoBase {
         //initialize subsystems
         init_classes(driverOp);
 
-        //TODO - vision.init_sample_detection(SAMPLE.COLOR - YELLOW)
 
-
-        //TODO - Test
         while(opModeInInit()){
             runMenu();
             AutoPose = getAutoPose();
@@ -88,10 +85,9 @@ public class Park extends AutoBase {
             telemetry.update();
         }
 
-
         waitForStart();
 
-        buildPaths(AutoPose); //should build paths after we select the autoStart pose from the mennu
+        buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
 
         bot.setPose(startPose);
 
@@ -112,6 +108,7 @@ public class Park extends AutoBase {
                 case PARK:
                     if(!bot.isBusy()){
                         currentState = State.END;
+                        bot.holdPoint(new BezierPoint(parkPose.getPoint()),parkPose.getHeading());
                         break;
                     }
             }
