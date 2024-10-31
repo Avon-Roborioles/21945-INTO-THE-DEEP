@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Bezi
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 
 @Autonomous(name="Auto Park", group = "Autos")
 public class Park extends AutoBase {
@@ -39,21 +40,15 @@ public class Park extends AutoBase {
             parkPose = PoseStoragePedro.LeftPark;
             inverseConstant = -8;
 
-        } else {
-            startPose = PoseStoragePedro.RightStartPose;
-            parkPose = PoseStoragePedro.RightPark;
-            inverseConstant = 10;
-        }
+            start = bot.pathBuilder()
+                    .addPath(new BezierLine(startPose.getPoint(), new Pose(parkPose.getX() + inverseConstant, parkPose.getY(),parkPose.getHeading()).getPoint()))
+                    .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
+                    .build();
 
-        start = bot.pathBuilder()
-                .addPath(new BezierLine(startPose.getPoint(), new Pose(parkPose.getX() + inverseConstant, parkPose.getY(),parkPose.getHeading()).getPoint()))
-                .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
-                .build();
-
-        park = bot.pathBuilder() //TODO use pathBuilder(bot) to test waitSeconds
-                .addPath(new BezierLine(new Pose(parkPose.getX() + inverseConstant, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
-                .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
-                .setPathEndVelocityConstraint(10) //sets constant velocity for last path
+            park = bot.pathBuilder() //TODO use pathBuilder(bot) to test waitSeconds
+                    .addPath(new BezierLine(new Pose(parkPose.getX() + inverseConstant, parkPose.getY(), parkPose.getHeading()).getPoint(), parkPose.getPoint()))
+                    .setConstantHeadingInterpolation(parkPose.getHeading()) //sets constant heading for last path
+                    .setPathEndVelocityConstraint(10) //sets constant velocity for last path
 //                //.setPathEndTimeoutConstraint(3)
 //                .waitSeconds(3) // custom waitSeconds method to make things easier - Test!!!
 //
@@ -62,7 +57,31 @@ public class Park extends AutoBase {
 //                .addPath(new BezierLine(new Pose(parkPose.getX() + inverseConstant, parkPose.getY(), parkPose.getHeading()).getPoint(), startPose.getPoint()))
 //                //.setConstantHeadingInterpolation(startPose.getHeading())
 //                .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
-                .build();
+                    .build();
+
+        } else {
+            startPose = PoseStoragePedro.RightStartPose;
+            parkPose = PoseStoragePedro.RightPark;
+            inverseConstant = 10;
+
+            start = bot.pathBuilder()
+                    //get in line to drive to parkPose
+                    .addPath(new BezierLine(startPose.getPoint(), new Pose(startPose.getX(), startPose.getY() + 5,startPose.getHeading()).getPoint())) //heading doesn't matter
+                    .setLinearHeadingInterpolation(startPose.getHeading(), Math.toRadians(180-1e-6))
+
+                    //waitSeconds(.1)
+
+                    //drive to point close to parkPose
+                    .addPath(new BezierLine(new Pose(startPose.getX(), startPose.getY() + 5,startPose.getHeading()).getPoint(), new Pose(parkPose.getX() - 5, startPose.getY() + 5,startPose.getHeading()).getPoint())) //heading doesn't matter
+                    .setConstantHeadingInterpolation(Math.toRadians(180-1e-6))
+                    .build();
+
+            park = bot.pathBuilder() //TODO use pathBuilder(bot) to test waitSeconds
+                    //drive to parkPose
+                    .addPath(new BezierLine(new Pose(parkPose.getX() - 5, startPose.getY() + 5,startPose.getHeading()).getPoint(), new Point(parkPose)))
+                    .setLinearHeadingInterpolation(Math.toRadians(180-1e-6), parkPose.getHeading())
+                    .build();
+        }
 
     };
 
