@@ -65,7 +65,6 @@ public class AutoBase extends LinearOpMode {
             }
         }
 
-
         //menu
         telemetry.addLine("Select the StartPose by Toggling the D-pad Up Button");
         telemetry.addData("Current StartPose Selected: ", AutoPose);
@@ -74,10 +73,9 @@ public class AutoBase extends LinearOpMode {
         telemetry.addData("Number of cycles: ", cycleCount);
         //telemetry.update();
 
-        //updates
+        //updates gamepad readers
         d_up.readValue();
         d_down.readValue();
-
     }
 
     public AutoPoses getAutoPose(){

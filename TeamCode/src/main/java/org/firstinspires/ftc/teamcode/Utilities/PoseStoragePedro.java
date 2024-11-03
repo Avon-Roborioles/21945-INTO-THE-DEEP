@@ -32,7 +32,7 @@ public class PoseStoragePedro {
 
 
     //Right Side Poses - Specimen
-    public static Pose RightStartPose = new Pose(11+72,-60+72, Math.toRadians(90));
+    public static Pose RightStartPose = new Pose(5+72,-60+72, Math.toRadians(90));
 
     public static Pose RightSample1 = new Pose(35+72,-39+72,Math.toRadians(45));
 
