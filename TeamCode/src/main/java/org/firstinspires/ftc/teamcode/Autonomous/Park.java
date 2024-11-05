@@ -59,7 +59,7 @@ public class Park extends AutoBase {
 //                .setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading())
                     .build();
 
-        } else {
+        } else if (AutoPose == AutoPoses.RIGHT) {
             startPose = PoseStoragePedro.RightStartPose;
             parkPose = PoseStoragePedro.RightPark;
             inverseConstant = 10;

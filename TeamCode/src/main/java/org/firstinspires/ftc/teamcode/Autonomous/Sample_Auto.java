@@ -37,7 +37,44 @@ public class Sample_Auto extends AutoBase {
 
     //add all paths/auto objectives here
     public void buildPaths(AutoPoses AutoPose){
+        if(AutoPose == AutoPoses.LEFT){
+            scorePassive = bot.pathBuilder()
+                    .build();
 
+            Sample1 = bot.pathBuilder()
+                    .build();
+
+            Sample2 = bot.pathBuilder()
+                    .build();
+
+            Sample3 = bot.pathBuilder()
+                    .build();
+
+            score = bot.pathBuilder()
+                    .build();
+
+            park = bot.pathBuilder()
+                    .build();
+
+        } else if(AutoPose == AutoPoses.RIGHT){
+            scorePassive = bot.pathBuilder()
+                    .build();
+
+            Sample1 = bot.pathBuilder()
+                    .build();
+
+            Sample2 = bot.pathBuilder()
+                    .build();
+
+            Sample3 = bot.pathBuilder()
+                    .build();
+
+            score = bot.pathBuilder()
+                    .build();
+
+            park = bot.pathBuilder()
+                    .build();
+        }
     }
 
 
