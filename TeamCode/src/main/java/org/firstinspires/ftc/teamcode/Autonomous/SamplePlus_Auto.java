@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Disabled
 //@Autonomous(name="3 Plus Sample Auto", group = "Right Autos")
-public class Right_3Plus_Sample_Auto extends AutoBase {
+public class SamplePlus_Auto extends AutoBase {
     public void runOpMode() throws InterruptedException{
         //important variables
 

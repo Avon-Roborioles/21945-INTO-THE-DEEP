@@ -20,11 +20,11 @@ public class TestSim {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(SimPoseStorage.SpecimenScore)
+                        drive.trajectorySequenceBuilder(SimPoseStorage.RightStartPose)
                                 .waitSeconds(.1)
                                 //test code here
-                                .lineToLinearHeading(SimPoseStorage.PathCheckPoint)
-                                .waitSeconds(20000)
+                                .lineToLinearHeading(SimPoseStorage.LeftCheckPoint)
+                                .waitSeconds(2000)
                                 .build());
 
 

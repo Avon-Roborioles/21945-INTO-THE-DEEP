@@ -22,6 +22,9 @@ public class SimPoseStorage {
 
    public static Pose2d LeftPark = new Pose2d(-29,-9.8, Math.toRadians(0));
 
+   public static Pose2d LeftCheckPoint = new Pose2d(-40,-43, Math.toRadians(225));
+
+
 
 
    //Right Side Poses
@@ -33,9 +36,7 @@ public class SimPoseStorage {
 
    public static Pose2d RightSample3 = new Pose2d(52,-25,Math.toRadians(0));
 
-   public static Pose2d RightPitSamples = new Pose2d(-28,-9,Math.toRadians(179));
-
-   public static Pose2d SampleDropoff = new Pose2d(51,-40,Math.toRadians(-45));
+   public static Pose2d SampleDropoff = new Pose2d(51,-45,Math.toRadians(-45));
 
    public static Pose2d SpecimenPickup = new Pose2d(50,-57,Math.toRadians(90));
 
