@@ -58,9 +58,19 @@ public class Sample_Auto extends AutoBase {
 
         } else if(AutoPose == AutoPoses.RIGHT){
             scorePassive = bot.pathBuilder()
+                    //drop loaded sample in observation szone
+
+                    //drive to checkpoint
                     .build();
 
             Sample1 = bot.pathBuilder()
+                    //pickup sample 1
+
+                    //drop in observation zone
+
+                    //pickup specimen
+
+                    //return to checkpoint
                     .build();
 
             Sample2 = bot.pathBuilder()
@@ -76,7 +86,6 @@ public class Sample_Auto extends AutoBase {
                     .build();
         }
     }
-
 
     public void runOpMode() throws InterruptedException{
         bot = new Follower(hardwareMap);

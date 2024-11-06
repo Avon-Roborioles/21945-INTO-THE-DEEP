@@ -27,7 +27,7 @@ public class PoseStoragePedro {
 
     public static Pose LeftPitSamples = new Pose(-28+72,-9+72,Math.toRadians(0));
 
-    public static Pose LeftPark = new Pose(-30+72,65, Math.toRadians(0)); //y was -9.8+72
+    public static Pose LeftPark = new Pose(-30+72,72, Math.toRadians(0)); //y was -9.8+72
 
 
 
@@ -50,7 +50,9 @@ public class PoseStoragePedro {
 
     public static Pose SpecimenScore = new Pose(0+72,-33+72,Math.toRadians(-90));
 
-    public static Pose RightPark = new Pose(-30+72,60, Math.toRadians(0)); //change x to -29 for right spot
+    public static Pose RightCheckPoint = new Pose(33+72,-40+72, Math.toRadians(45));
+
+    public static Pose RightPark = new Pose(-30+72,51, Math.toRadians(0)); //change x to -29 for right spot
 
 
     //useful points to hold during auto - allows us to keep our stance against aggressive bots

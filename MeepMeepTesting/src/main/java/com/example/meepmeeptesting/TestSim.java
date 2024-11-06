@@ -21,9 +21,9 @@ public class TestSim {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(SimPoseStorage.SpecimenScore)
-                                .waitSeconds(2)
+                                .waitSeconds(.1)
                                 //test code here
-                                
+                                .lineToLinearHeading(SimPoseStorage.PathCheckPoint)
                                 .waitSeconds(20000)
                                 .build());
 

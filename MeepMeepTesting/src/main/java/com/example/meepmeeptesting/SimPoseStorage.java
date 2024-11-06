@@ -41,5 +41,7 @@ public class SimPoseStorage {
 
    public static Pose2d SpecimenScore = new Pose2d(0,-33,Math.toRadians(-90));
 
+   public static Pose2d PathCheckPoint = new Pose2d(33,-40, Math.toRadians(45));
+
    public static Pose2d RightPark = new Pose2d(29,-9.8, Math.toRadians(180-1e-6));
 }
