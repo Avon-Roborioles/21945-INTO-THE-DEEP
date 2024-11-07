@@ -9,9 +9,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.*;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
-import java.util.ArrayList;
-import java.util.List;
-
 //this class is used by all auto programs to access subsystem controls & AutoMenu
 public class AutoBase extends LinearOpMode {
     //subsystem objects - arm, intake, lift, etc
@@ -201,7 +198,11 @@ public class AutoBase extends LinearOpMode {
         return returnHome;
     }
 
-    public Pose getCurrentCoordinate(){
+    public Pose getSelectedCoordinate(){
         return currentCoordinate;
+    }
+
+    public String getSelectedCoordinateName(){
+        return currentCoordinateName;
     }
 }

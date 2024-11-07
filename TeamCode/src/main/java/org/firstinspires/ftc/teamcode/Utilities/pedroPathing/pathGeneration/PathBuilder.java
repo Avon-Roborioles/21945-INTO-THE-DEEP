@@ -63,6 +63,12 @@ public class PathBuilder {
     }
 
     /**
+     * CUSTOM CODE by Stephen O. - Nov. 2024
+     * TODO RoadRunner-like methods to use for easier use
+     * TODO - need to add variable to save last point (allows us to not have to call the start in each path)
+     */
+
+    /**
      * This sets a linear heading interpolation on the last Path added to the PathBuilder.
      *
      * @param startHeading The start of the linear heading interpolation.
