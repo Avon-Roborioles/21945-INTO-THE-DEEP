@@ -99,7 +99,7 @@ public class CoordinateTester extends AutoBase{
                         break;
                     }
                 case RETURN:
-                    if(a_button.getState() && returnHome){ //TODO - switch to "!a_button.getState() if bot automaticially returns
+                    if(a_button.wasJustPressed() && returnHome){ //TODO - switch to "!a_button.getState() if bot automaticially returns
                         bot.followPath(targetToStart);
                         if(!bot.isBusy()){
                             currentState = State.END;
@@ -117,6 +117,7 @@ public class CoordinateTester extends AutoBase{
             telemetry.addData("X Position: ", bot.getPose().getX());
             telemetry.addData("Y Position: ", bot.getPose().getY());
             telemetry.addData("Heading Position: ", bot.getPose().getHeading());
+            telemetry.addData("A Button State: ", a_button.getState());
             telemetry.update();
             a_button.readValue(); //updates a_button reader
         }
