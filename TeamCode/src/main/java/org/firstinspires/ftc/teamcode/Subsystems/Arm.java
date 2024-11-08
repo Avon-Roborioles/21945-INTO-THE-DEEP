@@ -45,6 +45,10 @@ public class Arm {
 
     }
 
+    public void run_teleOpBASIC(GamepadEx driverOp){
+
+    }
+
     //--------AUTO COMMANDS------------
 
     //quick command to control arm
