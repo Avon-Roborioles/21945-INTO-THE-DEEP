@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 
+@TeleOp(name="Arm Control Test", group = "Tests")
 public class ArmControlTest extends LinearOpMode {
 
     private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
@@ -17,13 +19,13 @@ public class ArmControlTest extends LinearOpMode {
 
         driver1Op = new GamepadEx(gamepad1);
 
-        arm.init(hardwareMap);
+        arm.init(hardwareMap, driver1Op);
 
         waitForStart();
 
         while(opModeIsActive()){
             //run basic auto control
-            arm.run_teleOpBASIC(driver1Op);
+            arm.run_teleOpBASIC();
 
             arm.getTelemetryFULL(telemetry);
             telemetry.update();
