@@ -132,7 +132,7 @@ public class Arm {
 
         //arm extension control
         if(a_button.getState()) {
-            extentionMotor.set(0);
+            extentionMotor.set(0.2);
         } else {
             extentionMotor.set(-1);
         }
