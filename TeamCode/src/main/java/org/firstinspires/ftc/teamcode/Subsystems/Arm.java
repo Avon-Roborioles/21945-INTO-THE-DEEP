@@ -12,7 +12,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 //robot subsystem for extendable arm
 public class Arm {
     //motor objects & related variables
-    Motor extentionMotor;
+    Motor extensionMotor;
     Motor armMotor;
     static final double GEAR_RATIO = 10.0; //TODO record actual gear and store here
 
@@ -57,9 +57,9 @@ public class Arm {
      * @param hardwareMap needed to access robot config
      */
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
-        extentionMotor = new Motor(hardwareMap, "extensionMotor");
+        extensionMotor = new Motor(hardwareMap, "extensionMotor");
         armMotor = new Motor(hardwareMap, "armMotor");
-        extentionMotor.setRunMode(Motor.RunMode.RawPower);
+        extensionMotor.setRunMode(Motor.RunMode.RawPower);
         armMotor.setRunMode(Motor.RunMode.RawPower);
 
         //gamepad variables
@@ -130,9 +130,9 @@ public class Arm {
 
         //arm extension control
         if(a_button.wasJustPressed()){
-            extentionMotor.set(.7);
+            extensionMotor.set(1);
         } else {
-            extentionMotor.set(0);
+            extensionMotor.set(0);
         }
 
         a_button.readValue(); //upddate a_button toggle
