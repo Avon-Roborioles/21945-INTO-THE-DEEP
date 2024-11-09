@@ -24,6 +24,8 @@ public class Arm {
     private double currentPose;
     private Arm_Poses armState;
 
+    double targetReach; //TODO - a crucial value calculated & used to position arm + tolerence (length of intake)
+
     //TODO - PID variables
     double target = 0;
     private final double p = 0;
