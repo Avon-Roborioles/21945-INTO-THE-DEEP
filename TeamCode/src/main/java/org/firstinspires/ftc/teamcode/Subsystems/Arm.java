@@ -131,16 +131,10 @@ public class Arm {
         }
 
         //arm extension control
-        if(driverOp.gamepad.x){
+        if(a_button.getState()) {
+            extentionMotor.set(0);
+        } else {
             extentionMotor.set(-1);
-        } else {
-            extentionMotor.set(0);
-        }
-
-        if(driverOp.gamepad.b){
-            extentionMotor.set(1);
-        } else {
-            extentionMotor.set(0);
         }
 
 
