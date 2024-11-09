@@ -130,7 +130,7 @@ public class Arm {
 
         //arm extension control
         if(a_button.wasJustPressed()){
-            extensionMotor.set(1);
+            extensionMotor.set(-1);
         } else {
             extensionMotor.set(0);
         }
