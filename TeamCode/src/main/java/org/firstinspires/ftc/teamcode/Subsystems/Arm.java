@@ -60,6 +60,7 @@ public class Arm {
         extentionMotor.setRunMode(Motor.RunMode.RawPower);
         armMotor.setRunMode(Motor.RunMode.RawPower);
 
+
         //gamepad variables
         driverOp = gamepad;
         a_button = new ToggleButtonReader(
@@ -79,61 +80,71 @@ public class Arm {
      * testing-rated method using raw power values for movement
      */
     public void run_teleOpBASIC(){
-//        double leftY = gamepad2.left_stick_y;
-//        float rightTrigger = gamepad2.right_trigger;
-//
-//        //activate Hanging Mode
-//        if(d_down.wasJustPressed()){
-//            hangDefault = true;
-//        }
-//
-//        if(leftY > 0 || leftY < 0) {
-//            hangDefault = false;
-//            if (rightMotorEx.getCurrentPosition() < 1600) {
-//                if (leftY < 0) {
-//                    leftMotorEx.setPower(-0.5);
-//                    rightMotorEx.setPower(0.5);
-//                } else if (leftY > 0) {
-//                    leftMotorEx.setPower(0.3);
-//                    rightMotorEx.setPower(-0.3);
-//                }
-//            } else {
-//                if (leftY > 0) {
-//                    leftMotorEx.setPower(0.5);
-//                    rightMotorEx.setPower(-0.5);
-//                } else if (leftY < 0) {
-//                    leftMotorEx.setPower(-0.3);
-//                    rightMotorEx.setPower(0.3);
-//                }
-//            }
-//        } else if(!hangDefault){
-//            if(rightMotorEx.getCurrentPosition() < 1600) {
-//                leftMotorEx.setPower(-0.04); //small bit of power for brakes
-//                rightMotorEx.setPower(0.04);
-//            } else {
-//                leftMotorEx.setPower(0.09); //small bit of power for brakes - 0.09
-//                rightMotorEx.setPower(-0.09);
-//            }
-//        }
+    //        double leftY = gamepad2.left_stick_y;
+    //        float rightTrigger = gamepad2.right_trigger;
+    //
+    //        //activate Hanging Mode
+    //        if(d_down.wasJustPressed()){
+    //            hangDefault = true;
+    //        }
+    //
+    //        if(leftY > 0 || leftY < 0) {
+    //            hangDefault = false;
+    //            if (rightMotorEx.getCurrentPosition() < 1600) {
+    //                if (leftY < 0) {
+    //                    leftMotorEx.setPower(-0.5);
+    //                    rightMotorEx.setPower(0.5);
+    //                } else if (leftY > 0) {
+    //                    leftMotorEx.setPower(0.3);
+    //                    rightMotorEx.setPower(-0.3);
+    //                }
+    //            } else {
+    //                if (leftY > 0) {
+    //                    leftMotorEx.setPower(0.5);
+    //                    rightMotorEx.setPower(-0.5);
+    //                } else if (leftY < 0) {
+    //                    leftMotorEx.setPower(-0.3);
+    //                    rightMotorEx.setPower(0.3);
+    //                }
+    //            }
+    //        } else if(!hangDefault){
+    //            if(rightMotorEx.getCurrentPosition() < 1600) {
+    //                leftMotorEx.setPower(-0.04); //small bit of power for brakes
+    //                rightMotorEx.setPower(0.04);
+    //            } else {
+    //                leftMotorEx.setPower(0.09); //small bit of power for brakes - 0.09
+    //                rightMotorEx.setPower(-0.09);
+    //            }
+    //        }
+
         //main arm control
+
+        //update leftY joystick reading
         leftY = driverOp.getLeftY();
 
         if(leftY > 0){
-            armMotor.set(0.5);
-        } else if (leftY < 0){
             armMotor.set(-0.5);
+        } else if (leftY < 0){
+            armMotor.set(0.5);
         } else {
             armMotor.set(0);
         }
 
         //arm extension control
-        if(a_button.wasJustPressed()){
-            extentionMotor.set(.7);
+        if(driverOp.gamepad.x){
+            extentionMotor.set(-1);
         } else {
             extentionMotor.set(0);
         }
 
-        a_button.readValue(); //upddate a_button toggle
+        if(driverOp.gamepad.b){
+            extentionMotor.set(1);
+        } else {
+            extentionMotor.set(0);
+        }
+
+
+        a_button.readValue(); //update a_button toggle
     }
 
     //--------AUTO COMMANDS------------
