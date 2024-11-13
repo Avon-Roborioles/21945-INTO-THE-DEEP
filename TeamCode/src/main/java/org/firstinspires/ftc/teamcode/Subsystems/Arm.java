@@ -21,7 +21,8 @@ public class Arm {
     private final double basket1Pose = 0; //TODO
     private final double basket2Pose = 0; //TODO
     private final double maxPose = 0; //TODO
-    private double currentPose;
+    private double currentArmPose;
+    private double currentEPose;
     private Arm_Poses armState;
 
     //TODO - PID variables
@@ -33,7 +34,7 @@ public class Arm {
 
     //control variables
     GamepadEx driverOp;
-    ToggleButtonReader a_button;
+    ToggleButtonReader a_button, d_up;
     double leftY;
 
     //enum commands for arm positions
@@ -57,15 +58,37 @@ public class Arm {
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
         extentionMotor = new Motor(hardwareMap, "extensionMotor");
         armMotor = new Motor(hardwareMap, "armMotor");
-        extentionMotor.setRunMode(Motor.RunMode.RawPower);
-        armMotor.setRunMode(Motor.RunMode.RawPower);
-
+        extentionMotor.setRunMode(Motor.RunMode.PositionControl);
+        armMotor.setRunMode(Motor.RunMode.PositionControl);
 
         //gamepad variables
         driverOp = gamepad;
+
+        //extensionMotor toggle
         a_button = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.A
         );
+
+        //button to set extensionMotor to 0
+        d_up = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_UP
+        );
+
+        //start running EMotor & set ArmPose to 0
+        extentionMotor.set(-1);
+        currentArmPose = 0;
+    }
+
+    /**
+     * Helps pull in the extensionArm & set the position to 0
+     */
+    public void setupEMotor(){
+        if(d_up.wasJustPressed()){
+            extentionMotor.set(0);
+            currentEPose = 0;
+        }
+
+        d_up.readValue();
     }
 
     /**
@@ -80,44 +103,8 @@ public class Arm {
      * testing-rated method using raw power values for movement
      */
     public void run_teleOpBASIC(){
-    //        double leftY = gamepad2.left_stick_y;
-    //        float rightTrigger = gamepad2.right_trigger;
-    //
-    //        //activate Hanging Mode
-    //        if(d_down.wasJustPressed()){
-    //            hangDefault = true;
-    //        }
-    //
-    //        if(leftY > 0 || leftY < 0) {
-    //            hangDefault = false;
-    //            if (rightMotorEx.getCurrentPosition() < 1600) {
-    //                if (leftY < 0) {
-    //                    leftMotorEx.setPower(-0.5);
-    //                    rightMotorEx.setPower(0.5);
-    //                } else if (leftY > 0) {
-    //                    leftMotorEx.setPower(0.3);
-    //                    rightMotorEx.setPower(-0.3);
-    //                }
-    //            } else {
-    //                if (leftY > 0) {
-    //                    leftMotorEx.setPower(0.5);
-    //                    rightMotorEx.setPower(-0.5);
-    //                } else if (leftY < 0) {
-    //                    leftMotorEx.setPower(-0.3);
-    //                    rightMotorEx.setPower(0.3);
-    //                }
-    //            }
-    //        } else if(!hangDefault){
-    //            if(rightMotorEx.getCurrentPosition() < 1600) {
-    //                leftMotorEx.setPower(-0.04); //small bit of power for brakes
-    //                rightMotorEx.setPower(0.04);
-    //            } else {
-    //                leftMotorEx.setPower(0.09); //small bit of power for brakes - 0.09
-    //                rightMotorEx.setPower(-0.09);
-    //            }
-    //        }
-
-        //main arm control
+        currentArmPose = armMotor.getCurrentPosition();
+        currentEPose = armMotor.getCurrentPosition();
 
         //update leftY joystick reading
         leftY = driverOp.getLeftY();
@@ -168,11 +155,13 @@ public class Arm {
 
 
     public void getTelemetryBRIEF(Telemetry telemetry){
-        telemetry.addData("Arm Pose:", currentPose);
+        telemetry.addData("Arm Pose:", currentArmPose);
+        telemetry.addData("E Pose: ", currentEPose);
     }
 
     public void getTelemetryFULL(Telemetry telemetry){
-        telemetry.addData("Arm Pose:", currentPose);
+        telemetry.addData("Arm Pose:", currentArmPose);
+        telemetry.addData("E Pose: ", currentEPose);
         telemetry.addData("Arm STATE:", armState);
 
 

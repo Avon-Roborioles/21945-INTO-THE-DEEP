@@ -21,6 +21,10 @@ public class ArmControlTest extends LinearOpMode {
 
         arm.init(hardwareMap, driver1Op);
 
+        while(opModeInInit()){
+            arm.setupEMotor();
+        }
+
         waitForStart();
 
         while(opModeIsActive()){
