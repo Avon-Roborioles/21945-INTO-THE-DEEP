@@ -19,13 +19,13 @@ public class PoseStoragePedro {
 
     public static Pose LeftSample1 = new Pose(-41+72,-35+72, Math.toRadians(135)); //Done
 
-    public static Pose LeftSample2 = new Pose(-48+72,-36+72, Math.toRadians(145)); //TODO
+    public static Pose LeftSample2 = new Pose(-50+72,-33+72, Math.toRadians(145)); //TODO MOVINGBack
 
-    public static Pose LeftSample3 = new Pose(-52+72,-25+72,Math.toRadians(179)); //TODO
+    public static Pose LeftSample3 = new Pose(-64+72,-25+72,Math.toRadians(179)); //Done
 
-    public static Pose LeftBucketScore = new Pose(-49+72,-49+72,Math.toRadians(225)); //TODO
+    public static Pose LeftBucketScore = new Pose(-70+72,-55+72,Math.toRadians(225)); //TODO
 
-    public static Pose PitSamples = new Pose(-28+72,-9+72,Math.toRadians(0)); //TODO
+    public static Pose PitSamples = new Pose(-28+72,-26+72,Math.toRadians(0)); //TODO Hits cage
 
     public static Pose LeftCheckPoint = new Pose(-40+72,-43+72, Math.toRadians(225)); //TODO
 
