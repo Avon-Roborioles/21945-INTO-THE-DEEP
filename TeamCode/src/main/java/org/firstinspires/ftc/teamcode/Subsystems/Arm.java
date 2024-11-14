@@ -1,20 +1,25 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 //import needed libraries
+import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import com.arcrobotics.ftclib.controller.PIDFController;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+
 
 //robot subsystem for extendable arm
+@Config
 public class Arm {
     //motor objects & related variables
-    Motor extentionMotor;
+    Motor extensionMotor;
     Motor armMotor;
-    static final double GEAR_RATIO = 10.0; //TODO record actual gear and store here
+    public static final double GEAR_RATIO = 3.0; // Output 60 Teeth, Input 20 Teeth
+    private static final  double ticks_in_degree = 700 / 180.0;
 
     //absolute positions ("final" means they can't change later in code)
     private final double groundPose = 0; //TODO
@@ -25,12 +30,13 @@ public class Arm {
     private double currentEPose;
     private Arm_Poses armState;
 
-    //TODO - PID variables
-    double target = 0;
-    private final double p = 0;
-    private final double i = 0;
-    private final double d = 0;
-    private final double f = 0;
+    //TODO - Tune these PID variables
+    PIDController pidController;
+    public static final double p = 0;
+    public static final double i = 0;
+    public static final double d = 0;
+    public static final double f = 0;
+    public static int target = 0;
 
     //control variables
     GamepadEx driverOp;
@@ -52,14 +58,14 @@ public class Arm {
     //--------TELEOP COMMANDS---------
 
     /**
-     * Arm Command to initialize motors & other variables
+     * Default Arm Command to initialize motors & other variables
      * @param hardwareMap needed to access robot config
      */
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
-        extentionMotor = new Motor(hardwareMap, "extensionMotor");
+        extensionMotor = new Motor(hardwareMap, "extensionMotor");
         armMotor = new Motor(hardwareMap, "armMotor");
-        extentionMotor.setRunMode(Motor.RunMode.PositionControl);
-        armMotor.setRunMode(Motor.RunMode.PositionControl);
+        extensionMotor.setRunMode(Motor.RunMode.RawPower);
+        armMotor.setRunMode(Motor.RunMode.RawPower);
 
         //gamepad variables
         driverOp = gamepad;
@@ -75,17 +81,33 @@ public class Arm {
         );
 
         //start running EMotor & set ArmPose to 0
-        extentionMotor.set(-1);
+        extensionMotor.set(-1);
         currentArmPose = 0;
+    }
+
+
+    /**
+     * Comp-Ready Arm Command to initialize motors WITH PID Control
+     * @param hardwareMap needed to access robot config
+     */
+    public void initPID(HardwareMap hardwareMap, GamepadEx gamepad){
+        pidController = new PIDController(p,i,d);
+        //telemetry
+        extensionMotor = new Motor(hardwareMap, "extensionMotor");
+        armMotor = new Motor(hardwareMap, "armMotor");
+        extensionMotor.setRunMode(Motor.RunMode.RawPower);
+        armMotor.setRunMode(Motor.RunMode.RawPower);
     }
 
     /**
      * Helps pull in the extensionArm & set the position to 0
      */
     public void setupEMotor(){
-        if(d_up.wasJustPressed()){
-            extentionMotor.set(0);
+        if(d_up.getState()){
+            extensionMotor.set(0);
             currentEPose = 0;
+        } else {
+            extensionMotor.set(-1);
         }
 
         d_up.readValue();
@@ -103,25 +125,37 @@ public class Arm {
      * testing-rated method using raw power values for movement
      */
     public void run_teleOpBASIC(){
-        currentArmPose = armMotor.getCurrentPosition();
-        currentEPose = armMotor.getCurrentPosition();
+//        currentArmPose = armMotor.getCurrentPosition();
+//        currentEPose = armMotor.getCurrentPosition();
 
         //update leftY joystick reading
         leftY = driverOp.getLeftY();
 
         if(leftY > 0){
-            armMotor.set(-0.5);
+            armMotor.set(-0.6);
         } else if (leftY < 0){
-            armMotor.set(0.5);
+            armMotor.set(0.6);
         } else {
-            armMotor.set(0);
+            armMotor.set(-0.05); //0 passive hold
         }
 
-        //arm extension control
-        if(a_button.getState()) {
-            extentionMotor.set(0.2);
+        //arm extension control V1 - Greatly affects Arm Control & Can't use well
+//        if(a_button.getState()) {
+//            extensionMotor.set(0.2);
+//        } else {
+//            extensionMotor.set(-1);
+//        }
+
+        if(driverOp.gamepad.x){
+            extensionMotor.set(-1);
         } else {
-            extentionMotor.set(-1);
+            extensionMotor.set(0);
+        }
+
+        if(driverOp.gamepad.b){
+            extensionMotor.set(1);
+        } else {
+            extensionMotor.set(0);
         }
 
 
@@ -143,26 +177,33 @@ public class Arm {
      * @param pose double value of arm position
      */
     public void set_arm(int pose){
-
+        target = pose;
     }
 
     /**
      * update PID controller for arm in auto
      */
     public void update(){
-        
+        currentArmPose = armMotor.getCurrentPosition();
+        //TODO Add extension PID Controller
+        double pid = pidController.calculate(currentArmPose, target);
+        double ff = Math.cos(Math.toRadians(target / ticks_in_degree) * f);
+
+        double power = pid + ff;
+
+        armMotor.set(power);
     }
 
 
     public void getTelemetryBRIEF(Telemetry telemetry){
-        telemetry.addData("Arm Pose:", currentArmPose);
-        telemetry.addData("E Pose: ", currentEPose);
+//        telemetry.addData("Arm Pose:", currentArmPose);
+//        telemetry.addData("E Pose: ", currentEPose);
+        telemetry.addData("D UP State: ", d_up.getState());
     }
 
     public void getTelemetryFULL(Telemetry telemetry){
         telemetry.addData("Arm Pose:", currentArmPose);
         telemetry.addData("E Pose: ", currentEPose);
-        telemetry.addData("Arm STATE:", armState);
 
 
     }

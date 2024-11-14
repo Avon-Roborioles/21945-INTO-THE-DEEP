@@ -23,6 +23,8 @@ public class ArmControlTest extends LinearOpMode {
 
         while(opModeInInit()){
             arm.setupEMotor();
+            arm.getTelemetryBRIEF(telemetry);
+            telemetry.update();
         }
 
         waitForStart();
@@ -31,7 +33,7 @@ public class ArmControlTest extends LinearOpMode {
             //run basic auto control
             arm.run_teleOpBASIC();
 
-            arm.getTelemetryFULL(telemetry);
+            arm.getTelemetryBRIEF(telemetry);
             telemetry.update();
         }
 
