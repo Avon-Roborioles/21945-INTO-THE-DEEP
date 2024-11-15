@@ -17,6 +17,7 @@ public class ArmPoseControl extends LinearOpMode {
     //position variable to test PID movement
     public static int armTarget = 0;
     public int extendTarget = Arm.extendTarget;
+    public int count = 0;
 
 
     @Override
@@ -28,17 +29,20 @@ public class ArmPoseControl extends LinearOpMode {
         //arm.initPID(hardwareMap, driverOp);
         arm.initPoseControl(hardwareMap, driverOp);
 
-        while(opModeInInit()){
-            arm.setupEMotor(); //pulls extension in
-            arm.getTelemetryFULL(telemetry);
-            telemetry.update();
-        }
+//        while(opModeInInit()){
+//            arm.setupEMotor(); //pulls extension in
+//            arm.getTelemetryFULL(telemetry);
+//            telemetry.update();
+//        }
 
         waitForStart();
 
-        while(opModeIsActive()){
-            arm.set_pose_Main(armTarget);
+        arm.set_pose_Main(1);
+        count++;
 
+        while(opModeIsActive()){
+           // arm.set_pose_Main(armTarget);
+            telemetry.addData("Pose Count: ", count);
             arm.getTelemetryFULL(telemetry);
             telemetry.update();
         }
