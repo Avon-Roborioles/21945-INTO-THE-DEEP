@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 
-@TeleOp(name="Arm Control Test", group = "Tests")
-public class ArmControlTest extends LinearOpMode {
+@TeleOp(name="Arm TeleOp Test", group = "Tests")
+public class ArmTeleOpTest extends LinearOpMode {
 
     private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
 
@@ -19,10 +19,10 @@ public class ArmControlTest extends LinearOpMode {
 
         driver1Op = new GamepadEx(gamepad1);
 
-        arm.init(hardwareMap, driver1Op);
+        arm.initBASIC(hardwareMap, driver1Op);
 
         while(opModeInInit()){
-            arm.setupEMotor();
+            //arm.setupEMotor();
             arm.getTelemetryBRIEF(telemetry);
             telemetry.update();
         }
