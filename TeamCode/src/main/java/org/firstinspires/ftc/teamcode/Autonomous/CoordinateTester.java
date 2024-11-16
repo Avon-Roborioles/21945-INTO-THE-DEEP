@@ -45,11 +45,12 @@ public class CoordinateTester extends AutoBase{
 
         startToTarget = bot.pathBuilder()
                 .addPath(new BezierLine(startPose.getPoint(), targetPose.getPoint()))
-
+                .setLinearHeadingInterpolation(startPose.getHeading(), targetPose.getHeading())
                 .build();
 
         targetToStart = bot.pathBuilder()
                 .addPath(new BezierLine(targetPose.getPoint(), startPose.getPoint()))
+                .setLinearHeadingInterpolation(targetPose.getHeading(), startPose.getHeading())
                 .build();
     }
 

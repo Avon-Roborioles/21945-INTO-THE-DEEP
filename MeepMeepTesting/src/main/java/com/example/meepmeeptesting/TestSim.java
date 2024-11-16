@@ -23,7 +23,7 @@ public class TestSim {
                         drive.trajectorySequenceBuilder(SimPoseStorage.LeftStartPose)
                                 .waitSeconds(.1)
                                 //test code here
-                                .lineToLinearHeading(SimPoseStorage.BucketScore)
+                                .lineToLinearHeading(SimPoseStorage.LeftCheckPoint)
 
                                 .waitSeconds(2000)
                                 .build());
