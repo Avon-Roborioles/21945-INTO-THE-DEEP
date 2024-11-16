@@ -48,6 +48,8 @@
         public static final double extend_d = 0;
         public static final double extend_f = 0;
         public static int extendTarget = 0;
+        private volatile boolean isMotorTimerRunning = false;
+        private Thread motorTimerThread;
 
         //control variables
         GamepadEx driverOp;
@@ -174,12 +176,24 @@
                 armMotor.set(-0.05); //0 passive hold
             }
 
-            //arm extension control V1 - Greatly affects Arm Control & Can't use well
-    //        if(a_button.getState()) {
-    //            extensionMotor.set(0.2);
-    //        } else {
-    //            extensionMotor.set(-1);
-    //        }
+            /* arm extension control V1 - Greatly affects Arm Control & Can't use well
+
+            code below sucks causes backwards movement
+            if(a_button.getState()) {
+                extensionMotor.set(0.2);
+            } else {
+                extensionMotor.set(-1);
+            } */
+
+            /* CODE FOR NO MORE PID IN EXTENSION
+
+            if(a_button.getState() && !isMotorTimerRunning) {
+                // Start a new timer thread only if one isn't already running
+                startMotorTimer(0.2); 
+            } else if(!a_button.getState() && !isMotorTimerRunning) {
+                // Start a new timer thread with -1 power
+                startMotorTimer(-1.0);
+            }*/
 
             if(driverOp.gamepad.x){
                 extensionMotor.set(-1);
@@ -196,6 +210,42 @@
 
             a_button.readValue(); //update a_button toggle
         }
+
+        /* USES THREADING FOR THE SLEEP METHOD BC JAVA STINKS AND HAS NO WAIT METHOD
+        private void startMotorTimer(final double power) {
+            if (isMotorTimerRunning) {
+                return; // Don't start a new thread if one is already running
+            }
+
+            isMotorTimerRunning = true;
+            motorTimerThread = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        extensionMotor.set(power);
+                        Thread.sleep(2000); // Sleep for 2 seconds
+                        extensionMotor.set(0);
+                    // THREADING IS WEIRD AND WILL THROW EXCEPTIONS
+                    } catch (InterruptedException e) {
+                        // Handle interruption when angy
+                        extensionMotor.set(0);
+                    } finally {
+                        isMotorTimerRunning = false;
+                    }
+                }
+            });
+            motorTimerThread.start();
+        }
+
+         */
+
+        /* KILL THREADS
+        public void cleanup() {
+            if (motorTimerThread != null && motorTimerThread.isAlive()) {
+                motorTimerThread.interrupt();
+            }
+        }
+
+         */
 
         //--------AUTO COMMANDS------------
         //TODO
