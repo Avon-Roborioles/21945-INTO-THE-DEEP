@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
@@ -41,23 +42,39 @@ public class Sample_Auto extends AutoBase {
         if(AutoPose == AutoPoses.LEFT){
             scorePassive = bot.pathBuilder()
                     //drive to LeftBucketScore
+                    .addPath(new BezierLine(startPose.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()))
+                    .setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading())
+                    .setPathEndVelocityConstraint(20) //slow down speed for arm movement
+                    .setPathEndTimeoutConstraint(3) //TODO see if this adds a short pause before next path
 
                     //score passive sample
+//                    .addParametricCallback(1, () -> {
+//                        //arm.set_pose(Arm_Poses.BASKET2);
+
+                         //intake.pickup();
+//                    })
 
                     //return to leftCheckPoint
-
+                    .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
+                    .setPathEndVelocityConstraint(20) //slow down speed for arm movement
+                    .setPathEndTimeoutConstraint(3) //TODO see if this adds a short pause before next path
                     .build();
 
             Sample1 = bot.pathBuilder()
-                    //drive to sample1
+                    //drive to sample1 (From CheckPoint)
+                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample1.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample1.getHeading())
+                    .setPathEndTimeoutConstraint(2.5) //TODO see if this adds a short pause before next path
 
                     //pickup sample
 
                     //return to leftCheckPoint
+
                     .build();
 
             Sample2 = bot.pathBuilder()
-                    //drive to sample2
+                    //drive to sample2 (From CheckPoint)
 
                     //pickup sample
 
@@ -65,7 +82,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             Sample3 = bot.pathBuilder()
-                    //drive to sample3
+                    //drive to sample3 (From CheckPoint)
 
                     //pickup sample
 
@@ -73,7 +90,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             score = bot.pathBuilder()
-                    //drive to LeftBucketScore
+                    //drive to LeftBucketScore (From CheckPoint)
 
                     //score sample
 
@@ -81,7 +98,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             park = bot.pathBuilder()
-                    //drive to point close to parkSpot
+                    //drive to point close to parkSpot (From Score)
 
                     //drive to parkSpot
                     .build();
@@ -94,7 +111,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             Sample1 = bot.pathBuilder()
-                    //pickup sample 1
+                    //pickup sample 1 (From CheckPoint)
 
                     //drop in observation zone
 
@@ -108,7 +125,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             Sample2 = bot.pathBuilder()
-                    //pickup sample 2
+                    //pickup sample 2 (From CheckPoint)
 
                     //drop in observation zone
 
@@ -122,7 +139,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             Sample3 = bot.pathBuilder()
-                    //pickup sample 3
+                    //pickup sample 3 (From CheckPoint)
 
                     //drop in observation zone
 
@@ -136,7 +153,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             score = bot.pathBuilder()
-                    //drive to specimen score spot
+                    //drive to specimen score spot (From CheckPoint)
 
                     //score specimen
 
@@ -144,7 +161,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             park = bot.pathBuilder()
-                    //drive to spot close to parkSpot
+                    //drive to spot close to parkSpot (From Score)
 
                     //drive to parkSpot & move arm up
 
