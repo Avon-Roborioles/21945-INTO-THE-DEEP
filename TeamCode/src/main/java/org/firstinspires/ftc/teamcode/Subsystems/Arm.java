@@ -104,6 +104,7 @@
             extensionMotor = new Motor(hardwareMap, "extensionMotor");
 
             armMotor.setInverted(true);
+            armMotor.encoder.setDirection(Motor.Direction.REVERSE);
             //armMotor.stopAndResetEncoder();
             armMotor.resetEncoder();
 
@@ -113,7 +114,9 @@
             } else {
                 //auto
                 armMotor.setRunMode(Motor.RunMode.PositionControl);
-                armMotor.setPositionCoefficient(0.05);
+                armMotor.setPositionCoefficient(0.05); //MUST HAVE
+                armMotor.setInverted(true);
+                armMotor.setDistancePerPulse(0.015);
                 armMotor.setTargetPosition(0);
                 armMotor.set(0);
             }
@@ -213,12 +216,11 @@
          */
         public void set_pose(int pose){
             armTarget = pose;
-            armMotor.setTargetPosition(armTarget);
+            //armMotor.setTargetPosition(armTarget);
 
-            while(!armMotor.atTargetPosition()) {
-                armMotor.set(0.1); //change power to make movement smooth
-            }
-            armMotor.stopMotor();
+
+            armMotor.setTargetDistance(armTarget);
+            armMotor.set(0.3);
         }
 
 
