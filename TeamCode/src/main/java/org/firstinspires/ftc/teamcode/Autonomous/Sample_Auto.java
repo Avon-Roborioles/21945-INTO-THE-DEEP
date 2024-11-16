@@ -36,29 +36,59 @@ public class Sample_Auto extends AutoBase {
     public int groundSamplesScored = 0;
 
     //add all paths/auto objectives here
+    //TODO make sure all main paths return to LeftCheckPoint
     public void buildPaths(AutoPoses AutoPose){
         if(AutoPose == AutoPoses.LEFT){
             scorePassive = bot.pathBuilder()
+                    //drive to LeftBucketScore
+
+                    //score passive sample
+
+                    //return to leftCheckPoint
+
                     .build();
 
             Sample1 = bot.pathBuilder()
+                    //drive to sample1
+
+                    //pickup sample
+
+                    //return to leftCheckPoint
                     .build();
 
             Sample2 = bot.pathBuilder()
+                    //drive to sample2
+
+                    //pickup sample
+
+                    //return to leftCheckPoint
                     .build();
 
             Sample3 = bot.pathBuilder()
+                    //drive to sample3
+
+                    //pickup sample
+
+                    //return to leftCheckPoint
                     .build();
 
             score = bot.pathBuilder()
+                    //drive to LeftBucketScore
+
+                    //score sample
+
+                    //return to leftCheckPoint
                     .build();
 
             park = bot.pathBuilder()
+                    //drive to point close to parkSpot
+
+                    //drive to parkSpot
                     .build();
 
         } else if(AutoPose == AutoPoses.RIGHT){
             scorePassive = bot.pathBuilder()
-                    //drop loaded sample in observation szone
+                    //drop loaded sample in observation zone
 
                     //drive to checkpoint
                     .build();
@@ -68,21 +98,57 @@ public class Sample_Auto extends AutoBase {
 
                     //drop in observation zone
 
+                    //drive to specimen pickup spot
+
+                    //align with specimen with vision estimates
+
                     //pickup specimen
 
                     //return to checkpoint
                     .build();
 
             Sample2 = bot.pathBuilder()
+                    //pickup sample 2
+
+                    //drop in observation zone
+
+                    //drive to specimen pickup spot
+
+                    //align with specimen with vision estimates
+
+                    //pickup specimen
+
+                    //return to checkpoint
                     .build();
 
             Sample3 = bot.pathBuilder()
+                    //pickup sample 3
+
+                    //drop in observation zone
+
+                    //drive to specimen pickup spot
+
+                    //align with specimen with vision estimates
+
+                    //pickup specimen
+
+                    //return to checkpoint
                     .build();
 
             score = bot.pathBuilder()
+                    //drive to specimen score spot
+
+                    //score specimen
+
+                    //return to checkpoint
                     .build();
 
             park = bot.pathBuilder()
+                    //drive to spot close to parkSpot
+
+                    //drive to parkSpot & move arm up
+
+                    //drop arm down a bit to get full parking
                     .build();
         }
     }
@@ -115,6 +181,7 @@ public class Sample_Auto extends AutoBase {
         currentState = State.SCORE_PASSIVE;
         bot.followPath(scorePassive);
 
+        //TODO make sure all main paths return to LeftCheckPoint
         while(opModeIsActive()){
             // FSM Auto Logic
             switch(currentState){
@@ -131,8 +198,9 @@ public class Sample_Auto extends AutoBase {
                         break;
                     }
                 case SCORE:
-                    groundSamplesScored++;
                     if(!bot.isBusy()){
+                        groundSamplesScored++;
+
                         if(groundSamplesScored == 1){
                             currentState = State.GET_GROUND_SAMPLE;
                             bot.followPath(Sample2);
@@ -157,7 +225,6 @@ public class Sample_Auto extends AutoBase {
             PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
             telemetry.addData("Selected Auto Position: ", AutoPose);
             telemetry.addData("Selected Park Position: ", AutoPose);
-            telemetry.addData("Inverse Constant: ", inverseConstant);
             telemetry.addData("Current State: ", currentState);
             telemetry.addData("X Position: ", bot.getPose().getX());
             telemetry.addData("Y Position: ", bot.getPose().getY());
