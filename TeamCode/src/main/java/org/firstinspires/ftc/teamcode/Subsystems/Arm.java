@@ -113,6 +113,7 @@
             } else {
                 //auto
                 armMotor.setRunMode(Motor.RunMode.PositionControl);
+                armMotor.setPositionCoefficient(0.05);
                 armMotor.setTargetPosition(0);
                 armMotor.set(0);
             }
@@ -213,7 +214,11 @@
         public void set_pose(int pose){
             armTarget = pose;
             armMotor.setTargetPosition(armTarget);
-            armMotor.set(0.05); //change power to make movement smooth
+
+            while(!armMotor.atTargetPosition()) {
+                armMotor.set(0.1); //change power to make movement smooth
+            }
+            armMotor.stopMotor();
         }
 
 
