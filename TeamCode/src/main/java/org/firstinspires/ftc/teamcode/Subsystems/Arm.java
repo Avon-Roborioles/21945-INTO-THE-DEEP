@@ -97,33 +97,27 @@
 
         }
 
-
-        public void initNEW(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp){
+        public void initNEW(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp) {
             driverOp = gamepad;
             armMotor = new Motor(hardwareMap, "armMotor");
             extensionMotor = new Motor(hardwareMap, "extensionMotor");
 
+            // Configure motor settings
             armMotor.setInverted(true);
-            armMotor.stopAndResetEncoder();
+            armMotor.resetEncoder();
 
-            //set runModes based on teleOp vs Auto
-            if(teleOp){
-                armMotor.setRunMode(Motor.RunMode.RawPower);
-            } else {
-                //auto
-                armMotor.setRunMode(Motor.RunMode.PositionControl);
-                armMotor.setTargetPosition(0);
-                armMotor.set(0);
-            }
+            // Important: Always use PositionControl for PID
+            armMotor.setRunMode(Motor.RunMode.PositionControl);
 
-            a_button = new ToggleButtonReader(
-                    driverOp, GamepadKeys.Button.A
-            );
+            // Initialize PID coefficients - adjust these values as needed
+            armMotor.setPositionCoefficient(0.05; // PID coefficient
 
-            //button to set extensionMotor to 0
-            d_up = new ToggleButtonReader(
-                    driverOp, GamepadKeys.Button.DPAD_UP
-            );
+            // Set initial position
+            armMotor.setTargetPosition(0);
+            armMotor.set(0);
+
+            a_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.A);
+            d_up = new ToggleButtonReader(driverOp, GamepadKeys.Button.DPAD_UP);
         }
 
         /**
@@ -173,6 +167,7 @@
             }
 
             //arm extension control V1 - Greatly affects Arm Control & Can't use well
+            // to-do add time to fix
     //        if(a_button.getState()) {
     //            extensionMotor.set(0.2);
     //        } else {
