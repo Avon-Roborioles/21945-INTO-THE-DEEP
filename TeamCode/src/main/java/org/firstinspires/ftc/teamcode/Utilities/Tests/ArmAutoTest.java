@@ -27,6 +27,10 @@ public class ArmAutoTest extends LinearOpMode {
         //arm.initPID(hardwareMap, driverOp);
         arm.initNEW(hardwareMap, driverOp,false);
 
+        while(opModeInInit()){
+            arm.getTelemetryFULL(telemetry);
+        }
+
         waitForStart();
 
         while(opModeIsActive()){

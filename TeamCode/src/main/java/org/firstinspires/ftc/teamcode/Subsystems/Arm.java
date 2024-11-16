@@ -104,7 +104,8 @@
             extensionMotor = new Motor(hardwareMap, "extensionMotor");
 
             armMotor.setInverted(true);
-            armMotor.stopAndResetEncoder();
+            //armMotor.stopAndResetEncoder();
+            armMotor.resetEncoder();
 
             //set runModes based on teleOp vs Auto
             if(teleOp){
@@ -212,7 +213,7 @@
         public void set_pose(int pose){
             armTarget = pose;
             armMotor.setTargetPosition(armTarget);
-            armMotor.set(0.1); //change power to make movement smooth
+            armMotor.set(0.05); //change power to make movement smooth
         }
 
 
@@ -222,14 +223,19 @@
 
 
         public void getTelemetryBRIEF(Telemetry telemetry){
-    //        telemetry.addData("Arm Pose:", currentArmPose);
+            telemetry.addData("Arm Pose:", armMotor.getCurrentPosition());
+            telemetry.addData("Arm Target: ", armTarget);
+            telemetry.addData("Extend Pose: ", extensionMotor.getCurrentPosition());
+            telemetry.addData("Extend Target: ", extendTarget);
 
         }
 
         public void getTelemetryFULL(Telemetry telemetry){
+            telemetry.addLine("Arm & Extension Data");
             telemetry.addData("Arm Pose:", armMotor.getCurrentPosition());
             telemetry.addData("Extend Pose: ", extensionMotor.getCurrentPosition());
             telemetry.addData("Arm Target: ", armTarget);
+            telemetry.addData("Arm Power: ", armMotor.get());
             telemetry.addData("Extend Target: ", extendTarget);
 
 
