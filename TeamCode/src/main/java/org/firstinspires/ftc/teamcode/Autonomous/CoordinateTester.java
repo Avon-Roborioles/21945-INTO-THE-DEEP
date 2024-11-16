@@ -95,17 +95,16 @@ public class CoordinateTester extends AutoBase{
             switch(currentState){
                 case START:
                     if(!bot.isBusy()){
-                        currentState = State.RETURN;
+                        bot.holdPoint(new BezierPoint(targetPose.getPoint()), targetPose.getHeading());
+                        if(a_button.wasJustPressed() && returnHome) {
+                            currentState = State.RETURN;
+                            bot.followPath(targetToStart);
+                        }
                         break;
                     }
                 case RETURN:
-                    if(a_button.wasJustPressed() && returnHome){ //TODO - switch to "!a_button.getState() if bot automaticially returns
-                        bot.followPath(targetToStart);
-                        if(!bot.isBusy()){
-                            currentState = State.END;
-                        }
-                    } else {
-                        bot.holdPoint(new BezierPoint(targetPose.getPoint()), targetPose.getHeading());
+                    if(!bot.isBusy()) {
+                        currentState = State.END;
                     }
             }
 
