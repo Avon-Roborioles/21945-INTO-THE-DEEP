@@ -18,23 +18,23 @@ public class ArmAutoTest extends LinearOpMode {
     public static int armTarget = 0;
 
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         driverOp = new GamepadEx(gamepad1);
 
         //init
-        //arm.initPID(hardwareMap, driverOp);
         arm.initNEW(hardwareMap, driverOp,false);
 
         while(opModeInInit()){
-            arm.getTelemetryFULL(telemetry);
+            arm.getTelemetryBRIEF(telemetry);
         }
 
         waitForStart();
 
         while(opModeIsActive()){
-            arm.set_pose(armTarget);
+            //arm.goTo(armTarget);
+            arm.setTarget(armTarget);
+            arm.update();
             arm.getTelemetryFULL(telemetry);
             telemetry.update();
         }
