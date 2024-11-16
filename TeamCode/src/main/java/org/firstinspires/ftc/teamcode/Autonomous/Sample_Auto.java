@@ -144,12 +144,19 @@ public class Sample_Auto extends AutoBase {
         } else if(AutoPose == AutoPoses.RIGHT){
             scorePassive = bot.pathBuilder()
                     //drop loaded sample in observation zone
+                    .addPath(new BezierLine(startPose.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()))
+                    .setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.SampleDropoff.getHeading())
+                    .setPathEndTimeoutConstraint(3)
 
                     //drive to checkpoint
+                    .addPath(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.RightCheckPoint.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.RightCheckPoint.getHeading())
+                    .setPathEndTimeoutConstraint(3)
                     .build();
 
             Sample1 = bot.pathBuilder()
-                    //pickup sample 1 (From CheckPoint)
+                    //pickup sample 1 (From CheckPoint) TODO figure out how to spline (BezierCurve) to Right Sample Poses well
+                    
 
                     //drop in observation zone
 
