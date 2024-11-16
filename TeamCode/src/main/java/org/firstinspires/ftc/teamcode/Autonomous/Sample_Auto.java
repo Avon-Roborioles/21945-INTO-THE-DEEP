@@ -38,6 +38,7 @@ public class Sample_Auto extends AutoBase {
 
     //add all paths/auto objectives here
     //TODO make sure all main paths return to LeftCheckPoint
+    //TODO make sure all arm commands eventually go down in each pathChain
     public void buildPaths(AutoPoses AutoPose){
         if(AutoPose == AutoPoses.LEFT){
             scorePassive = bot.pathBuilder()
@@ -50,8 +51,8 @@ public class Sample_Auto extends AutoBase {
                     //score passive sample
 //                    .addParametricCallback(1, () -> {
 //                        //arm.set_pose(Arm_Poses.BASKET2);
-
-                         //intake.pickup();
+//
+//                         intake.pickup();
 //                    })
 
                     //return to leftCheckPoint
@@ -68,41 +69,78 @@ public class Sample_Auto extends AutoBase {
                     .setPathEndTimeoutConstraint(2.5) //TODO see if this adds a short pause before next path
 
                     //pickup sample
+//                    .addParametricCallback(1, () -> {
+//                        //arm.set_pose(Arm_Poses.BASKET2);
+//
+//                        intake.pickup();
+//                    })
 
                     //return to leftCheckPoint
+                    .addPath(new BezierLine(PoseStoragePedro.LeftSample1.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftSample1.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
 
                     .build();
 
             Sample2 = bot.pathBuilder()
                     //drive to sample2 (From CheckPoint)
+                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample2.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample2.getHeading())
 
                     //pickup sample
+//                    .addParametricCallback(1, () -> {
+//                        //arm.set_pose(Arm_Poses.BASKET2);
+//
+//                        intake.pickup();
+//                    })
 
                     //return to leftCheckPoint
+                    .addPath(new BezierLine(PoseStoragePedro.LeftSample2.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftSample2.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
                     .build();
 
             Sample3 = bot.pathBuilder()
                     //drive to sample3 (From CheckPoint)
+                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample3.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample3.getHeading())
 
                     //pickup sample
+//                    .addParametricCallback(1, () -> {
+//                        //arm.set_pose(Arm_Poses.BASKET2);
+//
+//                        intake.pickup();
+//                    })
 
                     //return to leftCheckPoint
+                    .addPath(new BezierLine(PoseStoragePedro.LeftSample3.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftSample3.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
                     .build();
 
             score = bot.pathBuilder()
                     //drive to LeftBucketScore (From CheckPoint)
+                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading())
 
                     //score sample
+//                    .addParametricCallback(1, () -> {
+//                        //arm.set_pose(Arm_Poses.BASKET2);
+//
+//                        intake.pickup();
+//                    })
 
                     //return to leftCheckPoint
+                    .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
+
                     .build();
 
             park = bot.pathBuilder()
                     //drive to point close to parkSpot (From Score)
-
-                    //drive to parkSpot
+                    .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftPark.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftPark.getHeading())
+                    .setPathEndTimeoutConstraint(5)
                     .build();
 
+            //TODO *************** RIGHT ****************
         } else if(AutoPose == AutoPoses.RIGHT){
             scorePassive = bot.pathBuilder()
                     //drop loaded sample in observation zone
