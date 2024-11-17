@@ -41,8 +41,8 @@ public class Intake {
         //intakeServo.setInverted(true); //uncomment if positive power sucks in samples
         intakeServo.set(intakePower);
 
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        colorSensor.enableLed(true); //turns on white LED for color detection
+//        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+//        colorSensor.enableLed(true); //turns on white LED for color detection
     }
 
     //main command for teleOp code

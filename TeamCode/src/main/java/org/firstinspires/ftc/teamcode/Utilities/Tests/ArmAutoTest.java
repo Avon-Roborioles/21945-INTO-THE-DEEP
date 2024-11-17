@@ -22,7 +22,6 @@ public class ArmAutoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         driverOp = new GamepadEx(gamepad1);
 
-        //init
         arm.initNEW(hardwareMap, driverOp,false);
 
         while(opModeInInit()){
