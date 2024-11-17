@@ -39,7 +39,7 @@ public class IntakeAutoTest extends LinearOpMode {
                 default:
                     intake.stop();
             }
-            
+
             intake.update(); //reads selected power and runs intake control
             intake.getTelemetryFULL(telemetry);
             telemetry.update();

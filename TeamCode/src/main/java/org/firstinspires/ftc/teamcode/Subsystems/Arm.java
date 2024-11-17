@@ -43,7 +43,7 @@
         //control variables
         GamepadEx driverOp;
         ToggleButtonReader a_button, d_up;
-        double leftY;
+        double leftY, rightY;
 
         //enum commands for arm positions
         public enum Arm_Poses {
@@ -95,7 +95,7 @@
             //arm setup
             armMotor = new Motor(hardwareMap, "armMotor");
             extendMotor = new Motor(hardwareMap, "extensionMotor");
-            armMotor.setInverted(true);
+            armMotor.setInverted(true); //reverses the motor direction
             armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
             armMotor.resetEncoder();
 
@@ -104,13 +104,16 @@
             //set runModes based on teleOp vs Auto
             if(teleOp){
                 armMotor.setRunMode(Motor.RunMode.RawPower);
-                //extensionMotor.setRunMode(Motor.RunMode.RawPower);
+                armMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                armMotor.setInverted(true); //redundant but works lol
+                extendMotor.setRunMode(Motor.RunMode.RawPower);
+                extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
             } else { //auto
                 //arm
                 armMotor.setRunMode(Motor.RunMode.PositionControl);
                 armMotor.setPositionCoefficient(0.05); //tuned value for position controller
-                armMotor.setInverted(true); //reverses the motor direction
+                armMotor.setInverted(true);
                 armMotor.setDistancePerPulse( (360 / ENCODER_RESOLUTION) * GEAR_RATIO); //approximately 0.0758
                 armMotor.setTargetPosition(0);
                 armMotor.set(0);
@@ -156,26 +159,24 @@
             currentArmPose = armMotor.getCurrentPosition();
             currentEPose = extendMotor.getCurrentPosition();
 
-            //update leftY joystick reading
+            //get joystick readings
             leftY = driverOp.getLeftY();
+            rightY = driverOp.getRightY();
 
+            //arm control
             if(leftY > 0){
-                armMotor.set(-0.6);
+                armMotor.set(0.6); //up
             } else if (leftY < 0){
-                armMotor.set(0.6);
+                armMotor.set(-0.6); //down
             } else {
-                armMotor.set(-0.05); //0 passive hold
+                armMotor.set(0); //0 passive hold
             }
 
-
-            if(driverOp.gamepad.x){
-                extendMotor.set(-1);
-            } else {
-                extendMotor.set(0);
-            }
-
-            if(driverOp.gamepad.b){
+            //extension control
+            if(rightY > 0){
                 extendMotor.set(1);
+            } else if(rightY < 0){
+                extendMotor.set(-1);
             } else {
                 extendMotor.set(0);
             }
