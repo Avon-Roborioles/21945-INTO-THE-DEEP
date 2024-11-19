@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import android.graphics.Color;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -24,6 +26,10 @@ public class Intake {
     Sample_Colors currentSampleColor;
     int intakePower = 0;
 
+    ToggleButtonReader y_button, a_button, x_button, b_button; //modes
+    ToggleButtonReader d_up, d_down, d_left, d_right; //height toggles
+    ToggleButtonReader left_bumper, right_bumper; //intake control w/ sample detection
+
     //enum commands for sample colors
     public enum Sample_Colors{
         YELLOW,
@@ -41,12 +47,59 @@ public class Intake {
         //intakeServo.setInverted(true); //uncomment if positive power sucks in samples
         intakeServo.set(intakePower);
 
+        //---initialize toggles & buttons---
+        d_up = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_UP
+        );
+        d_down = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_DOWN
+        );
+        d_left = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_LEFT
+        );
+        d_right = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_RIGHT
+        );
+
+        y_button = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.Y
+        );
+        a_button = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.A
+        );
+        x_button = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.X
+        );
+        b_button = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.B
+        );
+        left_bumper = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.LEFT_BUMPER
+        );
+        right_bumper = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.RIGHT_BUMPER
+        );
+
 //        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 //        colorSensor.enableLed(true); //turns on white LED for color detection
     }
 
+    private void updateToggles(){
+        d_up.readValue();
+        d_down.readValue();
+        d_left.readValue();
+        d_right.readValue();
+        y_button.readValue();
+        a_button.readValue();
+        x_button.readValue();
+        b_button.readValue();
+        left_bumper.readValue();
+        right_bumper.readValue();
+    }
+
     //main command for teleOp code
     public void run_teleOp(GamepadEx driverOp){
+        updateToggles();
 
     }
 

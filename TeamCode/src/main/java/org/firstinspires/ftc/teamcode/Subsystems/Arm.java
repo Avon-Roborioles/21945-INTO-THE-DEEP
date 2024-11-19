@@ -42,7 +42,8 @@
 
         //control variables
         GamepadEx driverOp;
-        ToggleButtonReader a_button, d_up;
+        ToggleButtonReader y_button, a_button, x_button, b_button; //modes
+        ToggleButtonReader d_up, d_down, d_left, d_right; //height toggles
         double leftY, rightY;
 
         //enum commands for arm positions
@@ -121,14 +122,44 @@
                 //TODO extension
             }
 
-            a_button = new ToggleButtonReader(
-                    driverOp, GamepadKeys.Button.A
-            );
-
-            //button to set extensionMotor to 0
+            //---initialize toggles & buttons---
             d_up = new ToggleButtonReader(
                     driverOp, GamepadKeys.Button.DPAD_UP
             );
+            d_down = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_DOWN
+            );
+            d_left = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_LEFT
+            );
+            d_right = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_RIGHT
+            );
+
+            y_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.Y
+            );
+            a_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.A
+            );
+            x_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.X
+            );
+            b_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.B
+            );
+
+        }
+
+        private void updateToggles(){
+            d_up.readValue();
+            d_down.readValue();
+            d_left.readValue();
+            d_right.readValue();
+            y_button.readValue();
+            a_button.readValue();
+            x_button.readValue();
+            b_button.readValue();
         }
 
         /**
@@ -156,17 +187,20 @@
          *Competition-rated teleOp method with limits and shortcuts
          */
         public void run_teleOp(){
+            //update variables
             currentArmPose = armMotor.getCurrentPosition();
             currentEPose = extendMotor.getCurrentPosition();
-
-            //get joystick readings
             leftY = driverOp.getLeftY();
             rightY = driverOp.getRightY();
+            updateToggles();
+
 
             //arm control
             if(leftY > 0){
+                armState = Arm_Poses.DRIVER_CONTROL;
                 armMotor.set(0.6); //up
             } else if (leftY < 0){
+                armState = Arm_Poses.DRIVER_CONTROL;
                 armMotor.set(-0.6); //down
             } else {
                 armMotor.set(0); //0 passive hold
@@ -181,8 +215,10 @@
                 extendMotor.set(0);
             }
 
+            
 
-            a_button.readValue(); //update a_button toggle
+
+
         }
 
         /**
