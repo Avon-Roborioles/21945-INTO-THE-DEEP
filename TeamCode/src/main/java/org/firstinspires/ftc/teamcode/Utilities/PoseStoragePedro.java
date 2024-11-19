@@ -27,7 +27,7 @@ public class PoseStoragePedro {
 
     public static Pose PitSamples = new Pose(-20+72,-26+72,Math.toRadians(0)); //TODO Hits cage
 
-    public static Pose LeftCheckPoint = new Pose(-47+72,-47+72, Math.toRadians(225)); //TODO
+    public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 
     public static Pose LeftPark = new Pose(-30+72,72, Math.toRadians(0)); //Done
 
@@ -36,17 +36,17 @@ public class PoseStoragePedro {
     //Right Side Poses - Specimen
     public static Pose RightStartPose = new Pose(11+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose RightSample1 = new Pose(26+72,-24+72,Math.toRadians(180)); //DONE, NEEDS FIX PATH
+    public static Pose RightSample1 = new Pose(30+72,-14+72,Math.toRadians(180)); //DONE
 
-    public static Pose RightSample2 = new Pose(31+72,-24+72,Math.toRadians(180)); //TODO
+    public static Pose RightSample2 = new Pose(38+72,-14+72,Math.toRadians(180)); //Done
 
-    public static Pose RightSample3 = new Pose(43+72,-32+72,Math.toRadians(180)); //TODO...
+    public static Pose RightSample3 = new Pose(48 +72,-14+72,Math.toRadians(180)); //Done
 
-    public static Pose SampleDropoff = new Pose(34+72,-49+72,Math.toRadians(180)); //TODO
+    public static Pose SampleDropoff = new Pose(40+72,-49+72,Math.toRadians(180)); //done
 
-    public static Pose SpecimenPickup = new Pose(50+72,-57+72,Math.toRadians(90)); //TODO
+    public static Pose SpecimenPickup = new Pose(50+72,-56+72,Math.toRadians(90)); //done
 
-    public static Pose SpecimenScore = new Pose(0+72,-36+72,Math.toRadians(-90)); //TODO
+    public static Pose SpecimenScore = new Pose(-13+72,-42+72,Math.toRadians(-90)); //done
 
     public static Pose RightCheckPoint = new Pose(33+72,-40+72, Math.toRadians(180)); //TODO
 
