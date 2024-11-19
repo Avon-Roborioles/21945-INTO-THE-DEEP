@@ -46,6 +46,6 @@ public class SimPoseStorage {
 
    public static Pose2d RightPark = new Pose2d(29,-9.8, Math.toRadians(180-1e-6));
 
-   public static Pose2d RightCheckPoint = new Pose2d(33+72,-40+72, Math.toRadians(180)); //TODO
+   public static Pose2d RightCheckPoint = new Pose2d(33,-40, Math.toRadians(180)); //TODO
 
 }

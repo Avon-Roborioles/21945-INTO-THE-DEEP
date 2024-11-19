@@ -48,7 +48,7 @@ public class PoseStoragePedro {
 
     public static Pose SpecimenScore = new Pose(-13+72,-42+72,Math.toRadians(-90)); //done
 
-    public static Pose RightCheckPoint = new Pose(33+72,-40+72, Math.toRadians(180)); //TODO
+    public static Pose RightCheckPoint = new Pose(19+72,-39+72, Math.toRadians(180)); //TODO
 
     public static Pose RightPark = new Pose(-30+72,51, Math.toRadians(0)); //Done
 
