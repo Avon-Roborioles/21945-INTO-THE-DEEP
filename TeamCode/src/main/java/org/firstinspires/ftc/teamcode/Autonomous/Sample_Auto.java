@@ -46,7 +46,8 @@ public class Sample_Auto extends AutoBase {
                     .addPath(new BezierLine(startPose.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()))
                     .setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading())
                     .setPathEndVelocityConstraint(20) //slow down speed for arm movement
-                    .setPathEndTimeoutConstraint(3) //TODO see if this adds a short pause before next path
+                    //.setPathEndTimeoutConstraint(3) //TODO see if this adds a short pause before next path
+                    .waitSeconds(3)
 
                     //score passive sample
 //                    .addParametricCallback(1, () -> {

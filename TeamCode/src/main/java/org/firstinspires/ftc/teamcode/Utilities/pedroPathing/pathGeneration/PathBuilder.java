@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration;
 
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
+
+import com.arcrobotics.ftclib.util.Timing.Timer;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the PathBuilder class. This class makes it easier to create PathChains, so you don't have
@@ -21,6 +25,8 @@ public class PathBuilder {
     private ArrayList<PathCallback> callbacks = new ArrayList<>();
 
     Follower bot; //reference to actual Pedro-Pathing bot
+
+    Timer timer;
 
 
     /**
@@ -228,8 +234,24 @@ public class PathBuilder {
      * @param seconds Number of seconds to wait
      */
     public PathBuilder waitSeconds(double seconds){
-        this.paths.add(new Path(new BezierPoint(new Point(bot.getPose()))));
-        setPathEndTimeoutConstraint(seconds);
+        //method 1
+        timer = new Timer((long)seconds, TimeUnit.SECONDS);
+        while(!timer.done()){
+            setPathEndVelocityConstraint(0);
+        }
+
+        //method 2
+//        Point endPoint = this.paths.get(paths.size()-1).getPoint(1); //0 to 1 (percentage) of path
+//        double endHeading = this.paths.get(paths.size()-1).getHeadingGoal(1);
+//        if(this.paths.get(paths.size()-1).isAtParametricEnd()){
+//            timer = new Timer((long)seconds, TimeUnit.SECONDS);
+//            while(!timer.done()){
+//                this.bot.holdPoint(new BezierPoint(endPoint), endHeading);
+//            }
+//        }
+
+
+
         return this;
     }
 
