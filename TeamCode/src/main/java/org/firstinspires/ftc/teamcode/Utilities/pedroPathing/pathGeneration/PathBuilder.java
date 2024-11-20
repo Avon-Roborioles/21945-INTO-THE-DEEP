@@ -235,20 +235,20 @@ public class PathBuilder {
      */
     public PathBuilder waitSeconds(double seconds){
         //method 1
-        timer = new Timer((long)seconds, TimeUnit.SECONDS);
-        while(!timer.done()){
-            setPathEndVelocityConstraint(0);
-        }
+//        timer = new Timer((long)seconds, TimeUnit.SECONDS);
+//        while(!timer.done()){
+//            setPathEndVelocityConstraint(0);
+//        }
 
         //method 2
-//        Point endPoint = this.paths.get(paths.size()-1).getPoint(1); //0 to 1 (percentage) of path
-//        double endHeading = this.paths.get(paths.size()-1).getHeadingGoal(1);
-//        if(this.paths.get(paths.size()-1).isAtParametricEnd()){
-//            timer = new Timer((long)seconds, TimeUnit.SECONDS);
-//            while(!timer.done()){
-//                this.bot.holdPoint(new BezierPoint(endPoint), endHeading);
-//            }
-//        }
+        Point endPoint = this.paths.get(paths.size()-1).getPoint(1); //0 to 1 (percentage) of path
+        double endHeading = this.paths.get(paths.size()-1).getHeadingGoal(1);
+        if(this.paths.get(paths.size()-1).isAtParametricEnd()){
+            timer = new Timer((long)seconds, TimeUnit.SECONDS);
+            while(!timer.done()){
+                this.bot.holdPoint(new BezierPoint(endPoint), endHeading);
+            }
+        }
 
 
 
