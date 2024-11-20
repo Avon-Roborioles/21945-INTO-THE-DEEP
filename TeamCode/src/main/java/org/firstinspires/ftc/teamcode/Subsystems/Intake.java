@@ -98,8 +98,20 @@ public class Intake {
     }
 
     //main command for teleOp code
-    public void run_teleOp(GamepadEx driverOp){
+    public void run_teleOp(){
         updateToggles();
+
+        //manual trigger control
+        if(driverOp.gamepad.left_trigger > 0){
+            intakePower = -1;
+            intakeServo.set(intakePower);
+        } else if (driverOp.gamepad.right_trigger > 0){
+            intakePower = 1;
+            intakeServo.set(intakePower);
+        } else {
+            intakePower = 0;
+            intakeServo.set(intakePower);
+        }
 
     }
 
