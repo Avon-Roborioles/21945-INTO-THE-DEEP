@@ -26,7 +26,7 @@
         private final int specimenPickupPose = 0; //TODO
         private final int rung1Pose = 0; //TODO
         private final int rung2Pose = 0; //TODO
-        private final int  maxPose = 80;
+        private final int  maxPose = 270;
         private double currentArmPose;
         private double currentEPose;
         private Arm_Poses armState;
@@ -99,8 +99,11 @@
             armMotor.setInverted(true); //reverses the motor direction
             armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
             armMotor.resetEncoder();
+            armPower = 0.6;
 
             //TODO extension setup (will implement Aaron's Code)
+            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
+            extendMotor.resetEncoder();
 
             //set runModes based on teleOp vs Auto
             if(teleOp){
@@ -198,10 +201,10 @@
             //arm control
             if(leftY > 0){
                 armState = Arm_Poses.DRIVER_CONTROL;
-                armMotor.set(0.6); //up
+                armMotor.set(armPower); //up
             } else if (leftY < 0){
                 armState = Arm_Poses.DRIVER_CONTROL;
-                armMotor.set(-0.6); //down
+                armMotor.set(-armPower); //down
             } else {
                 armMotor.set(0); //0 passive hold
             }
@@ -215,7 +218,11 @@
                 extendMotor.set(0);
             }
 
-            
+            if(y_button.getState()){
+                armPower = 1;
+            } else {
+                armPower = 0.6;
+            }
 
 
 
