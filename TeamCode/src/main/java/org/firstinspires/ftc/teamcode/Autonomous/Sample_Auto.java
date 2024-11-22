@@ -43,14 +43,13 @@ public class Sample_Auto extends AutoBase {
     public int groundSamplesScored = 0;
 
     //name is self-explanatory
-    public void waitSeconds(int seconds){
-        waitTimer = new Timer(seconds, TimeUnit.SECONDS);
-        waitTimer.start();
+    public void waitSeconds(double seconds) throws InterruptedException {
 
-        while(waitTimer.isTimerOn()){
-            bot.holdPoint(new BezierPoint(bot.lastPose.getPoint()), bot.lastPose.getHeading());
-            //bot.breakFollowing();
-        }
+            long time = (long) (seconds * 1000L);
+
+            Thread.sleep(time);
+
+
 
     }
 
@@ -145,6 +144,7 @@ public class Sample_Auto extends AutoBase {
                 switch (currentState) {
                     case SCORE_PASSIVE:
                         if (!bot.isBusy()) {
+                            waitSeconds(3);
                             //TODO - intake.pickup()
                             //TODO if (intake.done()){}
                             currentState = State.GET_GROUND_SAMPLE;
@@ -154,6 +154,7 @@ public class Sample_Auto extends AutoBase {
 
                     case GET_GROUND_SAMPLE:
                         if (!bot.isBusy()) {
+                            waitSeconds(1.5);
                             currentState = State.SCORE;
                             if(groundSamplesScored == 1){
                                 updateScoreStart(2);
@@ -166,6 +167,7 @@ public class Sample_Auto extends AutoBase {
 
                     case SCORE:
                         if (!bot.isBusy()) {
+                            waitSeconds(1.5);
                             groundSamplesScored++;
 
                             if (groundSamplesScored == 1) {

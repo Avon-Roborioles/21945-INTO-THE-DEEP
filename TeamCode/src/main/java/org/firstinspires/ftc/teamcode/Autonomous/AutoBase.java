@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 public class AutoBase extends LinearOpMode {
     //subsystem objects - arm, intake, lift, etc
     protected org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
+    protected org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
+    protected org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
 
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down,d_left,d_right;
