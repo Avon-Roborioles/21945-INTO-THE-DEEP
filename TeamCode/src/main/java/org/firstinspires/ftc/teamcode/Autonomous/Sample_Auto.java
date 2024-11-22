@@ -4,30 +4,36 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
+
+import com.arcrobotics.ftclib.util.Timing.Timer;
+
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="3 Sample Auto", group = "Autos")
 public class Sample_Auto extends AutoBase {
     //important variables
-    PathChain scorePassive, Sample1, Sample2, Sample3, score, park;
+    Path scorePassive, Sample1, Sample2, Sample3, score, park, returnToCheckPoint;
     Pose startPose;
     Pose parkPose;
     Follower bot;
     AutoPoses AutoPose = getAutoPose();
     int inverseConstant = 1; //set to 1 or -1 depending on AutoPose - used only for parking
     GamepadEx driverOp;
+    Timer opModeTimer = new Timer(30, TimeUnit.SECONDS);
+    Timer waitTimer;
+
 
     //Finite State Machine (FSM) variables
     public enum State {
         SCORE_PASSIVE,
         GET_GROUND_SAMPLE,
+        RETURN_TO_CHECKPOINT,
         SCORE,
         PARK,
         END
@@ -36,264 +42,162 @@ public class Sample_Auto extends AutoBase {
     public State currentState;
     public int groundSamplesScored = 0;
 
+    //name is self-explanatory
+    public void waitSeconds(int seconds){
+        waitTimer = new Timer(seconds, TimeUnit.SECONDS);
+        waitTimer.start();
+
+        while(waitTimer.isTimerOn()){
+            bot.holdPoint(new BezierPoint(bot.lastPose.getPoint()), bot.lastPose.getHeading());
+            //bot.breakFollowing();
+        }
+
+    }
+
     //add all paths/auto objectives here
     //TODO make sure all main paths return to LeftCheckPoint
     //TODO make sure all arm commands eventually go down in each pathChain
-    public void buildPaths(AutoPoses AutoPose){
-        if(AutoPose == AutoPoses.LEFT){
-            scorePassive = bot.pathBuilder()
-                    //drive to LeftBucketScore
-                    .addPath(new BezierLine(startPose.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()))
-                    .setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading())
-                    .setPathEndVelocityConstraint(20) //slow down speed for arm movement
-                    //.setPathEndTimeoutConstraint(3) //TODO see if this adds a short pause before next path
-                    .waitSeconds(3)
+    public void buildPaths(AutoPoses AutoPose) {
+        if (AutoPose == AutoPoses.LEFT) {
 
-                    //score passive sample
-//                    .addParametricCallback(1, () -> {
-//                        //arm.set_pose(Arm_Poses.BASKET2);
-//
-//                         intake.pickup();
-//                    })
+            //drive to LeftBucketScore
+            scorePassive = new Path(new BezierLine(startPose.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()));
+            scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading());
+            scorePassive.setPathEndVelocityConstraint(20);
 
-                    //return to leftCheckPoint
-                    .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
-                    .setPathEndVelocityConstraint(20) //slow down speed for arm movement
-                    .setPathEndTimeoutConstraint(3) //TODO see if this adds a short pause before next path
-                    .build();
+//            returnToCheckPoint = new Path(new BezierLine(lastPose.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()));
+//            returnToCheckPoint.setLinearHeadingInterpolation(lastPose.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading());
+//            returnToCheckPoint.setPathEndVelocityConstraint(20); //slow down speed for arm movement
 
-            Sample1 = bot.pathBuilder()
-                    //drive to sample1 (From CheckPoint)
-                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample1.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample1.getHeading())
-                    .setPathEndTimeoutConstraint(2.5) //TODO see if this adds a short pause before next path
+            Sample1 = new Path(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample1.getPoint()));
+            Sample1.setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample1.getHeading());
 
-                    //pickup sample
-//                    .addParametricCallback(1, () -> {
-//                        //arm.set_pose(Arm_Poses.BASKET2);
-//
-//                        intake.pickup();
-//                    })
+            Sample2 = new Path(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample2.getPoint()));
+            Sample2.setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample2.getHeading());
 
-                    //return to leftCheckPoint
-                    .addPath(new BezierLine(PoseStoragePedro.LeftSample1.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftSample1.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
+            Sample3 = new Path(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample3.getPoint()));
+            Sample3.setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample3.getHeading());
 
-                    .build();
+            score = new Path(new BezierLine(PoseStoragePedro.LeftSample1.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()));
+            score.setLinearHeadingInterpolation(PoseStoragePedro.LeftSample1.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading());
 
-            Sample2 = bot.pathBuilder()
-                    //drive to sample2 (From CheckPoint)
-                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample2.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample2.getHeading())
+            park = new Path(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftPark.getPoint()));
+            park.setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftPark.getHeading());
 
-                    //pickup sample
-//                    .addParametricCallback(1, () -> {
-//                        //arm.set_pose(Arm_Poses.BASKET2);
-//
-//                        intake.pickup();
-//                    })
-
-                    //return to leftCheckPoint
-                    .addPath(new BezierLine(PoseStoragePedro.LeftSample2.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftSample2.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
-                    .build();
-
-            Sample3 = bot.pathBuilder()
-                    //drive to sample3 (From CheckPoint)
-                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample3.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample3.getHeading())
-
-                    //pickup sample
-//                    .addParametricCallback(1, () -> {
-//                        //arm.set_pose(Arm_Poses.BASKET2);
-//
-//                        intake.pickup();
-//                    })
-
-                    //return to leftCheckPoint
-                    .addPath(new BezierLine(PoseStoragePedro.LeftSample3.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftSample3.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
-                    .build();
-
-            score = bot.pathBuilder()
-                    //drive to LeftBucketScore (From CheckPoint)
-                    .addPath(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading())
-
-                    //score sample
-//                    .addParametricCallback(1, () -> {
-//                        //arm.set_pose(Arm_Poses.BASKET2);
-//
-//                        intake.pickup();
-//                    })
-
-                    //return to leftCheckPoint
-                    .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftCheckPoint.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftCheckPoint.getHeading())
-
-                    .build();
-
-            park = bot.pathBuilder()
-                    //drive to point close to parkSpot (From Score)
-                    .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftPark.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftPark.getHeading())
-                    .setPathEndTimeoutConstraint(5)
-                    .build();
 
             //TODO *************** RIGHT ****************
-        } else if(AutoPose == AutoPoses.RIGHT){
-            scorePassive = bot.pathBuilder()
-                    //drop loaded sample in observation zone
-                    .addPath(new BezierLine(startPose.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()))
-                    .setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.SampleDropoff.getHeading())
-                    .setPathEndTimeoutConstraint(3)
+        } else if (AutoPose == AutoPoses.RIGHT) {
 
-                    //drive to checkpoint
-                    .addPath(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.RightCheckPoint.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.RightCheckPoint.getHeading())
-                    .setPathEndTimeoutConstraint(3)
-                    .build();
-
-            Sample1 = bot.pathBuilder()
-                    //pickup sample 1 (From CheckPoint) TODO figure out how to spline (BezierCurve) to Right Sample Poses well
-                    
-
-                    //drop in observation zone
-
-                    //drive to specimen pickup spot
-
-                    //align with specimen with vision estimates
-
-                    //pickup specimen
-
-                    //return to checkpoint
-                    .build();
-
-            Sample2 = bot.pathBuilder()
-                    //pickup sample 2 (From CheckPoint)
-
-                    //drop in observation zone
-
-                    //drive to specimen pickup spot
-
-                    //align with specimen with vision estimates
-
-                    //pickup specimen
-
-                    //return to checkpoint
-                    .build();
-
-            Sample3 = bot.pathBuilder()
-                    //pickup sample 3 (From CheckPoint)
-
-                    //drop in observation zone
-
-                    //drive to specimen pickup spot
-
-                    //align with specimen with vision estimates
-
-                    //pickup specimen
-
-                    //return to checkpoint
-                    .build();
-
-            score = bot.pathBuilder()
-                    //drive to specimen score spot (From CheckPoint)
-
-                    //score specimen
-
-                    //return to checkpoint
-                    .build();
-
-            park = bot.pathBuilder()
-                    //drive to spot close to parkSpot (From Score)
-
-                    //drive to parkSpot & move arm up
-
-                    //drop arm down a bit to get full parking
-                    .build();
         }
     }
 
-    public void runOpMode() throws InterruptedException{
-        bot = new Follower(hardwareMap);
+    //vital method to update score paths based on number of samples scored
+    public void updateScoreStart(int sampleNumber){
+        if(AutoPose == AutoPoses.LEFT){
+            switch(sampleNumber){
+                case 2:
+                    score = new Path(new BezierLine(PoseStoragePedro.LeftSample2.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()));
+                    score.setLinearHeadingInterpolation(PoseStoragePedro.LeftSample2.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading());
+                    break;
 
-        startPose = PoseStoragePedro.LeftStartPose;
-        parkPose = PoseStoragePedro.LeftPark;
+                case 3:
+                    score = new Path(new BezierLine(PoseStoragePedro.LeftSample3.getPoint(), PoseStoragePedro.LeftBucketScore.getPoint()));
+                    score.setLinearHeadingInterpolation(PoseStoragePedro.LeftSample3.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading());
+                    break;
+            }
+        } else if(AutoPose == AutoPoses.RIGHT){
 
-        driverOp = new GamepadEx(gamepad1);
-
-        //initialize subsystems
-        init_classes(driverOp);
-
-
-        while(opModeInInit()){
-            runMenu();
-            AutoPose = getAutoPose();
-            telemetry.update();
         }
+    }
 
-        waitForStart();
+        public void runOpMode () throws InterruptedException {
+            bot = new Follower(hardwareMap);
 
-        buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
+            startPose = PoseStoragePedro.LeftStartPose;
+            parkPose = PoseStoragePedro.LeftPark;
 
-        bot.setPose(startPose);
+            driverOp = new GamepadEx(gamepad1);
 
-        // starting path & FSM
-        currentState = State.SCORE_PASSIVE;
-        bot.followPath(scorePassive);
+            //initialize subsystems
+            init_classes(driverOp);
 
-        //TODO make sure all main paths return to LeftCheckPoint
-        while(opModeIsActive()){
-            // FSM Auto Logic
-            switch(currentState){
-                case SCORE_PASSIVE:
-                    if(!bot.isBusy()){
-                        currentState = State.GET_GROUND_SAMPLE;
-                        bot.followPath(Sample1);
-                        break;
-                    }
-                case GET_GROUND_SAMPLE:
-                    if(!bot.isBusy()){
-                        currentState = State.SCORE;
-                        bot.followPath(score);
-                        break;
-                    }
-                case SCORE:
-                    if(!bot.isBusy()){
-                        groundSamplesScored++;
 
-                        if(groundSamplesScored == 1){
-                            currentState = State.GET_GROUND_SAMPLE;
-                            bot.followPath(Sample2);
-                            break;
-                        } else if(groundSamplesScored == 2){
-                            currentState = State.GET_GROUND_SAMPLE;
-                            bot.followPath(Sample3);
-                            break;
-                        } else {
-                            currentState = State.PARK;
-                            bot.followPath(park);
-                            break;
-                        }
-                    }
-                case PARK:
-                    if(!bot.isBusy()){
-                        currentState = State.END;
-                    }
+            while (opModeInInit()) {
+                runMenu();
+                AutoPose = getAutoPose();
+                telemetry.update();
             }
 
-            bot.update(); //controls Pedro-Pathing logic
-            PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
-            telemetry.addData("Selected Auto Position: ", AutoPose);
-            telemetry.addData("Selected Park Position: ", AutoPose);
-            telemetry.addData("Current State: ", currentState);
-            telemetry.addData("X Position: ", bot.getPose().getX());
-            telemetry.addData("Y Position: ", bot.getPose().getY());
-            telemetry.addData("Heading Position: ", bot.getPose().getHeading());
-            telemetry.update();
+            waitForStart();
+
+            buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
+
+            bot.setPose(startPose);
+
+            // starting path & FSM
+            currentState = State.SCORE_PASSIVE;
+            bot.followPath(scorePassive);
+            //move arm up
+
+            //TODO change start poses in all paths to match Auto Logic!!!!!!!!
+            while (opModeIsActive()) {
+                // FSM Auto Logic
+                switch (currentState) {
+                    case SCORE_PASSIVE:
+                        if (!bot.isBusy()) {
+                            //TODO - intake.pickup()
+                            //TODO if (intake.done()){}
+                            currentState = State.GET_GROUND_SAMPLE;
+                            bot.followPath(Sample1);
+                            break;
+                        }
+
+                    case GET_GROUND_SAMPLE:
+                        if (!bot.isBusy()) {
+                            currentState = State.SCORE;
+                            if(groundSamplesScored == 1){
+                                updateScoreStart(2);
+                            } else if (groundSamplesScored == 2){
+                                updateScoreStart(3);
+                            }
+                            bot.followPath(score);
+                            break;
+                        }
+
+                    case SCORE:
+                        if (!bot.isBusy()) {
+                            groundSamplesScored++;
+
+                            if (groundSamplesScored == 1) {
+                                currentState = State.GET_GROUND_SAMPLE;
+                                bot.followPath(Sample2);
+                                break;
+                            } else if (groundSamplesScored == 2) {
+                                currentState = State.GET_GROUND_SAMPLE;
+                                bot.followPath(Sample3);
+                                break;
+                            } else {
+                                currentState = State.PARK;
+                                bot.followPath(park);
+                                break;
+                            }
+                        }
+                    case PARK:
+                        if (!bot.isBusy()) {
+                            currentState = State.END;
+                        }
+                }
+
+                bot.update(); //controls Pedro-Pathing logic
+                PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
+                telemetry.addData("Selected Auto Position: ", AutoPose);
+                telemetry.addData("Selected Park Position: ", AutoPose);
+                telemetry.addData("Current State: ", currentState);
+                telemetry.addData("X Position: ", bot.getPose().getX());
+                telemetry.addData("Y Position: ", bot.getPose().getY());
+                telemetry.addData("Heading Position: ", bot.getPose().getHeading());
+                telemetry.update();
+            }
         }
     }
 
-}

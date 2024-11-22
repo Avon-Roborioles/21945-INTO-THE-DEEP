@@ -102,7 +102,7 @@ public class GamepadRumbleTest extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        // Example 1. a)   start by creating a three-pulse rumble sequence: right, LEFT, LEFT
+        // ExampleAuto 1. a)   start by creating a three-pulse rumble sequence: right, LEFT, LEFT
         customRumbleEffect = new Gamepad.RumbleEffect.Builder()
                 .addStep(0.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
                 .addStep(0.0, 0.0, 300)  //  Pause for 300 mSec
@@ -128,7 +128,7 @@ public class GamepadRumbleTest extends LinearOpMode
             telemetry.addData(">", "Are we RUMBLING? %s\n", gamepad1.isRumbling() ? "YES" : "no" );
 
             // ----------------------------------------------------------------------------------------
-            // Example 1. b) Watch the runtime timer, and run the custom rumble when we hit half-time.
+            // ExampleAuto 1. b) Watch the runtime timer, and run the custom rumble when we hit half-time.
             //               Make sure we only signal once by setting "secondHalf" flag to prevent further rumbles.
             // ----------------------------------------------------------------------------------------
             if ((runtime.seconds() > HALF_TIME) && !secondHalf)  {
@@ -143,7 +143,7 @@ public class GamepadRumbleTest extends LinearOpMode
 
 
             // ----------------------------------------------------------------------------------------
-            // Example 2. If Left Bumper is being pressed, power the rumble motors based on the two trigger depressions.
+            // ExampleAuto 2. If Left Bumper is being pressed, power the rumble motors based on the two trigger depressions.
             // This is useful to see how the rumble feels at various power levels.
             // ----------------------------------------------------------------------------------------
             if (currentLB) {
@@ -168,7 +168,7 @@ public class GamepadRumbleTest extends LinearOpMode
 
 
             // ----------------------------------------------------------------------------------------
-            // Example 3. Blip 3 times at the moment that A (Cross) is pressed. (look for pressed transition)
+            // ExampleAuto 3. Blip 3 times at the moment that A (Cross) is pressed. (look for pressed transition)
             // BUT !!!  Skip it altogether if the Gamepad is already rumbling.
             // ----------------------------------------------------------------------------------------
             if (currentA && !lastA) {
@@ -179,7 +179,7 @@ public class GamepadRumbleTest extends LinearOpMode
 
 
             // ----------------------------------------------------------------------------------------
-            // Example 4. Rumble once when gamepad right trigger goes above the THRESHOLD.
+            // ExampleAuto 4. Rumble once when gamepad right trigger goes above the THRESHOLD.
             // ----------------------------------------------------------------------------------------
             if (gamepad1.right_trigger > TRIGGER_THRESHOLD) {
                 if (!highLevel) {

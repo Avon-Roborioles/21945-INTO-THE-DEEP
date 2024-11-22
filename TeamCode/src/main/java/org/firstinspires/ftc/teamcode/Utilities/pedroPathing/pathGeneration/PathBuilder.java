@@ -233,27 +233,36 @@ public class PathBuilder {
      * This allows Pedro-Pathing to have a native wait function. Not much to it.
      * @param seconds Number of seconds to wait
      */
-    public PathBuilder waitSeconds(double seconds){
+    public PathBuilder waitSeconds(double seconds, Pose pose){
         //method 1
 //        timer = new Timer((long)seconds, TimeUnit.SECONDS);
+//        timer.start();
 //        while(!timer.done()){
-//            setPathEndVelocityConstraint(0);
+//            //setPathEndVelocityConstraint(0);
+//            this.bot.holdPoint(new BezierPoint(pose.getPoint()), pose.getHeading());
 //        }
 
+        //method 3
+        this.paths.add(new Path(new BezierLine(pose.getPoint(), new Pose(100,100, 100).getPoint())));
+        this.setPathEndVelocityConstraint(0);
+        this.setPathEndTimeoutConstraint(seconds);
+
+
+
         //method 2
-        Point endPoint = this.paths.get(paths.size()-1).getPoint(1); //0 to 1 (percentage) of path
-        double endHeading = this.paths.get(paths.size()-1).getHeadingGoal(1);
-        if(this.paths.get(paths.size()-1).isAtParametricEnd()){
-            timer = new Timer((long)seconds, TimeUnit.SECONDS);
-            while(!timer.done()){
-                this.bot.holdPoint(new BezierPoint(endPoint), endHeading);
-            }
-        }
-
-
+//        Point endPoint = this.paths.get(paths.size()-1).getPoint(1); //0 to 1 (percentage) of path
+//        double endHeading = this.paths.get(paths.size()-1).getHeadingGoal(1);
+//        if(this.paths.get(paths.size()-1).isAtParametricEnd()){
+//            timer = new Timer((long)seconds, TimeUnit.SECONDS);
+//            timer.start();
+//            while(!timer.done()){
+//                this.bot.holdPoint(new BezierPoint(endPoint), endHeading);
+//            }
+//        }
 
         return this;
     }
+
 
 
     /**

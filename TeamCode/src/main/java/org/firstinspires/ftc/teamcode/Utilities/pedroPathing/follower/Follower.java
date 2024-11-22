@@ -90,6 +90,8 @@ public class Follower {
     private ArrayList<Vector> velocities = new ArrayList<>();
     private ArrayList<Vector> accelerations = new ArrayList<>();
 
+    public Pose lastPose; //ADDED BY STEPHEN 0. - 21945 PURPLE ROBORIOLES
+
     private Vector averageVelocity;
     private Vector averagePreviousVelocity;
     private Vector averageAcceleration;
@@ -360,6 +362,7 @@ public class Follower {
         followingPathChain = false;
         currentPath = path;
         closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), BEZIER_CURVE_BINARY_STEP_LIMIT);
+        lastPose = new Pose(path.getPoint(1).getX(),path.getPoint(1).getY(),path.getHeadingGoal(1));
     }
 
     /**
@@ -369,6 +372,7 @@ public class Follower {
      */
     public void followPath(Path path) {
         followPath(path, false);
+        lastPose = new Pose(path.getPoint(1).getX(),path.getPoint(1).getY(),path.getHeadingGoal(1));
     }
 
     /**

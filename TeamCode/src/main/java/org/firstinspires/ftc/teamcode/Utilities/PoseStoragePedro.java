@@ -14,6 +14,7 @@ public class PoseStoragePedro {
     //dynamic pose variable to save current bot position from auto to teleOp (teleOp will use enhances from Pedro-Pathing)
     public static Pose CurrentPose = null;
 
+
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
 
