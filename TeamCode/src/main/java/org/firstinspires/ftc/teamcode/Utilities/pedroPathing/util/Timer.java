@@ -19,6 +19,7 @@ public class Timer {
         resetTimer();
     }
 
+
     /**
      * This resets the Timer's start time to the current time using System.currentTimeMillis().
      */

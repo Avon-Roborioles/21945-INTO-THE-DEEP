@@ -10,8 +10,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Bezi
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
-
-import com.arcrobotics.ftclib.util.Timing.Timer;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Timer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,8 +24,9 @@ public class Sample_Auto extends AutoBase {
     AutoPoses AutoPose = getAutoPose();
     int inverseConstant = 1; //set to 1 or -1 depending on AutoPose - used only for parking
     GamepadEx driverOp;
-    Timer opModeTimer = new Timer(30, TimeUnit.SECONDS);
+    Timer opModeTimer;
     Timer waitTimer;
+
 
 
     //Finite State Machine (FSM) variables
@@ -135,7 +135,8 @@ public class Sample_Auto extends AutoBase {
 
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
-            bot.followPath(scorePassive);
+            bot.followPath(scorePassive, true);
+            waitTimer = new Timer();
             //move arm up
 
             //TODO change start poses in all paths to match Auto Logic!!!!!!!!
@@ -144,12 +145,18 @@ public class Sample_Auto extends AutoBase {
                 switch (currentState) {
                     case SCORE_PASSIVE:
                         if (!bot.isBusy()) {
-                            waitSeconds(3);
-                            //TODO - intake.pickup()
-                            //TODO if (intake.done()){}
-                            currentState = State.GET_GROUND_SAMPLE;
-                            bot.followPath(Sample1);
-                            break;
+//                            waitSeconds(3);
+                            if(waitTimer.getElapsedTime() == 0.5){
+                                //TODO - intake.pickup()
+                            }
+
+                            //moves on to next path after 5 seconds
+                            if(waitTimer.getElapsedTime() == 5) {
+                                currentState = State.GET_GROUND_SAMPLE;
+                                bot.followPath(Sample1);
+                                break;
+                            }
+
                         }
 
                     case GET_GROUND_SAMPLE:
