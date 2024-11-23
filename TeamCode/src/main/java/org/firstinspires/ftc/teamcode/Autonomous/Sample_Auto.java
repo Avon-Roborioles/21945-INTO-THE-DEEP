@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 //import needed libraries
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
@@ -93,6 +94,21 @@ public class Sample_Auto extends AutoBase {
         }
     }
 
+    public void safeSleep(double sleep){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
+        while(sleep >= time.time(TimeUnit.SECONDS)){
+            bot.update();
+            if(isStopRequested()){
+                break;
+            }
+            if(!opModeIsActive()){
+                break;
+            }
+        }
+    }
+
     //vital method to update score paths based on number of samples scored
     public void updateScoreStart(int sampleNumber){
         if(AutoPose == AutoPoses.LEFT){
@@ -163,7 +179,7 @@ public class Sample_Auto extends AutoBase {
                 switch (currentState) {
                     case SCORE_PASSIVE:
                         if (!bot.isBusy()) {
-                            Thread.sleep(3000);
+                            safeSleep(3);
                             currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                             bot.followPath(Sample1);
                             break;
@@ -173,7 +189,7 @@ public class Sample_Auto extends AutoBase {
 
                     case GET_GROUND_SAMPLE:
                         if (!bot.isBusy()) {
-                          Thread.sleep(1500);
+                          safeSleep(1.5);
                             currentState = Sample_Auto.State.SCORE;
                             if(groundSamplesScored == 1){
                                 updateScoreStart(2);
@@ -186,7 +202,7 @@ public class Sample_Auto extends AutoBase {
 
                     case SCORE:
                         if (!bot.isBusy()) {
-                            Thread.sleep(1500);
+                            safeSleep(1.5);
                             groundSamplesScored++;
 
                             if (groundSamplesScored == 1) {
