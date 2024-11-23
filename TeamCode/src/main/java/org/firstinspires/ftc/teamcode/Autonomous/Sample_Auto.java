@@ -28,6 +28,7 @@ public class Sample_Auto extends AutoBase {
     Timer waitTimer;
     Thread pathingThread;
     Thread subsystemThread;
+    String message = "";
 
 
 
@@ -140,93 +141,73 @@ public class Sample_Auto extends AutoBase {
             bot.followPath(scorePassive, true);
             waitTimer = new Timer();
 
-            pathingThread = new Thread(){
-                public void run(){
-                    switch (currentState) {
-                        case SCORE_PASSIVE:
-                            if (!bot.isBusy()) {
-                                try {
-                                    Thread.sleep(3000);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                //TODO - intake.pickup()
 
-
-                                //TODO if (intake.done()){}
-                                currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
-                                bot.followPath(Sample1);
-                                break;
-
-
-                            }
-
-                        case GET_GROUND_SAMPLE:
-                            if (!bot.isBusy()) {
-                                try {
-                                    Thread.sleep(1500);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                currentState = Sample_Auto.State.SCORE;
-                                if(groundSamplesScored == 1){
-                                    updateScoreStart(2);
-                                } else if (groundSamplesScored == 2){
-                                    updateScoreStart(3);
-                                }
-                                bot.followPath(score);
-                                break;
-                            }
-
-                        case SCORE:
-                            if (!bot.isBusy()) {
-                                try {
-                                    Thread.sleep(1500);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                groundSamplesScored++;
-
-                                if (groundSamplesScored == 1) {
-                                    currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
-                                    bot.followPath(Sample2);
-                                    break;
-                                } else if (groundSamplesScored == 2) {
-                                    currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
-                                    bot.followPath(Sample3);
-                                    break;
-                                } else {
-                                    currentState = Sample_Auto.State.PARK;
-                                    bot.followPath(park);
-                                    break;
-                                }
-                            }
-                        case PARK:
-                            if (!bot.isBusy()) {
-                                currentState = Sample_Auto.State.END;
-                            }
-                    }
-                }
-            };
 
             //TODO - DO NOT CONTROL CURRENT STATE IN SUBSYSTEM THREAD!!!
-            subsystemThread = new Thread(){
-                public void run(){
-                    switch(currentState){
+//            subsystemThread = new Thread(){
+//                public void run(){
+//                    switch(currentState){
+//
+//                    }
+//                }
+//            };
 
-                    }
-                }
-            };
 
 
-
-            pathingThread.start();
-            subsystemThread.start();
+            //subsystemThread.start();
+            //pathingThread.start();
 
             //TODO change start poses in all paths to match Auto Logic!!!!!!!!
             while (opModeIsActive()) {
                 // FSM Auto Logic
+                switch (currentState) {
+                    case SCORE_PASSIVE:
+                        if (!bot.isBusy()) {
+                            Thread.sleep(3000);
+                            currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                            bot.followPath(Sample1);
+                            break;
 
+
+                        }
+
+                    case GET_GROUND_SAMPLE:
+                        if (!bot.isBusy()) {
+                          Thread.sleep(1500);
+                            currentState = Sample_Auto.State.SCORE;
+                            if(groundSamplesScored == 1){
+                                updateScoreStart(2);
+                            } else if (groundSamplesScored == 2){
+                                updateScoreStart(3);
+                            }
+                            bot.followPath(score);
+                            break;
+                        }
+
+                    case SCORE:
+                        if (!bot.isBusy()) {
+                            Thread.sleep(1500);
+                            groundSamplesScored++;
+
+                            if (groundSamplesScored == 1) {
+                                currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                bot.followPath(Sample2);
+                                break;
+                            } else if (groundSamplesScored == 2) {
+                                currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                bot.followPath(Sample3);
+                                break;
+                            } else {
+                                currentState = Sample_Auto.State.PARK;
+                                bot.followPath(park);
+                                break;
+                            }
+                        }
+                    case PARK:
+                        if (!bot.isBusy()) {
+                            currentState = Sample_Auto.State.END;
+                        }
+                }
 
                 bot.update(); //controls Pedro-Pathing logic
                 PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
@@ -236,6 +217,7 @@ public class Sample_Auto extends AutoBase {
                 telemetry.addData("X Position: ", bot.getPose().getX());
                 telemetry.addData("Y Position: ", bot.getPose().getY());
                 telemetry.addData("Heading Position: ", bot.getPose().getHeading());
+                telemetry.addData("Message: ", message);
                 telemetry.update();
             }
         }
