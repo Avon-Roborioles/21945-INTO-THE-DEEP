@@ -26,6 +26,8 @@ public class Sample_Auto extends AutoBase {
     GamepadEx driverOp;
     Timer opModeTimer;
     Timer waitTimer;
+    Thread pathingThread;
+    Thread subsystemThread;
 
 
 
@@ -137,65 +139,94 @@ public class Sample_Auto extends AutoBase {
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
             waitTimer = new Timer();
-            //move arm up
+
+            pathingThread = new Thread(){
+                public void run(){
+                    switch (currentState) {
+                        case SCORE_PASSIVE:
+                            if (!bot.isBusy()) {
+                                try {
+                                    Thread.sleep(3000);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                //TODO - intake.pickup()
+
+
+                                //TODO if (intake.done()){}
+                                currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                bot.followPath(Sample1);
+                                break;
+
+
+                            }
+
+                        case GET_GROUND_SAMPLE:
+                            if (!bot.isBusy()) {
+                                try {
+                                    Thread.sleep(1500);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                currentState = Sample_Auto.State.SCORE;
+                                if(groundSamplesScored == 1){
+                                    updateScoreStart(2);
+                                } else if (groundSamplesScored == 2){
+                                    updateScoreStart(3);
+                                }
+                                bot.followPath(score);
+                                break;
+                            }
+
+                        case SCORE:
+                            if (!bot.isBusy()) {
+                                try {
+                                    Thread.sleep(1500);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                groundSamplesScored++;
+
+                                if (groundSamplesScored == 1) {
+                                    currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                    bot.followPath(Sample2);
+                                    break;
+                                } else if (groundSamplesScored == 2) {
+                                    currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                    bot.followPath(Sample3);
+                                    break;
+                                } else {
+                                    currentState = Sample_Auto.State.PARK;
+                                    bot.followPath(park);
+                                    break;
+                                }
+                            }
+                        case PARK:
+                            if (!bot.isBusy()) {
+                                currentState = Sample_Auto.State.END;
+                            }
+                    }
+                }
+            };
+
+            //TODO - DO NOT CONTROL CURRENT STATE IN SUBSYSTEM THREAD!!!
+            subsystemThread = new Thread(){
+                public void run(){
+                    switch(currentState){
+
+                    }
+                }
+            };
+
+
+
+            pathingThread.start();
+            subsystemThread.start();
 
             //TODO change start poses in all paths to match Auto Logic!!!!!!!!
             while (opModeIsActive()) {
                 // FSM Auto Logic
-                switch (currentState) {
-                    case SCORE_PASSIVE:
-                        if (!bot.isBusy()) {
-//                            waitSeconds(3);
-                            if(waitTimer.getElapsedTime() == 0.5){
-                                //TODO - intake.pickup()
-                            }
 
-                            //moves on to next path after 5 seconds
-                            if(waitTimer.getElapsedTime() == 5) {
-                                currentState = State.GET_GROUND_SAMPLE;
-                                bot.followPath(Sample1);
-                                break;
-                            }
-
-                        }
-
-                    case GET_GROUND_SAMPLE:
-                        if (!bot.isBusy()) {
-                            waitSeconds(1.5);
-                            currentState = State.SCORE;
-                            if(groundSamplesScored == 1){
-                                updateScoreStart(2);
-                            } else if (groundSamplesScored == 2){
-                                updateScoreStart(3);
-                            }
-                            bot.followPath(score);
-                            break;
-                        }
-
-                    case SCORE:
-                        if (!bot.isBusy()) {
-                            waitSeconds(1.5);
-                            groundSamplesScored++;
-
-                            if (groundSamplesScored == 1) {
-                                currentState = State.GET_GROUND_SAMPLE;
-                                bot.followPath(Sample2);
-                                break;
-                            } else if (groundSamplesScored == 2) {
-                                currentState = State.GET_GROUND_SAMPLE;
-                                bot.followPath(Sample3);
-                                break;
-                            } else {
-                                currentState = State.PARK;
-                                bot.followPath(park);
-                                break;
-                            }
-                        }
-                    case PARK:
-                        if (!bot.isBusy()) {
-                            currentState = State.END;
-                        }
-                }
 
                 bot.update(); //controls Pedro-Pathing logic
                 PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
