@@ -31,7 +31,6 @@ public class Sample_Auto extends AutoBase {
     String message = "";
 
 
-
     //Finite State Machine (FSM) variables
     public enum State {
         SCORE_PASSIVE,
