@@ -92,6 +92,7 @@ public class AutoBase extends LinearOpMode {
                 driverOp, GamepadKeys.Button.DPAD_RIGHT
         );
 
+        intake.initTest(hardwareMap, driverOp);
     }
 
     /**
@@ -130,6 +131,7 @@ public class AutoBase extends LinearOpMode {
         d_right.readValue();
     }
 
+    public void subsystemsUpdate(){}
 
     /**
      * A Specialized Auto Menu Program for the "CoordinateTester" Program

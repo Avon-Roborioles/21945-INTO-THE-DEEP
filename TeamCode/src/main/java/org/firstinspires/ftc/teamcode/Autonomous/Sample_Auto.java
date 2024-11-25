@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Timer;
@@ -46,16 +45,6 @@ public class Sample_Auto extends AutoBase {
     public State currentState;
     public int groundSamplesScored = 0;
 
-    //name is self-explanatory
-    public void waitSeconds(double seconds) throws InterruptedException {
-
-            long time = (long) (seconds * 1000L);
-
-            Thread.sleep(time);
-
-
-
-    }
 
     //add all paths/auto objectives here
     //TODO make sure all main paths return to LeftCheckPoint
@@ -94,12 +83,12 @@ public class Sample_Auto extends AutoBase {
         }
     }
 
-    public void safeSleep(double sleep){
+    public void waitSeconds(double seconds){
         ElapsedTime time = new ElapsedTime();
         time.reset();
 
-        while(sleep >= time.time(TimeUnit.SECONDS)){
-            bot.update();
+        while(seconds >= time.time(TimeUnit.SECONDS)){
+            updateAuto();
             if(isStopRequested()){
                 break;
             }
@@ -107,6 +96,21 @@ public class Sample_Auto extends AutoBase {
                 break;
             }
         }
+    }
+
+    //various PID updating & Telemetry Data bundled into one method
+    public void updateAuto(){
+        bot.update(); //controls Pedro-Pathing logic
+        //TODO - subsystemsUpdate();
+        PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
+        telemetry.addData("Selected Auto Position: ", AutoPose);
+        telemetry.addData("Selected Park Position: ", AutoPose);
+        telemetry.addData("Current State: ", currentState);
+        telemetry.addData("X Position: ", bot.getPose().getX());
+        telemetry.addData("Y Position: ", bot.getPose().getY());
+        telemetry.addData("Heading Position: ", bot.getPose().getHeading());
+        telemetry.addData("Message: ", message);
+        telemetry.update();
     }
 
     //vital method to update score paths based on number of samples scored
@@ -155,23 +159,9 @@ public class Sample_Auto extends AutoBase {
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
-            waitTimer = new Timer();
+            //TODO move arm up
+            //TODO run intake (pickup) - should secure passive/loaded sample
 
-
-
-            //TODO - DO NOT CONTROL CURRENT STATE IN SUBSYSTEM THREAD!!!
-//            subsystemThread = new Thread(){
-//                public void run(){
-//                    switch(currentState){
-//
-//                    }
-//                }
-//            };
-
-
-
-            //subsystemThread.start();
-            //pathingThread.start();
 
             //TODO change start poses in all paths to match Auto Logic!!!!!!!!
             while (opModeIsActive()) {
@@ -179,9 +169,13 @@ public class Sample_Auto extends AutoBase {
                 switch (currentState) {
                     case SCORE_PASSIVE:
                         if (!bot.isBusy()) {
-                            safeSleep(3);
+                            waitSeconds(0.3);
+                            //TODO run intake (drop)
+                            waitSeconds(.1);
+                            //TODO move arm down
                             currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                             bot.followPath(Sample1);
+                            //TODO run intake (pickup)
                             break;
 
 
@@ -189,7 +183,7 @@ public class Sample_Auto extends AutoBase {
 
                     case GET_GROUND_SAMPLE:
                         if (!bot.isBusy()) {
-                          safeSleep(1.5);
+                            waitSeconds(.3);
                             currentState = Sample_Auto.State.SCORE;
                             if(groundSamplesScored == 1){
                                 updateScoreStart(2);
@@ -197,44 +191,44 @@ public class Sample_Auto extends AutoBase {
                                 updateScoreStart(3);
                             }
                             bot.followPath(score);
+                            //TODO move arm up
                             break;
                         }
 
                     case SCORE:
                         if (!bot.isBusy()) {
-                            safeSleep(1.5);
+                            waitSeconds(0.3);
+                            //TODO run intake (drop)
                             groundSamplesScored++;
 
                             if (groundSamplesScored == 1) {
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample2);
+                                //TODO move arm down
+                                //TODO run intake (pickup)
                                 break;
                             } else if (groundSamplesScored == 2) {
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample3);
+                                //TODO move arm down
+                                //TODO run intake (pickup)
                                 break;
                             } else {
                                 currentState = Sample_Auto.State.PARK;
                                 bot.followPath(park);
+                                //TODO move arm down (for parking)
+                                //TODO stop intake
                                 break;
                             }
                         }
                     case PARK:
                         if (!bot.isBusy()) {
+                            waitSeconds(0.3);
+                            //TODO move arm down (a bit for max parking)
                             currentState = Sample_Auto.State.END;
                         }
                 }
-
-                bot.update(); //controls Pedro-Pathing logic
-                PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
-                telemetry.addData("Selected Auto Position: ", AutoPose);
-                telemetry.addData("Selected Park Position: ", AutoPose);
-                telemetry.addData("Current State: ", currentState);
-                telemetry.addData("X Position: ", bot.getPose().getX());
-                telemetry.addData("Y Position: ", bot.getPose().getY());
-                telemetry.addData("Heading Position: ", bot.getPose().getHeading());
-                telemetry.addData("Message: ", message);
-                telemetry.update();
+                updateAuto();
             }
         }
     }

@@ -24,7 +24,7 @@ public class PoseStoragePedro {
 
     public static Pose LeftSample3 = new Pose(-64+72,-24+72,Math.toRadians(179)); //Done
 
-    public static Pose LeftBucketScore = new Pose(-64+72,-56+72,Math.toRadians(225)); //Done
+    public static Pose LeftBucketScore = new Pose(-64+72,-56+72,Math.toRadians(225)); //Done - 225
 
     public static Pose PitSamples = new Pose(-20+72,-26+72,Math.toRadians(0)); //TODO Hits cage
 
