@@ -1,6 +1,8 @@
 package com.example.meepmeeptesting;
 
 //import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
 import org.rowlandhall.meepmeep.MeepMeep;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
@@ -21,9 +23,9 @@ public class TestSim {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 14.5)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(SimPoseStorage.RightStartPose)
-                                .waitSeconds(.1)
-                                //test code here
-                                .lineToLinearHeading(SimPoseStorage.RightCheckPoint)
+
+
+//
 
                                 .waitSeconds(2000)
                                 .build());
