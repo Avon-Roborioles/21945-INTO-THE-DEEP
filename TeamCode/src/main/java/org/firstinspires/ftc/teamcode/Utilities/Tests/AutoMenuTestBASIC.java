@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.Utilities.Tests;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="Basic Auto Menu Test")
+//@TeleOp(name="Basic Auto Menu Test")
+@Disabled
 public class AutoMenuTestBASIC extends OpMode {
     public enum AutoPath {
         UP,

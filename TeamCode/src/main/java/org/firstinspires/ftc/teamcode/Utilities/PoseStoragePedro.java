@@ -37,13 +37,13 @@ public class PoseStoragePedro {
     //Right Side Poses - Specimen
     public static Pose RightStartPose = new Pose(11+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose RightSample1 = new Pose(30+72,-14+72,Math.toRadians(180)); //DONE
+    public static Pose RightSample1 = new Pose(-5+72,-39+72,Math.toRadians(45)); //DONE 35
 
     public static Pose RightSample2 = new Pose(38+72,-14+72,Math.toRadians(180)); //Done
 
     public static Pose RightSample3 = new Pose(48 +72,-14+72,Math.toRadians(180)); //Done
 
-    public static Pose SampleDropoff = new Pose(40+72,-49+72,Math.toRadians(180)); //done
+    public static Pose SampleDropoff = new Pose(0+72,-60+72,Math.toRadians(-45)); //done - 40,-49,180
 
     public static Pose SpecimenPickup = new Pose(50+72,-56+72,Math.toRadians(90)); //done
 

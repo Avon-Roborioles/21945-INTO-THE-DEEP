@@ -69,7 +69,6 @@ public class AutoBase extends LinearOpMode {
     public void runOpMode() throws InterruptedException {}
 
     public void init_classes(){
-
     }
 
     /**
@@ -92,8 +91,9 @@ public class AutoBase extends LinearOpMode {
                 driverOp, GamepadKeys.Button.DPAD_RIGHT
         );
 
-        intake.initTest(hardwareMap, driverOp);
+        intake.init(hardwareMap, driverOp);
     }
+
 
     /**
      * Runs the Main Auto Menu Program to input Auto Pathing Selections
@@ -131,7 +131,9 @@ public class AutoBase extends LinearOpMode {
         d_right.readValue();
     }
 
-    public void subsystemsUpdate(){}
+    public void subsystemsUpdate(){
+        intake.update();
+    }
 
     /**
      * A Specialized Auto Menu Program for the "CoordinateTester" Program
