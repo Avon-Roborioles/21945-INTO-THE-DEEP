@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name="3 Sample Auto", group = "Autos")
 public class Sample_Auto extends AutoBase {
     //important variables
-    Path scorePassive, Sample1, Sample2, Sample3, Score, Park, SampleDropoff;
+    Path scorePassive, Sample1, Sample2, Sample3, Score, Park, SampleDropoff, PickupSpecimen;
     Pose startPose;
     Pose parkPose;
     Follower bot;
@@ -28,6 +28,7 @@ public class Sample_Auto extends AutoBase {
         SCORE_PASSIVE, //path to buckets core (left)/sample dropoff (right) from startPose
         GET_GROUND_SAMPLE,
         DROPOFF_SAMPLE, //right side only
+        PICKUP_SPECIMEN, //right side only
         SCORE,
         PARK,
         END
@@ -69,6 +70,15 @@ public class Sample_Auto extends AutoBase {
 
             Sample1 = new Path(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.RightSample1.getPoint()));
             Sample1.setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.RightSample1.getHeading());
+
+            SampleDropoff = new Path(new BezierLine(PoseStoragePedro.RightSample1.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()));
+            SampleDropoff.setLinearHeadingInterpolation(PoseStoragePedro.RightSample1.getHeading(), PoseStoragePedro.SampleDropoff.getHeading());
+
+            PickupSpecimen = new Path(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.SpecimenPickup.getPoint()));
+            PickupSpecimen.setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.SpecimenPickup.getHeading());
+
+            Score = new Path(new BezierLine(PoseStoragePedro.SpecimenPickup.getPoint(), PoseStoragePedro.SpecimenScore.getPoint()));
+            Score.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenPickup.getHeading(), PoseStoragePedro.SpecimenScore.getHeading());
         }
     }
 
@@ -143,7 +153,11 @@ public class Sample_Auto extends AutoBase {
 
             buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
 
-            bot.setPose(startPose);
+            if(AutoPose == AutoPoses.LEFT){
+                bot.setPose(PoseStoragePedro.LeftStartPose);
+            } else if(AutoPose == AutoPoses.RIGHT){
+                bot.setPose(PoseStoragePedro.RightStartPose);
+            }
 
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
@@ -229,13 +243,13 @@ public class Sample_Auto extends AutoBase {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
                                 intake.stop();
-                                waitSeconds(1);
+                                waitSeconds(.1);
                                 intake.drop();
-                                waitSeconds(1);
+                                waitSeconds(.1);
                                 intake.stop();
 
                                 currentState = State.GET_GROUND_SAMPLE;
-                                bot.followPath(Sample1);
+                                bot.followPath(Sample1, true);
                                 break;
 
                             };
@@ -245,16 +259,25 @@ public class Sample_Auto extends AutoBase {
                                 waitSeconds(1);
                                 intake.stop();
 
-                                currentState = State.END;
+                                currentState = State.DROPOFF_SAMPLE;
+                                bot.followPath(SampleDropoff, true);
                                 break;
                             };
                         case DROPOFF_SAMPLE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.3);
 
-                                currentState = State.END;
+                                currentState = State.PICKUP_SPECIMEN;
+                                bot.followPath(PickupSpecimen, true);
                                 break;
                             };
+                        case PICKUP_SPECIMEN:
+                            if(!bot.isBusy()){
+                                waitSeconds(.3);
+                                currentState = State.SCORE;
+                                bot.followPath(Score, true);
+                                break;
+                            }
                         case SCORE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.3);
