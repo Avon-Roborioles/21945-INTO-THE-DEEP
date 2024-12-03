@@ -71,6 +71,12 @@ public class Sample_Auto extends AutoBase {
             Sample1 = new Path(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.RightSample1.getPoint()));
             Sample1.setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.RightSample1.getHeading());
 
+            Sample2 = new Path(new BezierLine(PoseStoragePedro.SpecimenScore.getPoint(), PoseStoragePedro.RightSample2.getPoint()));
+            Sample2.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenScore.getHeading(), PoseStoragePedro.RightSample2.getHeading());
+
+            Sample3 = new Path(new BezierLine(PoseStoragePedro.SpecimenScore.getPoint(), PoseStoragePedro.RightSample3.getPoint()));
+            Sample3.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenScore.getHeading(), PoseStoragePedro.RightSample3.getHeading());
+
             SampleDropoff = new Path(new BezierLine(PoseStoragePedro.RightSample1.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()));
             SampleDropoff.setLinearHeadingInterpolation(PoseStoragePedro.RightSample1.getHeading(), PoseStoragePedro.SampleDropoff.getHeading());
 
@@ -79,6 +85,9 @@ public class Sample_Auto extends AutoBase {
 
             Score = new Path(new BezierLine(PoseStoragePedro.SpecimenPickup.getPoint(), PoseStoragePedro.SpecimenScore.getPoint()));
             Score.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenPickup.getHeading(), PoseStoragePedro.SpecimenScore.getHeading());
+
+            Park = new Path(new BezierLine(PoseStoragePedro.SpecimenScore.getPoint(), PoseStoragePedro.RightPark.getPoint()));
+            Park.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenScore.getHeading(), PoseStoragePedro.RightPark.getHeading());
         }
     }
 
@@ -127,7 +136,17 @@ public class Sample_Auto extends AutoBase {
                     break;
             }
         } else if(AutoPose == AutoPoses.RIGHT){
+            switch(sampleNumber){
+                case 2:
+                    SampleDropoff = new Path(new BezierLine(PoseStoragePedro.RightSample2.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()));
+                    SampleDropoff.setLinearHeadingInterpolation(PoseStoragePedro.RightSample2.getHeading(), PoseStoragePedro.SampleDropoff.getHeading());
+                    break;
 
+                case 3:
+                    SampleDropoff = new Path(new BezierLine(PoseStoragePedro.RightSample3.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()));
+                    SampleDropoff.setLinearHeadingInterpolation(PoseStoragePedro.RightSample3.getHeading(), PoseStoragePedro.SampleDropoff.getHeading());
+                    break;
+            }
         }
     }
 
@@ -189,12 +208,13 @@ public class Sample_Auto extends AutoBase {
                             if (!bot.isBusy()) {
                                 waitSeconds(.5);
                                 intake.stop();
-                                currentState = Sample_Auto.State.SCORE;
                                 if (groundSamplesScored == 1) {
                                     updateScoreStart(2);
                                 } else if (groundSamplesScored == 2) {
                                     updateScoreStart(3);
                                 }
+
+                                currentState = State.DROPOFF_SAMPLE;
                                 bot.followPath(Score, true);
                                 //TODO move arm up
                                 break;
@@ -254,10 +274,17 @@ public class Sample_Auto extends AutoBase {
 
                             };
                         case GET_GROUND_SAMPLE:
+                            //TODO add updateScoreStart()
                             if (!bot.isBusy()) {
                                 intake.pickup();
                                 waitSeconds(1);
                                 intake.stop();
+
+                                if(groundSamplesScored == 1){
+                                    updateScoreStart(2);
+                                } else if(groundSamplesScored == 2){
+                                    updateScoreStart(3);
+                                }
 
                                 currentState = State.DROPOFF_SAMPLE;
                                 bot.followPath(SampleDropoff, true);
@@ -278,12 +305,27 @@ public class Sample_Auto extends AutoBase {
                                 bot.followPath(Score, true);
                                 break;
                             }
-                        case SCORE:
+                        case SCORE: //TODO------------------
                             if (!bot.isBusy()) {
-                                waitSeconds(0.3);
+                                waitSeconds(.3);
+                                groundSamplesScored++;
+                                if(groundSamplesScored == 1){
+                                    //sample2
+                                    currentState = State.GET_GROUND_SAMPLE;
+                                    bot.followPath(Sample2);
+                                    break;
+                                } else if(groundSamplesScored == 2){
+                                    //sample3
+                                    currentState = State.GET_GROUND_SAMPLE;
+                                    bot.followPath(Sample3);
+                                    break;
+                                } else {
+                                    //park
+                                    currentState = State.PARK;
+                                    bot.followPath(Park);
+                                    break;
+                                }
 
-                                currentState = State.END;
-                                break;
                             }
                         case PARK:
                             if (!bot.isBusy()) {
@@ -298,4 +340,3 @@ public class Sample_Auto extends AutoBase {
             }
         }
     }
-
