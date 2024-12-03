@@ -21,11 +21,11 @@
 
         //absolute positions for arm in degrees
         private final int groundPose = 0;
-        private final int basket1Pose = 0; //TODO
-        private final int basket2Pose = 0; //TODO
-        private final int specimenPickupPose = 0; //TODO
-        private final int rung1Pose = 0; //TODO
-        private final int rung2Pose = 0; //TODO
+        private final int basket1Pose = 230; //
+        private final int basket2Pose = 230; //
+        private final int specimenPickupPose = 95; //
+        private final int rung1Pose = 95; //
+        private final int rung2Pose = 130; //
         private final int  maxPose = 270;
         private double currentArmPose;
         private double currentEPose;
