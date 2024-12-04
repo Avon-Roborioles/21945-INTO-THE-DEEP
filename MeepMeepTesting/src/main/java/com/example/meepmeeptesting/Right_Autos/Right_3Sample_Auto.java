@@ -16,73 +16,77 @@ public class Right_3Sample_Auto {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(SimPoseStorage.RightStartPose)
-                                .waitSeconds(8)
+                                .waitSeconds(.1)
+                                //test code here
+                                //dropoff passive sample
+                                .lineToLinearHeading(SimPoseStorage.SampleDropoff)
+                                .waitSeconds(.1)
 
-                            //setup
-                                    //get first sample
-                                    .lineToLinearHeading(SimPoseStorage.RightSample1)
-
-                                    //give to human player
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.SampleDropoff)
-
-                                    //get second sample
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.RightSample2)
-
-                                    //drop second sample in corner
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.SampleDropoff)
-
-                                    //pickup first specimen
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
-                                    .waitSeconds(.1)
-                                    .back(3)
-                                    .waitSeconds(.2)
-                                    .forward(3)
-
-                            //score first specimen
-                            .waitSeconds(.7)
-                            .lineToLinearHeading(SimPoseStorage.SpecimenScore)
-
-                                    //get third sample
-                                    .waitSeconds(.7)
-                                    .splineToLinearHeading(SimPoseStorage.RightSample3, SimPoseStorage.RightSample3.getHeading())
-
-                                    //drop third sample in corner
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.SampleDropoff)
-
-                                    //pickup second specimen
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
-                                    .waitSeconds(.7)
-                                    .back(3)
-                                    .waitSeconds(.7)
-                                    .forward(3)
-
-                            //score second specimen
-                            .waitSeconds(.7)
-                            .lineToLinearHeading(SimPoseStorage.SpecimenScore)
-
-                                    //pickup third specimen
-                                    .waitSeconds(.7)
-                                    .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
-                                    .waitSeconds(.7)
-                                    .back(3)
-                                    .waitSeconds(.1)
-                                    .forward(3)
-
-
-                            //score third specimen
-                                .waitSeconds(.7)
-                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
-
-                            //park
-                                .waitSeconds(.7)
-                                .splineToLinearHeading(SimPoseStorage.RightPark, SimPoseStorage.RightPark.getHeading())
+                                //pickup sample 1
+                                .lineToLinearHeading(SimPoseStorage.RightSample1)
                                 .waitSeconds(1)
+
+                                //dropoff sample 1
+                                .lineToLinearHeading(SimPoseStorage.SampleDropoff)
+                                .waitSeconds(.1)
+
+                                //pickup first specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
+                                .waitSeconds(.3)
+
+                                //score first specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
+                                .waitSeconds(.5)
+
+                                //TODO make into a BezierCurve in PEdro-Pathing
+                                //get sample 2
+                                .lineToLinearHeading(SimPoseStorage.RightSample1)
+                                .lineToLinearHeading(SimPoseStorage.RightSamplePushSpot)
+                                .waitSeconds(.1)
+                                .lineToLinearHeading(SimPoseStorage.RightSample2)
+                                .waitSeconds(.1)
+
+
+                                //dropoff sample 2
+                                .lineToLinearHeading(SimPoseStorage.SamplePushDropoff)
+                                .waitSeconds(.1)
+
+                                //pickup second specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
+                                .waitSeconds(.3)
+
+                                //score second specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
+                                .waitSeconds(.5)
+
+                                //get sample 3
+                                .lineToLinearHeading(SimPoseStorage.RightSample1)
+                                .lineToLinearHeading(SimPoseStorage.RightSamplePushSpot)
+                                .waitSeconds(.1)
+                                .lineToLinearHeading(SimPoseStorage.RightSample3)
+                                .waitSeconds(.1)
+
+                                //dropoff sample 3
+                                .lineToLinearHeading(SimPoseStorage.SamplePushDropoff)
+                                .waitSeconds(.1)
+
+                                //pickup third specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
+                                .waitSeconds(.3)
+
+                                //score third specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
+                                .waitSeconds(.5)
+
+                                //pickup fourth specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
+                                .waitSeconds(.3)
+
+                                //score fourth specimen
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
+                                .waitSeconds(.5)
+
+                                .waitSeconds(2000)
                                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();

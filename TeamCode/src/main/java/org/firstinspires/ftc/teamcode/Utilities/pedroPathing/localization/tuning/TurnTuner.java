@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -27,7 +28,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Drawing;
  * @version 1.0, 5/6/2024
  */
 @Config
-@Autonomous(name = "Turn Localizer Tuner", group = "Autonomous Pathing Tuning")
+//@Autonomous(name = "Turn Localizer Tuner", group = "Autonomous Pathing Tuning")
+@Disabled
 public class TurnTuner extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;

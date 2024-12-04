@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -19,6 +20,7 @@ public class Intake {
     //motor & servo objects
     CRServo intakeServo;
     ColorSensor colorSensor;
+    TouchSensor touchSensor;
     GamepadEx driverOp;
 
     //useful variables
@@ -82,6 +84,19 @@ public class Intake {
 
 //        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 //        colorSensor.enableLed(true); //turns on white LED for color detection
+    }
+
+    /**
+     * Init Method to Simulate Scoring with Touch Sensor
+     */
+    public void initTest(HardwareMap hardwareMap, GamepadEx gamepad){
+        driverOp = gamepad;
+        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
+
+    }
+
+    public boolean isTouched(){
+        return touchSensor.isPressed();
     }
 
     private void updateToggles(){
@@ -150,6 +165,10 @@ public class Intake {
         //logic
 
         return currentSampleColor;
+    }
+
+    public void getTelemetryTest(Telemetry telemetry){
+        telemetry.addData("Touch Sensor Status: ", touchSensor.isPressed());
     }
 
     public void getTelemetryBRIEF(Telemetry telemetry){

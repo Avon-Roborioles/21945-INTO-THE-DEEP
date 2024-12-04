@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 public class AutoBase extends LinearOpMode {
     //subsystem objects - arm, intake, lift, etc
     protected org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
+    protected org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
+    protected org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
 
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down,d_left,d_right;
@@ -67,7 +69,6 @@ public class AutoBase extends LinearOpMode {
     public void runOpMode() throws InterruptedException {}
 
     public void init_classes(){
-
     }
 
     /**
@@ -90,7 +91,9 @@ public class AutoBase extends LinearOpMode {
                 driverOp, GamepadKeys.Button.DPAD_RIGHT
         );
 
+        intake.init(hardwareMap, driverOp);
     }
+
 
     /**
      * Runs the Main Auto Menu Program to input Auto Pathing Selections
@@ -128,6 +131,9 @@ public class AutoBase extends LinearOpMode {
         d_right.readValue();
     }
 
+    public void subsystemsUpdate(){
+        intake.update();
+    }
 
     /**
      * A Specialized Auto Menu Program for the "CoordinateTester" Program

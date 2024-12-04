@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 
-@TeleOp(name="Field-Centric TeleOp")
+//@TeleOp(name="Field-Centric TeleOp")
+@Disabled
 public class Field_Centric_TeleOp extends LinearOpMode {
 
     //create drivetrain object
