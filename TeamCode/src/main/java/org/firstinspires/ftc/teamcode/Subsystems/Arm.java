@@ -15,7 +15,6 @@
         //motor objects & related variables
         Motor extendMotor;
         Motor armMotor;
-        DcMotorEx test;
         public static final double GEAR_RATIO = 0.3; // Output 60 Teeth, Input 20 Teeth
         public static final double ENCODER_RESOLUTION = 1425; //TODO switch to 2,786 when new motor is installed
 
@@ -37,8 +36,6 @@
 
         //extension
         public static int extendTarget = 0;
-        private volatile boolean isMotorTimerRunning = false;
-        private Thread motorTimerThread;
 
         //control variables
         GamepadEx driverOp;
@@ -59,38 +56,7 @@
         }
 
         //--------TELEOP COMMANDS---------
-
-        /**
-         * testing-rated Arm Command to initialize motors & other variables
-         * @param hardwareMap needed to access robot config
-         */
-        public void initBASIC(HardwareMap hardwareMap, GamepadEx gamepad){
-            extendMotor = new Motor(hardwareMap, "extensionMotor");
-            armMotor = new Motor(hardwareMap, "armMotor");
-            extendMotor.setRunMode(Motor.RunMode.RawPower);
-            armMotor.setRunMode(Motor.RunMode.RawPower);
-
-            //gamepad variables
-            driverOp = gamepad;
-
-            //extensionMotor toggle
-            a_button = new ToggleButtonReader(
-                    driverOp, GamepadKeys.Button.A
-            );
-
-            //button to set extensionMotor to 0
-            d_up = new ToggleButtonReader(
-                    driverOp, GamepadKeys.Button.DPAD_UP
-            );
-
-            //start running EMotor & set ArmPose to 0
-            extendMotor.set(-1);
-            currentArmPose = 0;
-
-        }
-
-
-        public void initNEW(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp){
+        public void init(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp){
             driverOp = gamepad;
 
             //arm setup
@@ -114,7 +80,7 @@
                 extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
             } else { //auto
-                //arm
+                //arm init
                 armMotor.setRunMode(Motor.RunMode.PositionControl);
                 armMotor.setPositionCoefficient(0.05); //tuned value for position controller
                 armMotor.setInverted(true);
@@ -122,7 +88,11 @@
                 armMotor.setTargetPosition(0);
                 armMotor.set(0);
 
-                //TODO extension
+                //extension init
+                extendMotor.setRunMode(Motor.RunMode.PositionControl);
+                extendMotor.setDistancePerPulse(0.5); //TODO test different values for smooth
+                extendMotor.setTargetDistance(0);
+                extendMotor.set(0);
             }
 
             //---initialize toggles & buttons---
@@ -154,6 +124,7 @@
 
         }
 
+
         private void updateToggles(){
             d_up.readValue();
             d_down.readValue();
@@ -165,25 +136,6 @@
             b_button.readValue();
         }
 
-        /**
-         * Helps pull in the extension Arm & set the position to 0
-         */
-        public void setupEMotor() {
-            if(d_up.getState()) {
-                // Stop extension motor and reset its position
-                extendMotor.set(0);
-                extendMotor.resetEncoder();
-                currentEPose = extendMotor.getCurrentPosition();
-
-                // For arm motor, just update current position without resetting
-                currentArmPose = armMotor.getCurrentPosition();
-            } else {
-                // Retract extension motor when not in setup mode
-                extendMotor.set(-1);
-            }
-
-            d_up.readValue();
-        }
 
         //TODO
         /**
@@ -227,77 +179,6 @@
 
 
         }
-
-        /**
-         * testing-rated method using raw power values for movement
-         */
-        public void run_teleOpBASIC(){
-    //        currentArmPose = armMotor.getCurrentPosition();
-    //        currentEPose = armMotor.getCurrentPosition();
-
-            //update leftY joystick reading
-            leftY = driverOp.getLeftY();
-
-            if(leftY > 0){
-                armMotor.set(-0.6);
-            } else if (leftY < 0){
-                armMotor.set(0.6);
-            } else {
-                armMotor.set(-0.05); //0 passive hold
-            }
-
-
-            if(driverOp.gamepad.x){
-                extendMotor.set(-1);
-            } else {
-                extendMotor.set(0);
-            }
-
-            if(driverOp.gamepad.b){
-                extendMotor.set(1);
-            } else {
-                extendMotor.set(0);
-            }
-
-
-            a_button.readValue(); //update a_button toggle
-        }
-
-        /* USES THREADING FOR THE SLEEP METHOD BC JAVA STINKS AND HAS NO WAIT METHOD
-        private void startMotorTimer(final double power) {
-            if (isMotorTimerRunning) {
-                return; // Don't start a new thread if one is already running
-            }
-
-            isMotorTimerRunning = true;
-            motorTimerThread = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        extensionMotor.set(power);
-                        Thread.sleep(2000); // Sleep for 2 seconds
-                        extensionMotor.set(0);
-                    // THREADING IS WEIRD AND WILL THROW EXCEPTIONS
-                    } catch (InterruptedException e) {
-                        // Handle interruption when angy
-                        extensionMotor.set(0);
-                    } finally {
-                        isMotorTimerRunning = false;
-                    }
-                }
-            });
-            motorTimerThread.start();
-        }
-
-         */
-
-        /* KILL THREADS
-        public void cleanup() {
-            if (motorTimerThread != null && motorTimerThread.isAlive()) {
-                motorTimerThread.interrupt();
-            }
-        }
-
-         */
 
         //--------AUTO COMMANDS------------
         /**

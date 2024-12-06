@@ -20,7 +20,7 @@ public class ArmTeleOpTest extends LinearOpMode {
         driver1Op = new GamepadEx(gamepad1);
 
         //arm.initBASIC(hardwareMap, driver1Op);
-        arm.initNEW(hardwareMap,driver1Op,true);
+        arm.init(hardwareMap,driver1Op,true);
 
         while(opModeInInit()){
             //arm.setupEMotor();
