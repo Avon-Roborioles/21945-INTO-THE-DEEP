@@ -58,7 +58,7 @@ public class TurnTuner extends OpMode {
 
         Driver1Op = new GamepadEx(gamepad1);
 
-        drivetrain.init(hardwareMap);
+        drivetrain.init(hardwareMap,Driver1Op);
 
 
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
@@ -80,7 +80,7 @@ public class TurnTuner extends OpMode {
         Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
 
-        drivetrain.run_fieldCentric(Driver1Op);
+        drivetrain.run_fieldCentric();
 
         Drawing.sendPacket();
     }

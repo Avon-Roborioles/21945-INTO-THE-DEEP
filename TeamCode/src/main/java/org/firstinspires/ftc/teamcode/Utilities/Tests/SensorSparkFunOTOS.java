@@ -44,7 +44,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         configureOtos();
 
         Driver1Op = new GamepadEx(gamepad1);
-        drivetrain.init(hardwareMap);
+        drivetrain.init(hardwareMap,Driver1Op);
 
 
         // Wait for the start button to be pressed
@@ -56,7 +56,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-            drivetrain.run_fieldCentric(Driver1Op);
+            drivetrain.run_fieldCentric();
 
 
             // Reset the tracking if the user requests it

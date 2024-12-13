@@ -36,8 +36,8 @@ import java.util.List;
  * @version 1.0, 3/13/2024
  */
 @Config
-//@Autonomous (name = "Strafe Velocity Tuner", group = "Autonomous Pathing Tuning")
-@Disabled
+@Autonomous (name = "Strafe Velocity Tuner", group = "Autonomous Pathing Tuning")
+//@Disabled
 public class StrafeVelocityTuner extends OpMode {
     private ArrayList<Double> velocities = new ArrayList<>();
 

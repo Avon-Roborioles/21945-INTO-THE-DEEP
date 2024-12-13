@@ -30,8 +30,8 @@ public class FollowerConstants {
 
     // This section is for setting the actual drive vector for the front left wheel, if the robot
     // is facing a heading of 0 radians with the wheel centered at (0,0)
-    private static double xMovement = 57.1897; //56.7378, 57.8834, 56.9480  |81.34056 - 10/12/24
-    private static double yMovement = 48.81120909; //49.703373874332144, 48.493352470536266, 48.23690093801377 | 65.43028 - 10/12/24
+    private static double xMovement = 59.11802741; //56.7378, 57.8834, 56.9480  |81.34056 - 10/12/24
+    private static double yMovement = 48.81897724; //49.703373874332144, 48.493352470536266, 48.23690093801377 | 65.43028 - 10/12/24
     private static double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
     public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0],convertToPolar[1]));
 
@@ -91,11 +91,11 @@ public class FollowerConstants {
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double forwardZeroPowerAcceleration = -64.85449041; //-65.29973928710824, -60.58455773648211,-68.67917420650193  | -34.62719 - 10/12/24
+    public static double forwardZeroPowerAcceleration = -52.4395211; //-65.29973928710824, -60.58455773648211,-68.67917420650193  | -34.62719 - 10/12/24
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double lateralZeroPowerAcceleration = -78.76954021; //-73.4850059295849,-77.70044607555911, -85.12316862138681 | -78.15554 - 10/12/24
+    public static double lateralZeroPowerAcceleration = -76.6931786; //-73.4850059295849,-77.70044607555911, -85.12316862138681 | -78.15554 - 10/12/24
 
     // A multiplier for the zero power acceleration to change the speed the robot decelerates at
     // the end of paths.

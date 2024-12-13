@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerConstants;
 
 /**
- * This is the TeleOpEnhancements OpMode. It is an example usage of the TeleOp enhancements that
+ * This is the TeleOpEnhancements OpMode. It is an example usage of the Pedro_TeleOp enhancements that
  * Pedro Pathing is capable of.
  *
  * @author Anyi Lin - 10158 Scott's Bots
@@ -18,8 +19,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerCons
  * @version 1.0, 3/21/2024
  */
 @Disabled
-//@TeleOp(name = "Pedro Pathing TeleOp Enhancements ", group = "Test")
-public class TeleOp extends OpMode {
+//@TeleOp(name = "Pedro Pathing Pedro_TeleOp Enhancements ", group = "Test")
+public class Pedro_TeleOp extends OpMode {
     private Follower follower;
 
     private DcMotorEx leftFront;

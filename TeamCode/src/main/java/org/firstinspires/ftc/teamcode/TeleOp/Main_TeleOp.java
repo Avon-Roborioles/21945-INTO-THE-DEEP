@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.*;
 
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name="Main TeleOp")
+@TeleOp(name="MainTeleOp")
 public class Main_TeleOp extends LinearOpMode {
 
     //create subsystem objects
@@ -32,7 +32,7 @@ public class Main_TeleOp extends LinearOpMode {
 
         //initialize subsystems
         feedback.init();
-        drivetrain.init(hardwareMap);
+        drivetrain.init(hardwareMap, Driver1Op);
         arm.init(hardwareMap,Driver2Op, true);
         intake.init(hardwareMap, Driver2Op);
         //vision.init(hardwareMap);
@@ -44,7 +44,7 @@ public class Main_TeleOp extends LinearOpMode {
 
         while(opModeIsActive()){
             //Driver 1 Controls
-            drivetrain.run_fieldCentric(Driver1Op, feedback);
+            drivetrain.run_teleOp(feedback);
             drivetrain.getTelemetryFULL(telemetry);
 
 

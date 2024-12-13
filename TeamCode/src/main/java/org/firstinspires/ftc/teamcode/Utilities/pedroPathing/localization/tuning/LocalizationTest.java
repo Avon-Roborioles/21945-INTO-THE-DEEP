@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Drawing;
@@ -81,6 +82,12 @@ public class LocalizationTest extends OpMode {
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
     }
+
+    @Override
+    public void start(){
+        poseUpdater.setPose(PoseStoragePedro.LeftStartPose);
+    }
+
 
     /**
      * This updates the robot's pose estimate, the simple mecanum drive, and updates the FTC

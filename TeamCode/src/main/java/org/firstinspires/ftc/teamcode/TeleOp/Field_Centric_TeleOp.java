@@ -22,14 +22,14 @@ public class Field_Centric_TeleOp extends LinearOpMode {
 
         GamepadEx Driver1Op = new GamepadEx(gamepad1);
 
-        drivetrain.init(hardwareMap);
+        drivetrain.init(hardwareMap, Driver1Op);
         feedback.init();
 
         waitForStart();
 
         //run drivetrain software in loop
         while(opModeIsActive()){
-            drivetrain.run_fieldCentric(Driver1Op, feedback);
+            drivetrain.run_fieldCentric();
             drivetrain.getTelemetryFULL(telemetry);
             telemetry.update();
         }

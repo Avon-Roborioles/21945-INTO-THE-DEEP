@@ -125,6 +125,18 @@
         }
 
 
+        public void initExtend(HardwareMap hardwareMap){
+            extendMotor = new Motor(hardwareMap, "extensionMotor");
+            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
+            extendMotor.resetEncoder();
+            extendMotor.setRunMode(Motor.RunMode.RawPower);
+            extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        }
+
+        public void runPassiveExtend(){
+            extendMotor.set(0.3);
+        }
+
         private void updateToggles(){
             d_up.readValue();
             d_down.readValue();
@@ -226,7 +238,7 @@
         }
 
         /**
-         * An all in one command to control the arm (TeleOp Only)
+         * An all in one command to control the arm (Pedro_TeleOp Only)
          * @param pose double value of arm angle
          */
         public void goTo(int pose){

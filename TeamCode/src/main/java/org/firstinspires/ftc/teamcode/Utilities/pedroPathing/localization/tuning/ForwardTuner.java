@@ -58,9 +58,9 @@ public class ForwardTuner extends OpMode {
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
 
-        Driver1Op = new GamepadEx(gamepad1);
+        //Driver1Op = new GamepadEx(gamepad1);
 
-        drivetrain.init(hardwareMap);
+        //drivetrain.init(hardwareMap,Driver1Op);
     }
 
     /**
@@ -80,6 +80,6 @@ public class ForwardTuner extends OpMode {
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
 
-        drivetrain.run_fieldCentric(Driver1Op);
+        //drivetrain.run_fieldCentric();
     }
 }

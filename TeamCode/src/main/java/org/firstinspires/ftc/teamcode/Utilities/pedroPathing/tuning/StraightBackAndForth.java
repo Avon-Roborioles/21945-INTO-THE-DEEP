@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
@@ -27,8 +28,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Poin
  * @version 1.0, 3/12/2024
  */
 @Config
-//@Autonomous (name = "Straight Back And Forth", group = "Autonomous Pathing Tuning")
-@Disabled
+@Autonomous (name = "Straight Back And Forth", group = "Autonomous Pathing Tuning")
+//@Disabled
 public class StraightBackAndForth extends OpMode {
     private Telemetry telemetryA;
 
@@ -40,6 +41,8 @@ public class StraightBackAndForth extends OpMode {
 
     private Path forwards;
     private Path backwards;
+
+    private org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
 
     /**
      * This initializes the Follower and creates the forward and backward Paths. Additionally, this
@@ -61,6 +64,8 @@ public class StraightBackAndForth extends OpMode {
                             + " inches forward. The robot will go forward and backward continuously"
                             + " along the path. Make sure you have enough room.");
         telemetryA.update();
+
+        arm.initExtend(hardwareMap);
     }
 
     /**
@@ -69,6 +74,7 @@ public class StraightBackAndForth extends OpMode {
      */
     @Override
     public void loop() {
+        arm.runPassiveExtend();
         follower.update();
         if (!follower.isBusy()) {
             if (forward) {
