@@ -93,6 +93,7 @@ public class CoordinateTester extends AutoBase{
 
         while(opModeIsActive()){
             //FSM Auto Logic
+            //arm.runPassiveExtend();
             switch(currentState){
                 case START:
                     if(!bot.isBusy()){
@@ -108,6 +109,7 @@ public class CoordinateTester extends AutoBase{
                         currentState = State.END;
                     }
             }
+
 
             bot.update(); //controls Pedro-Pathing logic
             PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable

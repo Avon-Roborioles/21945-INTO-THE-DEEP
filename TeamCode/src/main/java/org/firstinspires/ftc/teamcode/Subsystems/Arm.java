@@ -5,10 +5,8 @@
     import com.arcrobotics.ftclib.gamepad.GamepadKeys;
     import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
     import com.arcrobotics.ftclib.hardware.motors.Motor;
-    import com.qualcomm.robotcore.hardware.DcMotorEx;
     import com.qualcomm.robotcore.hardware.HardwareMap;
     import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 
     //robot subsystem for extendable arm
     public class Arm {
@@ -134,7 +132,7 @@
         }
 
         public void runPassiveExtend(){
-            extendMotor.set(0.3);
+            extendMotor.set(-0.3);
         }
 
         private void updateToggles(){

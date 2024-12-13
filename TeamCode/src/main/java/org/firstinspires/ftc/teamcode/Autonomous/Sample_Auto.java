@@ -112,6 +112,7 @@ public class Sample_Auto extends AutoBase {
     public void updateAuto(){
         bot.update(); //controls Pedro-Pathing logic
         subsystemsUpdate();
+        arm.runPassiveExtend();
         PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
         telemetry.addData("Selected Auto Position: ", AutoPose);
         telemetry.addData("Selected Park Position: ", AutoPose);
