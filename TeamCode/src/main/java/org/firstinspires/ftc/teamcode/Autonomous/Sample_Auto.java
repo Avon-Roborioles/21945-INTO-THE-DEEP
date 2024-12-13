@@ -216,7 +216,7 @@ public class Sample_Auto extends AutoBase {
                                     updateScoreStart(3);
                                 }
 
-                                currentState = State.DROPOFF_SAMPLE;
+                                currentState = State.SCORE;
                                 bot.followPath(Score, true);
                                 //TODO move arm up
                                 break;
