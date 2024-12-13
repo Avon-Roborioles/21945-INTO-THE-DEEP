@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
@@ -181,23 +183,22 @@ public class Sample_Auto extends AutoBase {
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
-            //TODO move arm up
+            //arm.setPose(Arm.Arm_Poses.SPECIMEN_PICKUP); //TODO change to BASKET2 later
             intake.pickup(); //should secure passive/loaded sample
 
 
-            //TODO change start poses in all paths to match Auto Logic!!!!!!!!
+
             while (opModeIsActive()) {
                 // FSM Auto Logic
                 if(AutoPose == AutoPoses.LEFT) {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
-                                intake.stop();
                                 waitSeconds(0.3);
                                 intake.drop();
                                 waitSeconds(1);
-                                intake.stop();
-                                //TODO move arm down
+                                intake.pickup();
+                                //arm.setPose(Arm.Arm_Poses.GROUND);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
                                 intake.pickup();

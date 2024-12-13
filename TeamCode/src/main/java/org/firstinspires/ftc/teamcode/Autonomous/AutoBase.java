@@ -19,7 +19,6 @@ public class AutoBase extends LinearOpMode {
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down,d_left,d_right;
 
-
     public enum AutoPoses {
         LEFT,
         RIGHT
@@ -92,6 +91,7 @@ public class AutoBase extends LinearOpMode {
         );
 
         intake.init(hardwareMap, driverOp);
+        arm.init(hardwareMap, driverOp, false);
     }
 
 
@@ -133,6 +133,7 @@ public class AutoBase extends LinearOpMode {
 
     public void subsystemsUpdate(){
         intake.update();
+        arm.update();
     }
 
     /**
