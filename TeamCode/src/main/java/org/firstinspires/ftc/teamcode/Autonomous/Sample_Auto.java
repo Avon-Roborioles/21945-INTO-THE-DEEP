@@ -195,10 +195,10 @@ public class Sample_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
-                                waitSeconds(0.3);
-                                intake.drop();
+                                waitSeconds(0.2);
+                                intake.drop(); //score
                                 waitSeconds(1);
-                                intake.pickup();
+                                intake.stop();
                                 //arm.setPose(Arm.Arm_Poses.GROUND);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
