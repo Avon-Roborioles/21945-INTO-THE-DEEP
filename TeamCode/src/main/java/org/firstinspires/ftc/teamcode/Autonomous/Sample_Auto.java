@@ -11,12 +11,16 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
+
 import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="3 Sample Auto", group = "Autos")
 public class Sample_Auto extends AutoBase {
     //important variables
     Path scorePassive, Sample1, Sample2, Sample3, Score, Park, SampleDropoff, PickupSpecimen;
+    PathChain scorePassiveChain;
     Pose startPose;
     Pose parkPose;
     Follower bot;
@@ -70,6 +74,14 @@ public class Sample_Auto extends AutoBase {
             scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.SampleDropoff.getHeading());
             scorePassive.setPathEndVelocityConstraint(20);
 
+            scorePassiveChain = bot.pathBuilder()
+                    .addPath(new BezierLine(startPose.getPoint(), new Point(new Pose(startPose.getX(),startPose.getY()+3,startPose.getHeading()))))
+                    .setConstantHeadingInterpolation(startPose.getHeading())
+                    .addPath(new BezierLine(new Point(new Pose(startPose.getX(),startPose.getY()+3,startPose.getHeading())), PoseStoragePedro.SampleDropoff.getPoint()))
+                    .setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.SampleDropoff.getHeading())
+                    .setPathEndVelocityConstraint(20)
+                    .build();
+
             Sample1 = new Path(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.RightSample1.getPoint()));
             Sample1.setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.RightSample1.getHeading());
 
@@ -112,7 +124,7 @@ public class Sample_Auto extends AutoBase {
     public void updateAuto(){
         bot.update(); //controls Pedro-Pathing logic
         subsystemsUpdate();
-        arm.runPassiveExtend();
+        //arm.runPassiveExtend();
         PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
         telemetry.addData("Selected Auto Position: ", AutoPose);
         telemetry.addData("Selected Park Position: ", AutoPose);
@@ -184,6 +196,7 @@ public class Sample_Auto extends AutoBase {
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
+
             //arm.setPose(Arm.Arm_Poses.SPECIMEN_PICKUP); //TODO change to BASKET2 later
             intake.pickup(); //should secure passive/loaded sample
 

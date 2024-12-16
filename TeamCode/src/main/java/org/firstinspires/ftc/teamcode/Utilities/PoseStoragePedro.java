@@ -22,7 +22,7 @@ public class PoseStoragePedro {
 
     public static Pose LeftSample2 = new Pose(-50+72,-33+72, Math.toRadians(145)); //Done
 
-    public static Pose LeftSample3 = new Pose(-64+72,-24+72,Math.toRadians(179)); //Done
+    public static Pose LeftSample3 = new Pose(-58+72,-24+72,Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftBucketScore = new Pose(-53+72,-52+72,Math.toRadians(45)); //Done - 225
 
@@ -30,7 +30,7 @@ public class PoseStoragePedro {
 
     public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 
-    public static Pose LeftPark = new Pose(-30+72,72, Math.toRadians(0)); //Done
+    public static Pose LeftPark = new Pose(-30+72,83, Math.toRadians(0)); //Done
 
 
 

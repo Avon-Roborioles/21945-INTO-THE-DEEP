@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerCons
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/21/2024
  */
-@Disabled
-//@TeleOp(name = "Pedro Pathing Pedro_TeleOp Enhancements ", group = "Test")
+//@Disabled
+@TeleOp(name = "Pedro Pathing TeleOp Enhancements ", group = "Tests")
 public class Pedro_TeleOp extends OpMode {
     private Follower follower;
 

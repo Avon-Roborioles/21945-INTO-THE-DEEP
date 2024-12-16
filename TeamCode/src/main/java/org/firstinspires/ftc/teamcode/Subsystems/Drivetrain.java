@@ -8,18 +8,21 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerConstants;
 
 public class Drivetrain {
     //motor objects
-    Motor leftFront = null;
-    Motor rightFront = null;
-    Motor leftRear = null;
-    Motor rightRear = null;
+    private DcMotorEx leftFront;
+    private DcMotorEx leftRear;
+    private DcMotorEx rightFront;
+    private DcMotorEx rightRear;
 
     //FTC Lib & Pedro-Pathing objects
     MecanumDrive drivetrain;
@@ -45,21 +48,9 @@ public class Drivetrain {
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
         pedroDrivetrain = new Follower(hardwareMap);
+
         //imu = hardwareMap.get(IMU.class, "imu");
         driverOp = gamepad;
-
-//        leftFront = new Motor(hardwareMap,"leftFront");
-//        rightFront = new Motor(hardwareMap,"rightFront");
-//        leftRear = new Motor(hardwareMap,"leftRear");
-//        rightRear = new Motor(hardwareMap,"rightRear");
-//
-//        //helps orient the robot for the IMU, change whenever the control hub is rotated
-//        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-//        usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.LEFT; //RIGHT
-//        drivetrain = new MecanumDrive(leftFront, rightFront,leftRear, rightRear);
-//
-//        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
-//        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         y_button = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.Y
@@ -81,7 +72,18 @@ public class Drivetrain {
         );
 
 
-        pedroDrivetrain.startTeleopDrive(); //TODO
+        //adding snappy breaking to drive motors
+        leftFront = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftFrontMotorName);
+        leftRear = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftRearMotorName);
+        rightRear = hardwareMap.get(DcMotorEx.class, FollowerConstants.rightRearMotorName);
+        rightFront = hardwareMap.get(DcMotorEx.class, FollowerConstants.rightFrontMotorName);
+
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        pedroDrivetrain.startTeleopDrive();
     }
 
     private void updateToggles(){
