@@ -70,8 +70,8 @@ public class Sample_Auto extends AutoBase {
 
 
         } else if (AutoPose == AutoPoses.RIGHT) {
-            scorePassive = new Path(new BezierLine(startPose.getPoint(), PoseStoragePedro.SampleDropoff.getPoint()));
-            scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.SampleDropoff.getHeading());
+            scorePassive = new Path(new BezierLine(startPose.getPoint(), PoseStoragePedro.SpecimenScore.getPoint()));
+            scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.SpecimenScore.getHeading());
             scorePassive.setPathEndVelocityConstraint(20);
 
             scorePassiveChain = bot.pathBuilder()
@@ -82,8 +82,8 @@ public class Sample_Auto extends AutoBase {
                     .setPathEndVelocityConstraint(20)
                     .build();
 
-            Sample1 = new Path(new BezierLine(PoseStoragePedro.SampleDropoff.getPoint(), PoseStoragePedro.RightSample1.getPoint()));
-            Sample1.setLinearHeadingInterpolation(PoseStoragePedro.SampleDropoff.getHeading(), PoseStoragePedro.RightSample1.getHeading());
+            Sample1 = new Path(new BezierLine(PoseStoragePedro.SpecimenScore.getPoint(), PoseStoragePedro.RightSample1.getPoint()));
+            Sample1.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenScore.getHeading(), PoseStoragePedro.RightSample1.getHeading());
 
             Sample2 = new Path(new BezierLine(PoseStoragePedro.SpecimenScore.getPoint(), PoseStoragePedro.RightSample2.getPoint()));
             Sample2.setLinearHeadingInterpolation(PoseStoragePedro.SpecimenScore.getHeading(), PoseStoragePedro.RightSample2.getHeading());
