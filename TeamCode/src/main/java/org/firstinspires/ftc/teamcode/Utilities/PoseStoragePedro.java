@@ -43,11 +43,11 @@ public class PoseStoragePedro {
 
     public static Pose RightSample3 = new Pose(53+72,-42+72,Math.toRadians(45)); //Done
 
-    public static Pose SampleDropoff = new Pose(445+72,-54+72,Math.toRadians(-45)); //done - 40,-49,180
+    public static Pose SampleDropoff = new Pose(45+72,-54+72,Math.toRadians(-45)); //done - 40,-49,180
 
     public static Pose SpecimenPickup = new Pose(30+72,-60+72,Math.toRadians(-90)); //done - 50, -56
 
-    public static Pose SpecimenScore = new Pose(-0+72,-39+72,Math.toRadians(90)); //done
+    public static Pose SpecimenScore = new Pose(-0+72,-36+72,Math.toRadians(90)); //done
 
     public static Pose RightCheckPoint = new Pose(19+72,-39+72, Math.toRadians(180)); //TODO
 

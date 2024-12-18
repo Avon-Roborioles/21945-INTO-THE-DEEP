@@ -1,6 +1,8 @@
     package org.firstinspires.ftc.teamcode.Subsystems;
 
     //import needed libraries
+    import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
+    import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
     import com.arcrobotics.ftclib.gamepad.GamepadEx;
     import com.arcrobotics.ftclib.gamepad.GamepadKeys;
     import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
@@ -34,6 +36,7 @@
 
         //extension
         public static int extendTarget = 0;
+
 
         //control variables
         GamepadEx driverOp;
@@ -146,7 +149,6 @@
             b_button.readValue();
         }
 
-
         //TODO
         /**
          *Competition-rated teleOp method with limits and shortcuts
@@ -173,9 +175,9 @@
 
             //extension control
             if(rightY > 0){
-                extendMotor.set(1);
-            } else if(rightY < 0){
                 extendMotor.set(-1);
+            } else if(rightY < 0){
+                extendMotor.set(1);
             } else {
                 extendMotor.set(0);
             }
@@ -255,10 +257,7 @@
             //TODO extension
         }
 
-        //TODO
-        public void extend(int pose){
-            extendTarget = pose;
-        }
+
 
         public void getTelemetryBRIEF(Telemetry telemetry){
             telemetry.addLine("----Arm Control Data----");
