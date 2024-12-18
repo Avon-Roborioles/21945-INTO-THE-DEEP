@@ -46,10 +46,14 @@ public class ArmAutoTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            //set target
+            //update PID arm
             double output = armController.calculate(armTarget,armMotor.getCurrentPosition());
             armMotor.set(output);
-            //update arm
+
+            //telemetry
+            telemetry.addData("Arm Target: ", armTarget);
+            telemetry.addData("Arm Position: ", armMotor.getCurrentPosition());
+            telemetry.update();
 
         }
 
