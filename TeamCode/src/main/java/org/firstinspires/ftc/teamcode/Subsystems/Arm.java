@@ -18,6 +18,9 @@
         public static final double GEAR_RATIO = 0.3; // Output 60 Teeth, Input 20 Teeth
         public static final double ENCODER_RESOLUTION = 1425; //TODO switch to 2,786 when new motor is installed
 
+        //limits
+        public final double extendMAX = 2300; //7.5 inches
+
         //absolute positions for arm in degrees
         private final int groundPose = 0;
         private final int basket1Pose = 230; //
@@ -26,9 +29,6 @@
         private final int rung1Pose = 95; //
         private final int rung2Pose = 130; //
         private final int  maxPose = 270;
-        private double currentArmPose;
-        private double currentEPose;
-        private Arm_Poses armState;
 
         //arm
         public static int armTarget = 0;
@@ -65,33 +65,31 @@
             extendMotor = new Motor(hardwareMap, "extensionMotor");
             armMotor.setInverted(true); //reverses the motor direction
             armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
+            armMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             armMotor.resetEncoder();
             armPower = 0.6;
 
-            //TODO extension setup (will implement Aaron's Code)
-            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
             extendMotor.resetEncoder();
+            extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
 
             //set runModes based on teleOp vs Auto
             if(teleOp){
                 armMotor.setRunMode(Motor.RunMode.RawPower);
-                armMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-                armMotor.setInverted(true); //redundant but works lol
+                armMotor.set(0);
                 extendMotor.setRunMode(Motor.RunMode.RawPower);
-                extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                extendMotor.set(0);
 
-            } else { //auto
+            } else {
                 //arm init
                 armMotor.setRunMode(Motor.RunMode.PositionControl);
-                armMotor.setPositionCoefficient(0.05); //tuned value for position controller
-                armMotor.setInverted(true);
                 armMotor.setDistancePerPulse( (360 / ENCODER_RESOLUTION) * GEAR_RATIO); //approximately 0.0758
                 armMotor.setTargetPosition(0);
                 armMotor.set(0);
 
-                //extension init
+                //extension
                 extendMotor.setRunMode(Motor.RunMode.PositionControl);
-                extendMotor.setDistancePerPulse(0.5); //TODO test different values for smooth
+                extendMotor.setDistancePerPulse(7.5 / 2300);
                 extendMotor.setTargetDistance(0);
                 extendMotor.set(0);
             }

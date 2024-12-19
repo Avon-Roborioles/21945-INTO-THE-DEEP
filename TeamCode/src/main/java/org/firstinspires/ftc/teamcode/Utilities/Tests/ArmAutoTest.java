@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -8,8 +10,13 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
+
+/**
+ * This program is used to test out PID control of the arm
+ */
 
 @Config
 @TeleOp(name="Arm Auto Test", group="Tests")
@@ -21,38 +28,30 @@ public class ArmAutoTest extends LinearOpMode {
     public static double kp = 0;
     public static double ki = 0;
     public static double kd = 0;
-    double maximumIntegralSum = 0;
-    double stabilityThreashold = 0;
-    double lowPassGain = 0;
+    public static double maximumIntegralSum = 1;
+    public static double stabilityThreashold = 1;
+    public static double lowPassGain = 1;
 
 
-    public static int armTarget = 0;
+    public static int target = 0;
+    public static int extendTarget = 0;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
         driverOp = new GamepadEx(gamepad1);
 
-        PIDCoefficientsEx armPIDCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stabilityThreashold,lowPassGain);
-        PIDEx armController = new PIDEx(armPIDCoefficients);
-
-        Motor armMotor = new Motor(hardwareMap, "armMotor");
-        armMotor.setInverted(true); //reverses the motor direction
-        armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
-        armMotor.resetEncoder();
-        armMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        armMotor.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //init method
+        arm.init(hardwareMap,driverOp,false);
 
         waitForStart();
 
         while(opModeIsActive()){
-            //update PID arm
-            double output = armController.calculate(armTarget,armMotor.getCurrentPosition());
-            armMotor.set(output);
+            //update method
+            arm.setTarget(target);
+            arm.update();
 
-            //telemetry
-            telemetry.addData("Arm Target: ", armTarget);
-            telemetry.addData("Arm Position: ", armMotor.getCurrentPosition());
+            arm.getTelemetryFULL(telemetry);
             telemetry.update();
 
         }
