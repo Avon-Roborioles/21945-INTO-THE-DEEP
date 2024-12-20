@@ -197,7 +197,7 @@ public class Sample_Auto extends AutoBase {
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
 
-            //arm.setPose(Arm.Arm_Poses.SPECIMEN_PICKUP); //TODO change to BASKET2 later
+            //arm.setPose(Arm.Arm_Modes.SPECIMEN_PICKUP); //TODO change to BASKET2 later
             intake.pickup(); //should secure passive/loaded sample
 
 
@@ -212,7 +212,7 @@ public class Sample_Auto extends AutoBase {
                                 intake.drop(); //score
                                 waitSeconds(1);
                                 intake.stop();
-                                //arm.setPose(Arm.Arm_Poses.GROUND);
+                                //arm.setPose(Arm.Arm_Modes.GROUND);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
                                 intake.pickup();

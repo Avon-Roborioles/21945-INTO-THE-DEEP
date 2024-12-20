@@ -7,6 +7,7 @@
     import com.arcrobotics.ftclib.gamepad.GamepadKeys;
     import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
     import com.arcrobotics.ftclib.hardware.motors.Motor;
+    import com.qualcomm.robotcore.hardware.DcMotor;
     import com.qualcomm.robotcore.hardware.HardwareMap;
     import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -25,18 +26,29 @@
         private final int specimenPickupPose = 95; //
         private final int rung1Pose = 95; //
         private final int rung2Pose = 130; //
-        private final int  maxPose = 270;
+        private final int  maxPose = 3000;
+        private final int  maxExtend = 3000;
         private double currentArmPose;
         private double currentEPose;
-        private Arm_Poses armState;
+        private Arm_Modes armMode;
 
         //arm
-        public static int armTarget = 0;
-        public double armPower;
+        public double armTarget = 0;
+        public double armPower = 0;
 
         //extension
-        public static int extendTarget = 0;
+        public double extendTarget = 0;
+        public double extendPower = 0;
 
+        //pid control TODO - tune
+        double kp = 0;
+        double ki = 0;
+        double kd = 0;
+        double maximumIntegralSum = 0;
+        double stabilityThreshold = 0;
+        double lowPassGain = 0;
+        PIDCoefficientsEx armPIDCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stabilityThreshold,lowPassGain);
+        PIDEx armController = new PIDEx(armPIDCoefficients);
 
         //control variables
         GamepadEx driverOp;
@@ -44,19 +56,24 @@
         ToggleButtonReader d_up, d_down, d_left, d_right; //height toggles
         double leftY, rightY;
 
-        //enum commands for arm positions
-        public enum Arm_Poses {
-            GROUND,
-            BASKET1,
-            BASKET2,
-            SPECIMEN_PICKUP,
-            RUNG1,
-            RUNG2,
+        //enum commands for arm modes
+        public enum Arm_Modes {
             DRIVER_CONTROL,
-            MAX
+            PRESET_MODE,
+            HANG_MODE
         }
 
         //--------TELEOP COMMANDS---------
+        public void setPID(double p, double i, double d, double sum, double stability, double gain){
+            kp = p;
+            ki = i;
+            kd = d;
+            maximumIntegralSum = sum;
+            stabilityThreshold = stability;
+            lowPassGain = gain;
+            armPIDCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stabilityThreshold,lowPassGain);
+        }
+
         public void init(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp){
             driverOp = gamepad;
 
@@ -124,6 +141,52 @@
 
         }
 
+        public void initPID(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleop){
+            driverOp = gamepad;
+            //---initialize toggles & buttons---
+            d_up = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_UP
+            );
+            d_down = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_DOWN
+            );
+            d_left = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_LEFT
+            );
+            d_right = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.DPAD_RIGHT
+            );
+
+            y_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.Y
+            );
+            a_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.A
+            );
+            x_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.X
+            );
+            b_button = new ToggleButtonReader(
+                    driverOp, GamepadKeys.Button.B
+            );
+
+            armMotor = new Motor(hardwareMap, "armMotor");
+            armMotor.setInverted(true); //reverses the motor direction
+            armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
+            armMotor.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armMotor.setRunMode(Motor.RunMode.RawPower);
+            armMotor.resetEncoder();
+
+            extendMotor = new Motor(hardwareMap, "extensionMotor");
+            extendMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            extendMotor.resetEncoder();
+            extendMotor.setRunMode(Motor.RunMode.PositionControl);
+            extendMotor.setDistancePerPulse(0.003260869565); //in - 7.5in/2300 ticks represents max range
+            extendMotor.setTargetDistance(0);
+            extendMotor.set(0);
+
+
+        }
 
         public void initExtend(HardwareMap hardwareMap){
             extendMotor = new Motor(hardwareMap, "extensionMotor");
@@ -148,7 +211,6 @@
             b_button.readValue();
         }
 
-        //TODO
         /**
          *Competition-rated teleOp method with limits and shortcuts
          */
@@ -163,10 +225,8 @@
 
             //arm control
             if(leftY > 0){
-                armState = Arm_Poses.DRIVER_CONTROL;
                 armMotor.set(armPower); //up
             } else if (leftY < 0){
-                armState = Arm_Poses.DRIVER_CONTROL;
                 armMotor.set(-armPower); //down
             } else {
                 armMotor.set(0); //0 passive hold
@@ -191,38 +251,84 @@
 
         }
 
-        //--------AUTO COMMANDS------------
-        /**
-         * main command to control arm
-         * @param pose enum Arm State
-         */
-        public void setPose(Arm_Poses pose){
-            switch(pose){
-                case GROUND:
-                    armTarget = groundPose;
 
-                case BASKET1:
-                    armTarget = basket1Pose;
+        public void run_PIDTeleOp(){
+            //update variables
+            currentArmPose = armMotor.getCurrentPosition();
+            currentEPose = extendMotor.getCurrentPosition();
+            leftY = driverOp.getLeftY();
+            rightY = driverOp.getRightY();
+            updateToggles();
 
-                case BASKET2:
-                    armTarget = basket2Pose;
-
-                case SPECIMEN_PICKUP:
-                    armTarget = specimenPickupPose;
-
-                case RUNG1:
-                    armTarget = rung1Pose;
-
-                case RUNG2:
-                    armTarget = rung2Pose;
-
-                default:
-                    armTarget = groundPose;
+            //manual arm control with limits
+            if(leftY > 0){
+                armMode = Arm_Modes.DRIVER_CONTROL;
+                armTarget += 1;
+            } else if(leftY < 0){
+                armMode = Arm_Modes.DRIVER_CONTROL;
+                armTarget -= 1;
             }
-            armMotor.setTargetDistance(armTarget);//highest of numbers
 
+            //manual extension control with limits
+            if(rightY > 0){
+                if(currentEPose > 0) {
+                    armMode = Arm_Modes.DRIVER_CONTROL;
+                    extendTarget -= .05;
+                }
+            } else if(rightY < 0){
+                if(currentEPose < maxExtend) {
+                    armMode = Arm_Modes.DRIVER_CONTROL;
+                    extendTarget += .05;
+                }
+            }
+
+
+            //d-pad height presets
+            if(d_left.wasJustPressed()){
+                armMode = Arm_Modes.PRESET_MODE;
+                if(d_left.getState()){
+                    armTarget = rung1Pose;
+                } else {
+                    armTarget = rung2Pose;
+                }
+
+            } else if(d_right.wasJustPressed()){
+                armMode = Arm_Modes.PRESET_MODE;
+                armTarget = specimenPickupPose;
+
+            } else if(d_down.wasJustPressed()){
+                armMode = Arm_Modes.PRESET_MODE;
+
+            } else if(d_up.wasJustPressed()){
+                armMode = Arm_Modes.PRESET_MODE;
+                armTarget = groundPose;
+                if(d_up.getState()){
+                    armTarget = basket1Pose;
+                } else {
+                    armTarget = basket2Pose;
+                }
+            }
+
+            //y button hang mode
+            if(y_button.wasJustPressed()){
+                armMode = Arm_Modes.HANG_MODE;
+
+            }
+
+
+            //arm + extension movements
+            if(armMode == Arm_Modes.HANG_MODE){
+                armMotor.set(-0.8);
+            } else {
+                armPower = armController.calculate(armTarget, currentArmPose);
+                armMotor.set(armPower);
+            }
+            extendMotor.setTargetDistance(extendTarget);
+            extendMotor.set(0.6);
         }
 
+
+        //--------AUTO COMMANDS------------
         /**
          * Precise Auto Command to control the arm position (degrees)
          * Maximum Degrees is 100°
@@ -237,16 +343,6 @@
         }
 
         /**
-         * An all in one command to control the arm (Pedro_TeleOp Only)
-         * @param pose double value of arm angle
-         */
-        public void goTo(int pose){
-            armTarget = pose;
-            armMotor.setTargetDistance(armTarget);
-            armMotor.set(0.3);
-        }
-
-        /**
          * Vital Arm Command to Update Telemetry Values and Run to Target
          */
         public void update(){
@@ -257,6 +353,18 @@
         }
 
 
+        public void getTelemetryPID(Telemetry telemetry){
+            telemetry.addData("Kp: ", kp);
+            telemetry.addData("Ki: ", ki);
+            telemetry.addData("Kd: ", kd);
+            telemetry.addData("MaxIntegralSum: ", maximumIntegralSum);
+            telemetry.addData("StabilityThreashold: ", stabilityThreshold);
+            telemetry.addData("Low Pass Gain: ", lowPassGain);
+            telemetry.addData("Arm Target: ", armTarget);
+            telemetry.addData("Arm Pose: ", currentArmPose);
+            telemetry.addData("Extend Target: ", extendTarget);
+            telemetry.addData("Extend Pose: ", currentEPose);
+        }
 
         public void getTelemetryBRIEF(Telemetry telemetry){
             telemetry.addLine("----Arm Control Data----");

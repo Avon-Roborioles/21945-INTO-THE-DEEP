@@ -18,7 +18,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Intake {
     //motor & servo objects
     CRServo intakeServo;
-    //Servo intakeSwivel;
     ColorSensor colorSensor;
     TouchSensor touchSensor;
     GamepadEx driverOp;
@@ -45,15 +44,9 @@ public class Intake {
         driverOp = gamepad;
 
         intakeServo = new CRServo(hardwareMap, "intake");
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         intakeServo.setRunMode(Motor.RunMode.RawPower);
-        //intakeServo.setInverted(true); //uncomment if positive power sucks in samples
         intakeServo.set(intakePower);
-
-
-        //TODO remove later
-//        intakeSwivel = hardwareMap.get(Servo.class, "intakeSwivel");
-//        //intakeSwivel.scaleRange(0.3,0.7);
-//        intakeSwivel.setPosition(0.5);
 
         //---initialize toggles & buttons---
         d_up = new ToggleButtonReader(
