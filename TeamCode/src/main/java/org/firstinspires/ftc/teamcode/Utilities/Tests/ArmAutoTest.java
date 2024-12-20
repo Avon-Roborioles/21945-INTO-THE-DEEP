@@ -33,26 +33,19 @@ public class ArmAutoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         driverOp = new GamepadEx(gamepad1);
 
-        PIDCoefficientsEx armPIDCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stabilityThreashold,lowPassGain);
-        PIDEx armController = new PIDEx(armPIDCoefficients);
+        arm.init(hardwareMap, driverOp,false);
 
-        Motor armMotor = new Motor(hardwareMap, "armMotor");
-        armMotor.setInverted(true); //reverses the motor direction
-        armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
-        armMotor.resetEncoder();
-        armMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        armMotor.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while(opModeInInit()){
+            arm.getTelemetryBRIEF(telemetry);
+        }
 
         waitForStart();
 
         while(opModeIsActive()){
-            //update PID arm
-            double output = armController.calculate(armTarget,armMotor.getCurrentPosition());
-            armMotor.set(output);
-
-            //telemetry
-            telemetry.addData("Arm Target: ", armTarget);
-            telemetry.addData("Arm Position: ", armMotor.getCurrentPosition());
+            //arm.goTo(armTarget);
+            arm.setTarget(armTarget);
+            arm.update();
+            arm.getTelemetryFULL(telemetry);
             telemetry.update();
 
         }

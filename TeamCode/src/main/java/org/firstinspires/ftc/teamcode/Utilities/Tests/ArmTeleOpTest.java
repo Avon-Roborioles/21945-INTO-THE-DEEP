@@ -32,7 +32,6 @@ public class ArmTeleOpTest extends LinearOpMode {
 
         while(opModeIsActive()){
             //run basic auto control
-            //arm.run_teleOpBASIC();
             arm.run_teleOp();
 
             arm.getTelemetryFULL(telemetry);

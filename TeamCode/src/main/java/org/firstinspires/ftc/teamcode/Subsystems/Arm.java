@@ -68,8 +68,7 @@
             armMotor.resetEncoder();
             armPower = 0.6;
 
-            //TODO extension setup (will implement Aaron's Code)
-            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
+            //extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
             extendMotor.resetEncoder();
 
             //set runModes based on teleOp vs Auto

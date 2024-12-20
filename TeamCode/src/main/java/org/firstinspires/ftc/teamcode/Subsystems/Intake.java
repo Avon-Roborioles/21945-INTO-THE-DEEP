@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 //import needed libraries
-import android.graphics.Color;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -10,7 +9,7 @@ import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -19,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Intake {
     //motor & servo objects
     CRServo intakeServo;
+    Servo intakeSwivel;
     ColorSensor colorSensor;
     TouchSensor touchSensor;
     GamepadEx driverOp;
@@ -48,6 +48,12 @@ public class Intake {
         intakeServo.setRunMode(Motor.RunMode.RawPower);
         //intakeServo.setInverted(true); //uncomment if positive power sucks in samples
         intakeServo.set(intakePower);
+
+
+        //TODO remove later
+        intakeSwivel = hardwareMap.get(Servo.class, "intakeSwivel");
+        //intakeSwivel.scaleRange(0.3,0.7);
+        intakeSwivel.setPosition(0.5);
 
         //---initialize toggles & buttons---
         d_up = new ToggleButtonReader(
@@ -81,6 +87,7 @@ public class Intake {
         right_bumper = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.RIGHT_BUMPER
         );
+
 
 //        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 //        colorSensor.enableLed(true); //turns on white LED for color detection
@@ -126,6 +133,15 @@ public class Intake {
         } else {
             intakePower = 0;
             intakeServo.set(intakePower);
+        }
+
+        //TODO remove later
+        if(left_bumper.wasJustPressed()){
+            intakeSwivel.setPosition(0);
+        } else if(right_bumper.wasJustPressed()){
+            intakeSwivel.setPosition(1);
+        } else if(a_button.wasJustPressed()){
+            intakeSwivel.setPosition(0.4);
         }
 
     }
