@@ -27,7 +27,7 @@
         private final int rung1Pose = 95; //
         private final int rung2Pose = 130; //
         private final int  maxPose = 3000;
-        private final int  maxExtend = 3000;
+        private final double maxExtend = 7.5; //in
         private double currentArmPose;
         private double currentEPose;
         private Arm_Modes armMode;
@@ -180,6 +180,8 @@
             extendMotor = new Motor(hardwareMap, "extensionMotor");
             extendMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             extendMotor.resetEncoder();
+            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
+            extendMotor.setInverted(true);
             extendMotor.setRunMode(Motor.RunMode.PositionControl);
             extendMotor.setDistancePerPulse(0.003260869565); //in - 7.5in/2300 ticks represents max range
             extendMotor.setTargetDistance(0);
@@ -271,14 +273,14 @@
 
             //manual extension control with limits
             if(rightY > 0){
-                if(currentEPose > 0) {
-                    armMode = Arm_Modes.DRIVER_CONTROL;
-                    extendTarget -= .05;
-                }
-            } else if(rightY < 0){
-                if(currentEPose < maxExtend) {
+                if(extendTarget > 0) {
                     armMode = Arm_Modes.DRIVER_CONTROL;
                     extendTarget += .05;
+                }
+            } else if(rightY < 0){
+                if(extendTarget < maxExtend) {
+                    armMode = Arm_Modes.DRIVER_CONTROL;
+                    extendTarget -= .05;
                 }
             }
 
