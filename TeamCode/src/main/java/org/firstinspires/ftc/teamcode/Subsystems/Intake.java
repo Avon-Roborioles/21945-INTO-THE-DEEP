@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Intake {
     //motor & servo objects
     CRServo intakeServo;
-    Servo intakeSwivel;
+    //Servo intakeSwivel;
     ColorSensor colorSensor;
     TouchSensor touchSensor;
     GamepadEx driverOp;
@@ -51,9 +51,9 @@ public class Intake {
 
 
         //TODO remove later
-        intakeSwivel = hardwareMap.get(Servo.class, "intakeSwivel");
-        //intakeSwivel.scaleRange(0.3,0.7);
-        intakeSwivel.setPosition(0.5);
+//        intakeSwivel = hardwareMap.get(Servo.class, "intakeSwivel");
+//        //intakeSwivel.scaleRange(0.3,0.7);
+//        intakeSwivel.setPosition(0.5);
 
         //---initialize toggles & buttons---
         d_up = new ToggleButtonReader(
@@ -136,13 +136,13 @@ public class Intake {
         }
 
         //TODO remove later
-        if(left_bumper.wasJustPressed()){
-            intakeSwivel.setPosition(0);
-        } else if(right_bumper.wasJustPressed()){
-            intakeSwivel.setPosition(1);
-        } else if(a_button.wasJustPressed()){
-            intakeSwivel.setPosition(0.4);
-        }
+//        if(left_bumper.wasJustPressed()){
+//            intakeSwivel.setPosition(0);
+//        } else if(right_bumper.wasJustPressed()){
+//            intakeSwivel.setPosition(1);
+//        } else if(a_button.wasJustPressed()){
+//            intakeSwivel.setPosition(0.4);
+//        }
 
     }
 
