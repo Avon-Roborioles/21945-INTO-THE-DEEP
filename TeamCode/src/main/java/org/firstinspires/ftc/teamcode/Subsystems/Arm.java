@@ -180,8 +180,8 @@
             extendMotor = new Motor(hardwareMap, "extensionMotor");
             extendMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             extendMotor.resetEncoder();
-            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
-            extendMotor.setInverted(true);
+//            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
+//            extendMotor.setInverted(true);
             extendMotor.setRunMode(Motor.RunMode.PositionControl);
             extendMotor.setDistancePerPulse(0.003260869565); //in - 7.5in/2300 ticks represents max range
             extendMotor.setTargetDistance(0);
@@ -273,15 +273,13 @@
 
             //manual extension control with limits
             if(rightY > 0){
-                if(extendTarget > 0) {
-                    armMode = Arm_Modes.DRIVER_CONTROL;
-                    extendTarget += .05;
-                }
+                armMode = Arm_Modes.DRIVER_CONTROL;
+                extendTarget += .05;
+
             } else if(rightY < 0){
-                if(extendTarget < maxExtend) {
-                    armMode = Arm_Modes.DRIVER_CONTROL;
-                    extendTarget -= .05;
-                }
+                armMode = Arm_Modes.DRIVER_CONTROL;
+                extendTarget -= .05;
+
             }
 
 
@@ -366,6 +364,7 @@
             telemetry.addData("Arm Pose: ", currentArmPose);
             telemetry.addData("Extend Target: ", extendTarget);
             telemetry.addData("Extend Pose: ", currentEPose);
+            telemetry.addData("Arm Mode: ", armMode);
         }
 
         public void getTelemetryBRIEF(Telemetry telemetry){
