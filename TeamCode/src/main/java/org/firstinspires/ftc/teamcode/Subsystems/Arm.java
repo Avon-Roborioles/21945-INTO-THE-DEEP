@@ -1,7 +1,9 @@
     package org.firstinspires.ftc.teamcode.Subsystems;
 
     //import needed libraries
+    import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
     import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
+    import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
     import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
     import com.arcrobotics.ftclib.gamepad.GamepadEx;
     import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -45,14 +47,14 @@
         public double extendPower = 0;
 
         //pid control TODO - tune
-        double kp = 0;
+        double kp = 0.1;
         double ki = 0;
         double kd = 0;
         double maximumIntegralSum = 0;
         double stabilityThreshold = 0;
         double lowPassGain = 0;
-        PIDCoefficientsEx armPIDCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stabilityThreshold,lowPassGain);
-        PIDEx armController = new PIDEx(armPIDCoefficients);
+        PIDCoefficients armPIDCoefficients = new PIDCoefficients(kp,ki,kd);
+        BasicPID armController = new BasicPID(armPIDCoefficients);
 
         //control variables
         GamepadEx driverOp;
@@ -68,14 +70,12 @@
         }
 
         //--------TELEOP COMMANDS---------
-        public void setPID(double p, double i, double d, double sum, double stability, double gain){
+        public void setPID(double p, double i, double d){
             kp = p;
             ki = i;
             kd = d;
-            maximumIntegralSum = sum;
-            stabilityThreshold = stability;
-            lowPassGain = gain;
-            armPIDCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stabilityThreshold,lowPassGain);
+
+            armPIDCoefficients = new PIDCoefficients(kp,ki,kd);
         }
 
         public void init(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp){
@@ -177,12 +177,11 @@
             aMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
             aMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             aMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            aMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             aMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             aMotor.setPower(0);
 
             eMotor = hardwareMap.get(DcMotorEx.class, "extensionMotor");
-            //eMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            //eMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             eMotor.setTargetPosition(0);
             eMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             eMotor.setPower(0);
@@ -341,6 +340,9 @@
                //PID
 
             }
+
+            armPower = armController.calculate(armTarget,currentArmPose);
+            aMotor.setPower(armPower);
             eMotor.setTargetPosition(extendTarget);
             eMotor.setPower(1);
             updateToggles();
@@ -376,9 +378,7 @@
             telemetry.addData("Kp: ", kp);
             telemetry.addData("Ki: ", ki);
             telemetry.addData("Kd: ", kd);
-            telemetry.addData("MaxIntegralSum: ", maximumIntegralSum);
-            telemetry.addData("StabilityThreashold: ", stabilityThreshold);
-            telemetry.addData("Low Pass Gain: ", lowPassGain);
+            telemetry.addData("Arm Power: ", armPower);
             telemetry.addData("Arm Target: ", armTarget);
             telemetry.addData("Arm Pose: ", currentArmPose);
             telemetry.addData("Extend Target: ", eMotor.getTargetPosition());

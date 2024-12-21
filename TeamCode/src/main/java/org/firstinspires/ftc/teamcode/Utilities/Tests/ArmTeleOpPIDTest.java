@@ -18,11 +18,10 @@ public class ArmTeleOpPIDTest extends LinearOpMode {
     public static double newKp = 0;
     public static double newKi = 0;
     public static double newKd = 0;
-    public static double maxintegralsum = 0;
-    public static double stability = 0;
-    public static double gain = 0;
+
 
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,7 +33,6 @@ public class ArmTeleOpPIDTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            arm.setPID(newKp,newKi,newKd,maxintegralsum,stability,gain);
             arm.run_PIDTeleOp();
             arm.getTelemetryPID(mainTelemetry);
             mainTelemetry.update();
