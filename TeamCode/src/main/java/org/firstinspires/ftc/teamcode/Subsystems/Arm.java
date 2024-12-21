@@ -8,6 +8,8 @@
     import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
     import com.arcrobotics.ftclib.hardware.motors.Motor;
     import com.qualcomm.robotcore.hardware.DcMotor;
+    import com.qualcomm.robotcore.hardware.DcMotorEx;
+    import com.qualcomm.robotcore.hardware.DcMotorSimple;
     import com.qualcomm.robotcore.hardware.HardwareMap;
     import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -16,6 +18,8 @@
         //motor objects & related variables
         Motor extendMotor;
         Motor armMotor;
+        DcMotorEx eMotor;
+        DcMotorEx aMotor;
         public static final double GEAR_RATIO = 0.3; // Output 60 Teeth, Input 20 Teeth
         public static final double ENCODER_RESOLUTION = 1425; //TODO switch to 2,786 when new motor is installed
 
@@ -27,7 +31,7 @@
         private final int rung1Pose = 95; //
         private final int rung2Pose = 130; //
         private final int  maxPose = 3000;
-        private final double maxExtend = 7.5; //in
+        private final int extendMAX = 3000;
         private double currentArmPose;
         private double currentEPose;
         private Arm_Modes armMode;
@@ -37,7 +41,7 @@
         public double armPower = 0;
 
         //extension
-        public double extendTarget = 0;
+        public int extendTarget = 0;
         public double extendPower = 0;
 
         //pid control TODO - tune
@@ -170,24 +174,35 @@
                     driverOp, GamepadKeys.Button.B
             );
 
-            armMotor = new Motor(hardwareMap, "armMotor");
-            armMotor.setInverted(true); //reverses the motor direction
-            armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
-            armMotor.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            armMotor.setRunMode(Motor.RunMode.RawPower);
-            armMotor.resetEncoder();
+            aMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
+            aMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            aMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            aMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            aMotor.setPower(0);
 
-            extendMotor = new Motor(hardwareMap, "extensionMotor");
-            extendMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            extendMotor.resetEncoder();
-//            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
+            eMotor = hardwareMap.get(DcMotorEx.class, "extensionMotor");
+            //eMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            //eMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            eMotor.setTargetPosition(0);
+            eMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            eMotor.setPower(0);
+
+//            armMotor = new Motor(hardwareMap, "armMotor");
+//            armMotor.setInverted(true); //reverses the motor direction
+//            armMotor.encoder.setDirection(Motor.Direction.REVERSE); //makes encoder positive when pulled up
+//            armMotor.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            armMotor.setRunMode(Motor.RunMode.RawPower);
+//            armMotor.resetEncoder();
+//
+//            extendMotor = new Motor(hardwareMap, "extensionMotor");
+//            extendMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//            extendMotor.resetEncoder();
+////            extendMotor.encoder.setDirection(Motor.Direction.REVERSE);
 //            extendMotor.setInverted(true);
-            extendMotor.setRunMode(Motor.RunMode.PositionControl);
-            extendMotor.setDistancePerPulse(0.003260869565); //in - 7.5in/2300 ticks represents max range
-            extendMotor.setTargetDistance(0);
-            extendMotor.set(0);
-
-
+//            extendMotor.setRunMode(Motor.RunMode.PositionControl);
+//            extendMotor.setDistancePerPulse(0.003260869565); //in - 7.5in/2300 ticks represents max range
+//            extendMotor.setTargetDistance(0);
+//            extendMotor.set(0);
         }
 
         public void initExtend(HardwareMap hardwareMap){
@@ -256,8 +271,8 @@
 
         public void run_PIDTeleOp(){
             //update variables
-            currentArmPose = armMotor.getCurrentPosition();
-            currentEPose = extendMotor.getCurrentPosition();
+            currentArmPose = aMotor.getCurrentPosition();
+            currentEPose = eMotor.getCurrentPosition();
             leftY = driverOp.getLeftY();
             rightY = driverOp.getRightY();
             updateToggles();
@@ -272,14 +287,17 @@
             }
 
             //manual extension control with limits
-            if(rightY > 0){
-                armMode = Arm_Modes.DRIVER_CONTROL;
-                extendTarget += .05;
+            if (rightY < 0) {
+                if(currentEPose < 2900) {
+                    armMode = Arm_Modes.DRIVER_CONTROL;
+                    extendTarget += 7;
+                }
 
-            } else if(rightY < 0){
-                armMode = Arm_Modes.DRIVER_CONTROL;
-                extendTarget -= .05;
-
+            }else if(rightY > 0){
+                if(currentEPose > 0) {
+                    armMode = Arm_Modes.DRIVER_CONTROL;
+                    extendTarget -= 7;
+                }
             }
 
 
@@ -298,6 +316,7 @@
 
             } else if(d_down.wasJustPressed()){
                 armMode = Arm_Modes.PRESET_MODE;
+                armTarget = groundPose;
 
             } else if(d_up.wasJustPressed()){
                 armMode = Arm_Modes.PRESET_MODE;
@@ -312,19 +331,19 @@
             //y button hang mode
             if(y_button.wasJustPressed()){
                 armMode = Arm_Modes.HANG_MODE;
-
             }
 
 
             //arm + extension movements
             if(armMode == Arm_Modes.HANG_MODE){
-                armMotor.set(-0.8);
+
             } else {
-                armPower = armController.calculate(armTarget, currentArmPose);
-                armMotor.set(armPower);
+               //PID
+
             }
-            extendMotor.setTargetDistance(extendTarget);
-            extendMotor.set(0.6);
+            eMotor.setTargetPosition(extendTarget);
+            eMotor.setPower(1);
+            updateToggles();
         }
 
 
@@ -362,7 +381,7 @@
             telemetry.addData("Low Pass Gain: ", lowPassGain);
             telemetry.addData("Arm Target: ", armTarget);
             telemetry.addData("Arm Pose: ", currentArmPose);
-            telemetry.addData("Extend Target: ", extendTarget);
+            telemetry.addData("Extend Target: ", eMotor.getTargetPosition());
             telemetry.addData("Extend Pose: ", currentEPose);
             telemetry.addData("Arm Mode: ", armMode);
         }
