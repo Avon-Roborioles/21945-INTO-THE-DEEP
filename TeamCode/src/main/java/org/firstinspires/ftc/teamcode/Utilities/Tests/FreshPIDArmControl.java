@@ -141,6 +141,7 @@ public class FreshPIDArmControl extends LinearOpMode {
             //loop
             motionComplete = Math.abs(armTarget - armMotor.getCurrentPosition()) < 50;
             profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
+
             if(previousTarget != armTarget){
                 previousTarget = armTarget;
                 time.reset();
@@ -155,10 +156,7 @@ public class FreshPIDArmControl extends LinearOpMode {
             double instantVelocity = state.getV();
             double instantAcceleration = state.getA();
 
-
-            double newInstantTarget = motion_profile(maxAcceleration,maxVelocity,armTarget,time.time());
-
-            armPower = armController.calculate(instantTarget, armMotor.getCurrentPosition());
+            armPower = armController.calculate(instantTarget,armMotor.getCurrentPosition());
            armMotor.set(armPower);
 
             //telemetry
@@ -169,7 +167,7 @@ public class FreshPIDArmControl extends LinearOpMode {
             mainTelemetry.addData("Instant Velocity: ", instantVelocity);
             mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);
             mainTelemetry.addData("Arm Power: ", armPower);
-            mainTelemetry.addData("New Instant Target: ", newInstantTarget);
+            mainTelemetry.addData("New Instant Target: ", instantTarget);
             mainTelemetry.update();
         }
     }
