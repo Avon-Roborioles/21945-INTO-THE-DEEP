@@ -165,7 +165,8 @@ public class Intake {
 
     //checks if a sample is collected by a valid color detection
     public Boolean isFull(){
-        double intakeDistance =
+       // double intakeDistance =
+        return true;
     }
 
     //returns color of sample, returns NONE if no color is detected
