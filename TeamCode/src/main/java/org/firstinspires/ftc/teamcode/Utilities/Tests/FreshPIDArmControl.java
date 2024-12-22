@@ -17,6 +17,7 @@ import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -42,9 +43,11 @@ public class FreshPIDArmControl extends LinearOpMode {
     public static double maximumIntegralSum = 0;
     public static double stability = 0;
     public static double lowPassGain = 0;
+    public static double maxJerk = 0;
     public boolean motionComplete = true;
     double startTime = System.currentTimeMillis();
     private MotionProfile profile;
+    private TrapezoidProfile newProfile;
     public MotionState currentState;
     VelocityConstraint velocityConstraint;
     AccelerationConstraint accelerationConstraint;
@@ -72,12 +75,16 @@ public class FreshPIDArmControl extends LinearOpMode {
 
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
 
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVelocity,maxAcceleration);
+        newProfile = new TrapezoidProfile(constraints,new TrapezoidProfile.State(armMotor.getCurrentPosition(),0),new TrapezoidProfile.State(armTarget,0));
 
         waitForStart();
 
         previousTarget = armTarget;
         while(opModeIsActive()){
-            profile = MotionProfileGenerator.generateMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), velocityConstraint,accelerationConstraint);
+            motionComplete = Math.abs(armTarget - armMotor.getCurrentPosition()) < 50;
+            profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
+            newProfile = new TrapezoidProfile(constraints,new TrapezoidProfile.State(armMotor.getCurrentPosition(),0),new TrapezoidProfile.State(armTarget,0));
 
             if(previousTarget != armTarget){
                 previousTarget = armTarget;
@@ -89,12 +96,16 @@ public class FreshPIDArmControl extends LinearOpMode {
 
 
             MotionState state = profile.get(time.time());
+            TrapezoidProfile.State newState = newProfile.calculate(time.time());
 
             double instantTarget = state.getX();
             double instantVelocity = state.getV();
-            double instantAcceleration = state.getA();
+            //double instantAcceleration = state.getA();
 
-           armPower = armController.calculate(instantTarget,armMotor.getCurrentPosition());
+
+            armPower = armController.calculate(instantTarget, armMotor.getCurrentPosition());
+
+
            armMotor.set(armPower);
 
 
@@ -104,7 +115,8 @@ public class FreshPIDArmControl extends LinearOpMode {
             mainTelemetry.addData("Arm Target: ", armTarget);
             mainTelemetry.addData("Instant Target: ", instantTarget);
             mainTelemetry.addData("Instant Velocity: ", instantVelocity);
-            mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);
+            //mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);
+            mainTelemetry.addData("Max Jerk: ", maxJerk);
             mainTelemetry.addData("Arm Power: ", armPower);
             mainTelemetry.update();
 
