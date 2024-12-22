@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -81,9 +82,8 @@ public class Intake {
                 driverOp, GamepadKeys.Button.RIGHT_BUMPER
         );
 
-
-//        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-//        colorSensor.enableLed(true); //turns on white LED for color detection
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        colorSensor.enableLed(true); //turns on white LED for color detection
     }
 
     /**
@@ -165,7 +165,7 @@ public class Intake {
 
     //checks if a sample is collected by a valid color detection
     public Boolean isFull(){
-        return !(currentSampleColor == Sample_Colors.NONE);
+        double intakeDistance =
     }
 
     //returns color of sample, returns NONE if no color is detected
@@ -193,8 +193,4 @@ public class Intake {
         telemetry.addData("Intake Full?: ", intakeFull);
         telemetry.addData("Intake Power: ", intakePower);
     }
-
-
-
-
 }

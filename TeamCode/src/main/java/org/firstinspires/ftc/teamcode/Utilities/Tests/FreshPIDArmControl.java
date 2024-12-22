@@ -48,13 +48,70 @@ public class FreshPIDArmControl extends LinearOpMode {
     double startTime = System.currentTimeMillis();
     private MotionProfile profile;
     private TrapezoidProfile newProfile;
-    public MotionState currentState;
-    VelocityConstraint velocityConstraint;
-    AccelerationConstraint accelerationConstraint;
+
 
     double leftY;
     GamepadEx driverOp;
     ElapsedTime time;
+
+    //returns the current target position based on max acceleration, max velocity, arm Target, & elapsed time
+    public double motion_profile(double max_acceleration, double max_velocity, double distance, double elapsed_time) {
+
+        // Calculate the time it takes to accelerate to max velocity
+        double acceleration_dt = max_velocity / max_acceleration;
+
+        // If we can't accelerate to max velocity in the given distance, we'll accelerate as much as possible
+        double halfway_distance = distance / 2;
+        double acceleration_distance = 0.5 * max_acceleration * Math.pow(acceleration_dt,2);
+
+        if (acceleration_distance > halfway_distance) {
+            acceleration_dt = Math.sqrt(halfway_distance / (0.5 * max_acceleration));
+        }
+
+        acceleration_distance = 0.5 * max_acceleration * Math.pow(acceleration_dt,2);
+
+        // recalculate max velocity based on the time we have to accelerate and decelerate
+        max_velocity = max_acceleration * acceleration_dt;
+
+        // we decelerate at the same rate as we accelerate
+        double deceleration_dt = acceleration_dt;
+
+        // calculate the time that we're at max velocity
+        double cruise_distance = distance - 2 * acceleration_distance;
+        double cruise_dt = cruise_distance / max_velocity;
+        double deceleration_time = acceleration_dt + cruise_dt;
+
+        // check if we're still in the motion profile
+        double entire_dt = acceleration_dt + cruise_dt + deceleration_dt;
+        if (elapsed_time > entire_dt) {
+            return distance;
+        }
+
+        // if we're accelerating
+        if (elapsed_time < acceleration_dt) {
+            // use the kinematic equation for acceleration
+            return 0.5 * max_acceleration * Math.pow(elapsed_time,2);
+        }
+
+        // if we're cruising
+        else if (elapsed_time < deceleration_time) {
+            acceleration_distance = 0.5 * max_acceleration * Math.pow(acceleration_dt,2);
+            double cruise_current_dt = elapsed_time - acceleration_dt;
+
+            // use the kinematic equation for constant velocity
+            return acceleration_distance + max_velocity * cruise_current_dt;
+        }
+
+        // if we're decelerating
+        else {
+            acceleration_distance = 0.5 * max_acceleration * Math.pow(acceleration_dt,2);
+            cruise_distance = max_velocity * cruise_dt;
+            deceleration_time = elapsed_time - deceleration_time;
+
+            // use the kinematic equations to calculate the instantaneous desired position
+            return acceleration_distance + cruise_distance + max_velocity * deceleration_time - 0.5 * max_acceleration * Math.pow(deceleration_time,2);
+        }
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,9 +119,10 @@ public class FreshPIDArmControl extends LinearOpMode {
         leftY = driverOp.getLeftY();
         time = new ElapsedTime();
 
+        MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         //init PID
         Motor armMotor = new Motor(hardwareMap,"armMotor");
-        MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         armMotor.setInverted(true);
         armMotor.encoder.setDirection(Motor.Direction.REVERSE);
         armMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,54 +130,47 @@ public class FreshPIDArmControl extends LinearOpMode {
         armMotor.setRunMode(Motor.RunMode.RawPower);
         PIDCoefficientsEx armCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stability,lowPassGain);
         PIDEx armController = new PIDEx(armCoefficients);
-
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
 
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVelocity,maxAcceleration);
-        newProfile = new TrapezoidProfile(constraints,new TrapezoidProfile.State(armMotor.getCurrentPosition(),0),new TrapezoidProfile.State(armTarget,0));
 
         waitForStart();
 
         previousTarget = armTarget;
+
         while(opModeIsActive()){
+            //loop
             motionComplete = Math.abs(armTarget - armMotor.getCurrentPosition()) < 50;
             profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
-            newProfile = new TrapezoidProfile(constraints,new TrapezoidProfile.State(armMotor.getCurrentPosition(),0),new TrapezoidProfile.State(armTarget,0));
-
             if(previousTarget != armTarget){
                 previousTarget = armTarget;
                 time.reset();
             }
-
             armCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stability,lowPassGain);
             armController = new PIDEx(armCoefficients);
 
 
             MotionState state = profile.get(time.time());
-            TrapezoidProfile.State newState = newProfile.calculate(time.time());
 
             double instantTarget = state.getX();
             double instantVelocity = state.getV();
-            //double instantAcceleration = state.getA();
+            double instantAcceleration = state.getA();
 
+
+            double newInstantTarget = motion_profile(maxAcceleration,maxVelocity,armTarget,time.time());
 
             armPower = armController.calculate(instantTarget, armMotor.getCurrentPosition());
-
-
            armMotor.set(armPower);
 
-
-
+            //telemetry
             mainTelemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
             mainTelemetry.addData("Previous Target: ", previousTarget);
             mainTelemetry.addData("Arm Target: ", armTarget);
             mainTelemetry.addData("Instant Target: ", instantTarget);
             mainTelemetry.addData("Instant Velocity: ", instantVelocity);
-            //mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);
-            mainTelemetry.addData("Max Jerk: ", maxJerk);
+            mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);
             mainTelemetry.addData("Arm Power: ", armPower);
+            mainTelemetry.addData("New Instant Target: ", newInstantTarget);
             mainTelemetry.update();
-
         }
     }
 }

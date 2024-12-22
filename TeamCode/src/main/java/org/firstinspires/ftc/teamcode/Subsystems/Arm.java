@@ -367,10 +367,7 @@
          * Vital Arm Command to Update Telemetry Values and Run to Target
          */
         public void update(){
-            currentArmPose = armMotor.getCurrentPosition();
-            armMotor.set(0.3); //percentage of power to get to targets
 
-            //TODO extension
         }
 
 
