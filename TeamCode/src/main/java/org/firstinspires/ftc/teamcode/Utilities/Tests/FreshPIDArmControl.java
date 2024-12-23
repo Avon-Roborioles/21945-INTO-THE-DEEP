@@ -137,10 +137,14 @@ public class FreshPIDArmControl extends LinearOpMode {
 
         previousTarget = armTarget;
 
+
+
         while(opModeIsActive()){
             //loop
             motionComplete = Math.abs(armTarget - armMotor.getCurrentPosition()) < 50;
             profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
+
+            profile = new MotionProfile();
 
             if(previousTarget != armTarget){
                 previousTarget = armTarget;
