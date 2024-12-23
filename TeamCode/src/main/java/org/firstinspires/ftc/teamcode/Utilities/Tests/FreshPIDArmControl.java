@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FullStateFeedback;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
+import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile.State;
+import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile.Constraints;
+import com.ThermalEquilibrium.homeostasis.Utils.Vector;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -47,7 +51,7 @@ public class FreshPIDArmControl extends LinearOpMode {
     public boolean motionComplete = true;
     double startTime = System.currentTimeMillis();
     private MotionProfile profile;
-    private TrapezoidProfile newProfile;
+    private WPILibMotionProfile newProfile;
 
 
     double leftY;
@@ -130,6 +134,10 @@ public class FreshPIDArmControl extends LinearOpMode {
         armMotor.setRunMode(Motor.RunMode.RawPower);
         PIDCoefficientsEx armCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stability,lowPassGain);
         PIDEx armController = new PIDEx(armCoefficients);
+
+        Vector coefficients = new Vector(new double[] {kp,ki,kd});
+        FullStateFeedback newArmController = new FullStateFeedback(coefficients);
+
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
 
 
@@ -142,33 +150,38 @@ public class FreshPIDArmControl extends LinearOpMode {
         while(opModeIsActive()){
             //loop
             motionComplete = Math.abs(armTarget - armMotor.getCurrentPosition()) < 50;
-            //profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
+            profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
 
-            MotionSegment start = new MotionSegment(new MotionState(armMotor.getCurrentPosition(),0),0);
-            MotionSegment end = new MotionSegment(new MotionState(armTarget,0),profile.duration());
-
-            List<MotionSegment> segments = new ArrayList<MotionSegment>();
-            segments.add(start);
-            segments.add(end);
-
-            profile = new MotionProfile(segments);
+            //WPILibMotionProfile.State cur
+            //newProfile = new WPILibMotionProfile();
 
             if(previousTarget != armTarget){
                 previousTarget = armTarget;
                 time.reset();
             }
+
             armCoefficients = new PIDCoefficientsEx(kp,ki,kd,maximumIntegralSum,stability,lowPassGain);
             armController = new PIDEx(armCoefficients);
 
+            MotionState motionProfileState = profile.get(time.time());
 
-            MotionState state = profile.get(time.time());
+            double instantTarget = motionProfileState.getX();
+            double instantVelocity = motionProfileState.getV();
+            double instantAcceleration = motionProfileState.getA();
 
-            double instantTarget = state.getX();
-            double instantVelocity = state.getV();
-            double instantAcceleration = state.getA();
+            //Full-State Feedback Approach
+            coefficients = new Vector(new double[] {kp,ki,kd});
+            newArmController = new FullStateFeedback(coefficients);
+            Vector currentState = new Vector(new double[] {armMotor.getCurrentPosition(),armMotor.getCorrectedVelocity()});
+            Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
 
-            armPower = armController.calculate(instantTarget,armMotor.getCurrentPosition());
-           armMotor.set(armPower);
+            //armPower = armController.calculate(instantTarget,armMotor.getCurrentPosition());
+            try {
+                armPower = newArmController.calculate(targetState,currentState);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            armMotor.set(armPower);
 
             //telemetry
             mainTelemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
