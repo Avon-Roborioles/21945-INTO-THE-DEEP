@@ -122,7 +122,7 @@ public class Drivetrain {
         } else if(d_left.wasJustPressed()){
             speedLimit = 0.5;
         } else if(d_down.wasJustPressed()){
-            speedLimit = 0.1;
+            speedLimit = 0.3;
         }
 
 
@@ -130,27 +130,7 @@ public class Drivetrain {
         pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed,strafeSpeed,turnSpeed, robotCentricMode);
         pedroDrivetrain.update();
         updateToggles();
-//        //uses FTCLib Library to control all logic of Field Centric Driving
-//        if(robotCentricMode){
-//           drivetrain.driveRobotCentric(
-//                   strafeSpeed,
-//                forwardSpeed,
-//                turnSpeed);
-//
-//        } else {
-//            drivetrain.driveFieldCentric(
-//                    strafeSpeed,
-//                    forwardSpeed,
-//                    turnSpeed,
-//                    gyroAngle
-//            );
-//        }
 
-        //absolute values of driver inputs used for haptic feedback functions
-
-
-
-        //driver feedback functions
 
         //TODO Driver Alerts for Speed
 //        if(strafeAbsolute == 1 || forwardAbsolute == 1 || turnAbsolute == 1){

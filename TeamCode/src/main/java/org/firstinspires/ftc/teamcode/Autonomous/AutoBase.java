@@ -91,7 +91,7 @@ public class AutoBase extends LinearOpMode {
         );
 
         intake.init(hardwareMap, driverOp);
-        arm.init(hardwareMap, driverOp, false);
+        arm.initPID(hardwareMap, driverOp, false);
     }
 
 

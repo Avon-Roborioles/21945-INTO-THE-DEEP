@@ -15,10 +15,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 public class ArmTeleOpPIDTest extends LinearOpMode {
     org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
 
-    public static double newKp = 0;
-    public static double newKi = 0;
-    public static double newKd = 0;
-
 
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
