@@ -93,6 +93,7 @@ public class FreshPIDArmControl extends LinearOpMode {
                 throw new RuntimeException(e);
             }
 
+            armMotor.setVelocity(-instantVelocity);
             armMotor.set(armPower);
 
 
