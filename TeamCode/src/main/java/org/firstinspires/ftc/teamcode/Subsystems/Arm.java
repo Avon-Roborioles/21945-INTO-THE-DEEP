@@ -33,12 +33,14 @@
 
         //absolute positions
         private final int groundPose = 0;
-        private final int basketPose = 5500;
+        private final int autoGround = 700;
+        private final int basketPose = 5600;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
-        private final int maxPose = 5500;
+        private final int maxPose = 5600;
 
-        private final int extendMAX = 3000;
+
+        private final int maxExtendPose = 2700;
 
         private double currentArmPose;
         private double currentEPose;

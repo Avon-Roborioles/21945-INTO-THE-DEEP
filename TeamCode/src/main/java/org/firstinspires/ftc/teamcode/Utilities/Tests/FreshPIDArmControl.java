@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FullStateFeedback;
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.ThermalEquilibrium.homeostasis.Utils.Vector;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -22,8 +24,13 @@ public class FreshPIDArmControl extends LinearOpMode {
 
     public double previousTarget = 0;
     public static double armTarget = 0;
+    public static double extendTarget = 0;
     public double armPower = 0;
-    public static double kp = 0.002; //helps match arm position with instant position
+    public double extendPower = 0;
+    public static double kpArm = 0.002; //helps match arm position with instant position
+    public static double kpExtend = 0.05;
+    public static double kiExtend = 0;
+    public static double kdExtend = 0;
     public static double ka = 0.0004; //helps match acceleration with instant acceleration
     public static double maxVelocity = 2000;
     public static double maxAcceleration = 4000;
@@ -53,6 +60,10 @@ public class FreshPIDArmControl extends LinearOpMode {
         armMotor.setRunMode(Motor.RunMode.RawPower);
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), maxVelocity,maxAcceleration);
 
+        MotorEx extendMotor = new MotorEx(hardwareMap,"extensionMotor");
+        extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        extendMotor.stopAndResetEncoder();
+        extendMotor.setRunMode(Motor.RunMode.RawPower);
 
         waitForStart();
 
@@ -71,8 +82,12 @@ public class FreshPIDArmControl extends LinearOpMode {
             }
 
             //---------------------------------
-            Vector coefficients = new Vector(new double[] {kp, ka});
-            FullStateFeedback armController = new FullStateFeedback(coefficients);
+            Vector armCoefficients = new Vector(new double[] {kpArm, ka});
+            FullStateFeedback armController = new FullStateFeedback(armCoefficients);
+
+            //extend controller
+            PIDCoefficients extendCoefficients = new PIDCoefficients(kpExtend,kiExtend,kdExtend);
+            BasicPID extendController = new BasicPID(extendCoefficients);
 
             MotionState state = profile.get(time.time());
 
@@ -93,15 +108,21 @@ public class FreshPIDArmControl extends LinearOpMode {
                 throw new RuntimeException(e);
             }
 
+            double measuredExtendPosition = extendMotor.getCurrentPosition();
+            extendPower = extendController.calculate(extendTarget,measuredExtendPosition);
+
             armMotor.setVelocity(-instantVelocity);
             armMotor.set(armPower);
 
+            extendMotor.set(extendPower);
 
             //telemetry
             mainTelemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
             mainTelemetry.addData("Previous Target: ", previousTarget);
             mainTelemetry.addData("Instant Target: ", instantTarget);
             mainTelemetry.addData("Arm Target: ", armTarget);
+            mainTelemetry.addData("Extend Target: ", extendTarget);
+            mainTelemetry.addData("Extend Pose: ", measuredExtendPosition);
             mainTelemetry.addData("Instant Velocity: ", instantVelocity);
             mainTelemetry.addData("Measured Velocity: ", measuredVelocity);
             mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);

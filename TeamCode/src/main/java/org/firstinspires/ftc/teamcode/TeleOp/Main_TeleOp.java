@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,6 +20,8 @@ public class Main_TeleOp extends LinearOpMode {
     private final org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
     //private final org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
     //private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
+
+    MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     //Driver gamepad objects - set to static so subsystems can access controls
     public static GamepadEx Driver1Op;
@@ -45,7 +49,6 @@ public class Main_TeleOp extends LinearOpMode {
         while(opModeIsActive()){
             //Driver 1 Controls
             drivetrain.run_teleOp(feedback);
-            drivetrain.getTelemetryFULL(telemetry);
 
 
             //Driver 2 Controls
@@ -53,13 +56,13 @@ public class Main_TeleOp extends LinearOpMode {
             intake.run_teleOp();
 
             //Telemetry
-            drivetrain.getTelemetryBRIEF(telemetry);
-            arm.getTelemetryBRIEF(telemetry);
-            intake.getTelemetryBRIEF(telemetry);
+            drivetrain.getTelemetryBRIEF(mainTelemetry);
+            arm.getTelemetryPID(mainTelemetry);
+            intake.getTelemetryBRIEF(mainTelemetry);
             //vision.getTelemetryBRIEF(telemetry);
             //lighting.getTelemetryBRIEF(telemetry);
-            telemetry.addData("OpMode Timer: ", opModeTimer.remainingTime());
-            telemetry.update();
+            mainTelemetry.addData("OpMode Timer: ", opModeTimer.remainingTime());
+            mainTelemetry.update();
         }
     }
 }
