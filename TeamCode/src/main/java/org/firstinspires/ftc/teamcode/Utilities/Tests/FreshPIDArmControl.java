@@ -1,35 +1,20 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FullStateFeedback;
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
-import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
-import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Utils.Vector;
-import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.profile.AccelerationConstraint;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileBuilder;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionSegment;
 import com.acmerobotics.roadrunner.profile.MotionState;
-import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Config
 @TeleOp(name="Fresh Arm PID Control", group="Tests")
@@ -38,10 +23,10 @@ public class FreshPIDArmControl extends LinearOpMode {
     public double previousTarget = 0;
     public static double armTarget = 0;
     public double armPower = 0;
-    public static double kp = 0.002;
-    public static double ks = 0.0003;
+    public static double kp = 0.002; //helps match arm position with instant position
+    public static double ka = 0.0004; //helps match acceleration with instant acceleration
     public static double maxVelocity = 2000;
-    public static double maxAcceleration = 3000;
+    public static double maxAcceleration = 4000;
     public static double maxJerk = 0;
     public boolean motionComplete = true;
     private MotionProfile profile;
@@ -86,7 +71,7 @@ public class FreshPIDArmControl extends LinearOpMode {
             }
 
             //---------------------------------
-            Vector coefficients = new Vector(new double[] {kp,ks});
+            Vector coefficients = new Vector(new double[] {kp, ka});
             FullStateFeedback armController = new FullStateFeedback(coefficients);
 
             MotionState state = profile.get(time.time());
