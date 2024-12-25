@@ -3,9 +3,7 @@
     //import needed libraries
     import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
     import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FullStateFeedback;
-    import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
     import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
-    import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
     import com.ThermalEquilibrium.homeostasis.Utils.Vector;
     import com.acmerobotics.roadrunner.profile.MotionProfile;
     import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
@@ -16,8 +14,6 @@
     import com.arcrobotics.ftclib.hardware.motors.Motor;
     import com.arcrobotics.ftclib.hardware.motors.MotorEx;
     import com.qualcomm.robotcore.hardware.DcMotor;
-    import com.qualcomm.robotcore.hardware.DcMotorEx;
-    import com.qualcomm.robotcore.hardware.DcMotorSimple;
     import com.qualcomm.robotcore.hardware.HardwareMap;
     import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -37,13 +33,13 @@
         private final int basketPose = 5600;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
-        private final int maxPose = 5600;
+        private final int maxArmPose = 5600;
 
 
         private final int maxExtendPose = 2700;
 
-        private double currentArmPose;
-        private double currentEPose;
+        private int currentArmPose;
+        private int currentExtendPose;
         private Arm_Modes armMode;
 
         //arm
@@ -55,7 +51,7 @@
         public int extendTarget = 0;
         public double extendPower = 0;
 
-        //Motion Profile + Full State Feedback PID Controller
+        //Motion Profile + Full State Feedback PID Controller (Arm) & Basic PID Controller (Extend)
         private final double kpArm = 0.002;
         private final double kpExtend = 0.05;
         private final double ka = 0.0004;
@@ -64,7 +60,8 @@
         MotionProfile motionProfile;
         Vector armCoefficients;
         FullStateFeedback armController;
-        PIDEx extendController;
+        PIDCoefficients extendCoefficients;
+        BasicPID extendController;
         ElapsedTime time;
 
         //control variables
@@ -88,6 +85,9 @@
 
             armCoefficients = new Vector(new double[] {kpArm,ka});
             armController = new FullStateFeedback(armCoefficients);
+
+            extendCoefficients = new PIDCoefficients(kpExtend,0,0);
+            extendController = new BasicPID(extendCoefficients);
 
             //---initialize toggles & buttons---
             d_up = new ToggleButtonReader(
@@ -129,6 +129,9 @@
 
             //TODO - extend
             extendMotor = new MotorEx(hardwareMap,"extensionMotor");
+            extendMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            extendMotor.stopAndResetEncoder();
+            extendMotor.setRunMode(Motor.RunMode.RawPower);
 
         }
 
@@ -155,23 +158,22 @@
             b_button.readValue();
         }
 
-
         public void run_PIDTeleOp(){
             //update variables
             currentArmPose = armMotor.getCurrentPosition();
-            currentEPose = extendMotor.getCurrentPosition();
-            leftY = driverOp.getLeftY();
-            rightY = driverOp.getRightY();
+            currentExtendPose = extendMotor.getCurrentPosition();
+            leftY = driverOp.getLeftY(); //arm
+            rightY = driverOp.getRightY(); //extend
             updateToggles();
             double decelTimeConstant = 0.06; //seconds to decelerate
 
             //manual arm control with limits
             //saves armTarget as arm current position for holding later
             if(leftY > 0){
-                if(currentArmPose < maxPose) {
+                if(currentArmPose < maxArmPose) {
                     armMode = Arm_Modes.DRIVER_MODE;
                     //int finalTarget = (int) (currentArmPose + ((-armMotor.getVelocity()) * decelTimeConstant));
-                    setTarget((int) currentArmPose);
+                    setTarget(currentArmPose, currentExtendPose);
                     armPower = 0.7 * leftY; //added sensitivity
                 }
 
@@ -179,7 +181,7 @@
                 if(currentArmPose > groundPose) {
                     armMode = Arm_Modes.DRIVER_MODE;
                     //int finalTarget = (int) (currentArmPose + (armMotor.getVelocity() * decelTimeConstant));
-                    setTarget((int) currentArmPose);
+                    setTarget(currentArmPose,currentExtendPose);
                     armPower = -0.5 * Math.abs(leftY); //added sensitivity
                 }
             } else {
@@ -187,15 +189,21 @@
             }
 
             //manual extension control with limits
-            if (rightY < 0) {
-                if(currentEPose < 2900) {
-                    extendPower = 1;
+            if (rightY > 0) {
+                if(currentExtendPose < maxExtendPose) {
+                    armMode = Arm_Modes.DRIVER_MODE;
+                    setTarget(currentArmPose,currentExtendPose);
+                    extendPower = 1* Math.abs(rightY); //added sensitivity
                 }
 
-            }else if(rightY > 0){
-                if(currentEPose > 0) {
-                    extendPower = -1;
+            }else if(rightY < 0){
+                if(currentExtendPose > 0) {
+                    armMode = Arm_Modes.DRIVER_MODE;
+                    setTarget(currentArmPose,currentExtendPose);
+                    extendPower = -1* Math.abs(rightY); //added sensitivity
                 }
+            } else {
+                armMode = Arm_Modes.HOLD_MODE;
             }
 
 
@@ -203,9 +211,9 @@
             if(d_left.wasJustPressed()){ //rung toggle
                 armMode = Arm_Modes.HOLD_MODE;
                 if(d_left.getState()){
-                    setTarget(rung1Pose);
+                    setTarget(rung1Pose,maxExtendPose);
                 } else {
-                    setTarget(rung2Pose);
+                    setTarget(rung2Pose,maxExtendPose);
                 }
 
             } else if(d_right.wasJustPressed()){ //TODO
@@ -214,11 +222,11 @@
 
             } else if(d_down.wasJustPressed()){ //ground
                 armMode = Arm_Modes.HOLD_MODE;
-                setTarget(groundPose);
+                setTarget(groundPose,0);
 
             } else if(d_up.wasJustPressed()){ //basket
                 armMode = Arm_Modes.HOLD_MODE;
-                setTarget(basketPose);
+                setTarget(basketPose,maxExtendPose);
             }
 
             //y button hang mode
@@ -241,9 +249,11 @@
 
                 try {
                     armPower = armController.calculate(targetState,measuredState);
+                    extendPower = extendController.calculate(extendTarget,currentExtendPose);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+
 
                 //armMotor.setVelocity(-instantVelocity);
             } else if(armMode == Arm_Modes.HANG_MODE){
@@ -251,6 +261,7 @@
             }
 
             armMotor.set(armPower);
+            extendMotor.set(extendPower);
             updateToggles();
         }
 
@@ -260,10 +271,12 @@
          * Precise Auto Command to control the arm position (degrees)
          * Maximum Degrees is 100°
          * Minimum Degrees is 0°
-         * @param pose exact position of bot in degrees
+         * @param arm position for arm
+         * @param extend position for extension
          */
-        public void setTarget(int pose){
-            armTarget = Math.min(pose, maxPose);
+        public void setTarget(int arm, int extend){
+            armTarget = Math.min(arm, maxArmPose);
+            extendTarget = Math.min(extend,maxExtendPose);
             motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
             time.reset();
         }
@@ -285,6 +298,7 @@
 
             try {
                 armPower = armController.calculate(targetState,measuredState);
+                extendPower = extendController.calculate(extendTarget,extendMotor.getCurrentPosition());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -297,9 +311,13 @@
 
 
         public void getTelemetryPID(Telemetry telemetry){
+            telemetry.addLine("----ARM DATA----");
             telemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
-            telemetry.addData("Arm Velocity: ", armMotor.getVelocity());
             telemetry.addData("Arm Target: ", armTarget);
+            telemetry.addData("Arm Power: ", armPower);
+            telemetry.addData("Extend Pose: ",extendMotor.getCurrentPosition());
+            telemetry.addData("Extend Target: ", extendTarget);
+            telemetry.addData("Extend Power: ", extendPower);
         }
 
         public void getTelemetryBRIEF(Telemetry telemetry){

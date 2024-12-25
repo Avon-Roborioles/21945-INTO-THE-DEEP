@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.outoftheboxrobotics.photoncore.Photon;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.util.Timing.Timer;
@@ -10,7 +11,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.*;
 
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name="MainTeleOp")
+//@Photon
+@TeleOp(name="Main TeleOp")
 public class Main_TeleOp extends LinearOpMode {
 
     //create subsystem objects
