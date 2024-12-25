@@ -28,7 +28,7 @@ public class FreshPIDArmControl extends LinearOpMode {
     public double armPower = 0;
     public double extendPower = 0;
     public static double kpArm = 0.002; //helps match arm position with instant position
-    public static double kpExtend = 0.05;
+    public static double kpExtend = 0.01;
     public static double kiExtend = 0;
     public static double kdExtend = 0;
     public static double ka = 0.0004; //helps match acceleration with instant acceleration

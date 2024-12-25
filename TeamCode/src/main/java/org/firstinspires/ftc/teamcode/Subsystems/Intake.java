@@ -8,25 +8,31 @@ import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //robot subsystem for active intake
 public class Intake {
     //motor & servo objects
     CRServo intakeServo;
-    ColorSensor colorSensor;
-    TouchSensor touchSensor;
+    NormalizedColorSensor colorSensor;
     GamepadEx driverOp;
 
     //useful variables
     boolean intakeFull = true;
     Sample_Colors currentSampleColor;
     int intakePower = 0;
+    double intakeDistance = 0; //cm
+
+    //Raw Color Readings:
+
 
     ToggleButtonReader y_button, a_button, x_button, b_button; //modes
     ToggleButtonReader d_up, d_down, d_left, d_right; //height toggles
@@ -45,7 +51,7 @@ public class Intake {
         driverOp = gamepad;
 
         intakeServo = new CRServo(hardwareMap, "intake");
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
         intakeServo.setRunMode(Motor.RunMode.RawPower);
         intakeServo.set(intakePower);
 
@@ -82,22 +88,8 @@ public class Intake {
                 driverOp, GamepadKeys.Button.RIGHT_BUMPER
         );
 
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        colorSensor.enableLed(true); //turns on white LED for color detection
     }
 
-    /**
-     * Init Method to Simulate Scoring with Touch Sensor
-     */
-    public void initTest(HardwareMap hardwareMap, GamepadEx gamepad){
-        driverOp = gamepad;
-        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
-
-    }
-
-    public boolean isTouched(){
-        return touchSensor.isPressed();
-    }
 
     private void updateToggles(){
         d_up.readValue();
@@ -164,9 +156,9 @@ public class Intake {
 
 
     //checks if a sample is collected by a valid color detection
-    public Boolean isFull(){
-       // double intakeDistance =
-        return true;
+    public boolean isFull(){
+        intakeDistance = ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM);
+        return intakeDistance < 5.0;
     }
 
     //returns color of sample, returns NONE if no color is detected
@@ -177,9 +169,6 @@ public class Intake {
         return currentSampleColor;
     }
 
-    public void getTelemetryTest(Telemetry telemetry){
-        telemetry.addData("Touch Sensor Status: ", touchSensor.isPressed());
-    }
 
     public void getTelemetryBRIEF(Telemetry telemetry){
         telemetry.addLine("-----Intake Control Data-----");

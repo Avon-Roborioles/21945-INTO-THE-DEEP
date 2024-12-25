@@ -44,6 +44,7 @@
 
         //arm
         public double previousTarget = 0;
+        public double instantTarget = 0;
         public double armTarget = 0;
         public double armPower = 0;
 
@@ -53,7 +54,7 @@
 
         //Motion Profile + Full State Feedback PID Controller (Arm) & Basic PID Controller (Extend)
         private final double kpArm = 0.002;
-        private final double kpExtend = 0.05;
+        private final double kpExtend = 0.01; //0.05
         private final double ka = 0.0004;
         private final double MAX_VELOCITY = 2000;
         private final double MAX_ACCELERATION = 4000;
@@ -63,6 +64,7 @@
         PIDCoefficients extendCoefficients;
         BasicPID extendController;
         ElapsedTime time;
+        boolean busy = false;
 
         //control variables
         GamepadEx driverOp;
@@ -76,6 +78,7 @@
             HOLD_MODE,
             HANG_MODE
         }
+        public boolean extendHold = true;
         boolean hangPriority = false;
 
         //--------TELEOP COMMANDS---------
@@ -170,16 +173,16 @@
             //manual arm control with limits
             //saves armTarget as arm current position for holding later
             if(leftY > 0){
+                armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose < maxArmPose) {
-                    armMode = Arm_Modes.DRIVER_MODE;
                     //int finalTarget = (int) (currentArmPose + ((-armMotor.getVelocity()) * decelTimeConstant));
                     setTarget(currentArmPose, currentExtendPose);
-                    armPower = 0.7 * leftY; //added sensitivity
+                    armPower = 0.7 * Math.abs(leftY); //added sensitivity
                 }
 
             } else if(leftY < 0){
+                armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose > groundPose) {
-                    armMode = Arm_Modes.DRIVER_MODE;
                     //int finalTarget = (int) (currentArmPose + (armMotor.getVelocity() * decelTimeConstant));
                     setTarget(currentArmPose,currentExtendPose);
                     armPower = -0.5 * Math.abs(leftY); //added sensitivity
@@ -189,21 +192,21 @@
             }
 
             //manual extension control with limits
-            if (rightY > 0) {
+            if (rightY < 0) {
                 if(currentExtendPose < maxExtendPose) {
-                    armMode = Arm_Modes.DRIVER_MODE;
+                    extendHold = false;
                     setTarget(currentArmPose,currentExtendPose);
                     extendPower = 1* Math.abs(rightY); //added sensitivity
                 }
 
-            }else if(rightY < 0){
+            }else if(rightY > 0){
                 if(currentExtendPose > 0) {
-                    armMode = Arm_Modes.DRIVER_MODE;
+                    extendHold = false;
                     setTarget(currentArmPose,currentExtendPose);
                     extendPower = -1* Math.abs(rightY); //added sensitivity
                 }
             } else {
-                armMode = Arm_Modes.HOLD_MODE;
+                extendHold = true;
             }
 
 
@@ -235,6 +238,7 @@
             }
 
 
+
             //control arm power for hang and hold modes
             if(armMode == Arm_Modes.HOLD_MODE){ //code from update() except motor set power
                 MotionState state = motionProfile.get(time.time());
@@ -249,15 +253,18 @@
 
                 try {
                     armPower = armController.calculate(targetState,measuredState);
-                    extendPower = extendController.calculate(extendTarget,currentExtendPose);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
 
-
                 //armMotor.setVelocity(-instantVelocity);
             } else if(armMode == Arm_Modes.HANG_MODE){
                 armPower = -0.8; //near maximum power to pull up
+            }
+
+            //control extend power
+            if(extendHold){
+                extendPower = extendController.calculate(extendTarget,currentExtendPose);
             }
 
             armMotor.set(armPower);
@@ -266,7 +273,13 @@
         }
 
 
+
+
         //--------AUTO COMMANDS------------
+        public boolean ArmIsBusy(){
+            return instantTarget != armTarget;
+        }
+
         /**
          * Precise Auto Command to control the arm position (degrees)
          * Maximum Degrees is 100°
@@ -287,7 +300,7 @@
         public void update(){
             MotionState state = motionProfile.get(time.time());
 
-            double instantTarget = state.getX();
+            instantTarget = state.getX();
             double instantVelocity = state.getV();
 
             double measuredPosition = armMotor.getCurrentPosition();
@@ -305,13 +318,13 @@
 
             armMotor.setVelocity(-instantVelocity);
             armMotor.set(armPower);
-
-            //TODO - extend
+            extendMotor.set(extendPower);
         }
 
 
         public void getTelemetryPID(Telemetry telemetry){
             telemetry.addLine("----ARM DATA----");
+            telemetry.addData("Arm Mode: ", armMode);
             telemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
             telemetry.addData("Arm Target: ", armTarget);
             telemetry.addData("Arm Power: ", armPower);

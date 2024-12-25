@@ -196,8 +196,6 @@ public class Sample_Auto extends AutoBase {
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
-
-            //arm.setPose(Arm.Arm_Modes.SPECIMEN_PICKUP); //TODO change to BASKET2 later
             intake.pickup(); //should secure passive/loaded sample
 
 
@@ -211,7 +209,7 @@ public class Sample_Auto extends AutoBase {
                                 waitSeconds(0.2);
                                 intake.drop(); //score
                                 waitSeconds(1);
-                                intake.stop();
+                                //intake.stop();
                                 //arm.setPose(Arm.Arm_Modes.GROUND);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
@@ -222,7 +220,7 @@ public class Sample_Auto extends AutoBase {
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
                                 waitSeconds(.5);
-                                intake.stop();
+                                //intake.stop();
                                 if (groundSamplesScored == 1) {
                                     updateScoreStart(2);
                                 } else if (groundSamplesScored == 2) {
@@ -267,7 +265,7 @@ public class Sample_Auto extends AutoBase {
                             }
                         case PARK:
                             if (!bot.isBusy()) {
-                                intake.stop();
+                                //intake.stop();
                                 waitSeconds(0.3);
                                 //TODO move arm down (a bit for max parking)
                                 currentState = Sample_Auto.State.END;
@@ -277,11 +275,11 @@ public class Sample_Auto extends AutoBase {
                     switch(currentState){
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
-                                intake.stop();
+                                //intake.stop();
                                 waitSeconds(.1);
                                 intake.drop();
                                 waitSeconds(.1);
-                                intake.stop();
+                                //intake.stop();
 
                                 currentState = State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
@@ -293,7 +291,7 @@ public class Sample_Auto extends AutoBase {
                             if (!bot.isBusy()) {
                                 intake.pickup();
                                 waitSeconds(1);
-                                intake.stop();
+                                //intake.stop();
 
                                 if(groundSamplesScored == 1){
                                     updateScoreStart(2);
