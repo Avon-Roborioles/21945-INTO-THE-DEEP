@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.outoftheboxrobotics.photoncore.Photon;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.util.Timing.Timer;
@@ -59,7 +58,7 @@ public class Main_TeleOp extends LinearOpMode {
 
             //Telemetry
             drivetrain.getTelemetryBRIEF(mainTelemetry);
-            arm.getTelemetryPID(mainTelemetry);
+            arm.getTelemetry(mainTelemetry);
             intake.getTelemetryBRIEF(mainTelemetry);
             //vision.getTelemetryBRIEF(telemetry);
             //lighting.getTelemetryBRIEF(telemetry);

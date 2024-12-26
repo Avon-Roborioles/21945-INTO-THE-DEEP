@@ -29,11 +29,11 @@
 
         //absolute positions
         private final int groundPose = 0;
-        private final int autoGround = 700;
+        private final int autoGround = 900;
         private final int basketPose = 5600;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
-        private final int maxArmPose = 5600;
+        private final int maxArmPose = 5750;
 
 
         private final int maxExtendPose = 2700;
@@ -219,8 +219,9 @@
                     setTarget(rung2Pose,maxExtendPose);
                 }
 
-            } else if(d_right.wasJustPressed()){ //TODO
+            } else if(d_right.wasJustPressed()){
                 armMode = Arm_Modes.HOLD_MODE;
+                setTarget(autoGround,maxExtendPose);
 
 
             } else if(d_down.wasJustPressed()){ //ground
@@ -322,7 +323,7 @@
         }
 
 
-        public void getTelemetryPID(Telemetry telemetry){
+        public void getTelemetry(Telemetry telemetry){
             telemetry.addLine("----ARM DATA----");
             telemetry.addData("Arm Mode: ", armMode);
             telemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
@@ -331,23 +332,5 @@
             telemetry.addData("Extend Pose: ",extendMotor.getCurrentPosition());
             telemetry.addData("Extend Target: ", extendTarget);
             telemetry.addData("Extend Power: ", extendPower);
-        }
-
-        public void getTelemetryBRIEF(Telemetry telemetry){
-            telemetry.addLine("----Arm Control Data----");
-            telemetry.addData("Arm Pose:", armMotor.getCurrentPosition());
-            telemetry.addData("Extend Pose: ", extendMotor.getCurrentPosition());
-
-        }
-
-        public void getTelemetryFULL(Telemetry telemetry){
-            telemetry.addLine("----Arm Control Data----");
-            telemetry.addData("Arm Pose:", armMotor.getCurrentPosition());
-            telemetry.addData("Extend Pose: ", extendMotor.getCurrentPosition());
-            telemetry.addData("Arm Target: ", armTarget);
-            telemetry.addData("Arm Power: ", armMotor.get());
-            telemetry.addData("Extend Target: ", extendTarget);
-
-
         }
     }

@@ -30,8 +30,12 @@ public class Intake {
     Sample_Colors currentSampleColor;
     int intakePower = 0;
     double intakeDistance = 0; //cm
+    boolean autoMode = false;
 
     //Raw Color Readings:
+    //Yellow -
+    //Red -
+    //Blue -
 
 
     ToggleButtonReader y_button, a_button, x_button, b_button; //modes
@@ -108,35 +112,60 @@ public class Intake {
     public void run_teleOp(){
         updateToggles();
 
-        //manual trigger control
-        if(driverOp.gamepad.left_trigger > 0){
-            intakePower = 1;
-            intakeServo.set(intakePower);
-        } else if (driverOp.gamepad.right_trigger > 0){
-            intakePower = -1;
-            intakeServo.set(intakePower);
+        if(!autoMode){
+            if(driverOp.gamepad.left_trigger > 0){
+                intakePower = 1;
+            } else if(driverOp.gamepad.right_trigger > 0){
+                intakePower = -1;
+            } else {
+                intakePower = 0;
+            }
+
+
+          if(right_bumper.wasJustPressed()){
+                intakePower = -1;
+                autoMode = true;
+            }
+
         } else {
-            intakePower = 0;
-            intakeServo.set(intakePower);
+            //logic to auto pickup/drop + get out of auto mode
+
+            //full
+            if(isFull()){
+                intakePower = 0;
+                autoMode = false;
+            }
+            //left trigger
+            if(driverOp.gamepad.left_trigger > 0){
+                intakePower = 1;
+                autoMode = false;
+            } else if(driverOp.gamepad.right_trigger > 0){
+                //right trigger
+                intakePower = -1;
+                autoMode = false;
+
+            }
+
         }
 
-        //TODO remove later
-//        if(left_bumper.wasJustPressed()){
-//            intakeSwivel.setPosition(0);
-//        } else if(right_bumper.wasJustPressed()){
-//            intakeSwivel.setPosition(1);
-//        } else if(a_button.wasJustPressed()){
-//            intakeSwivel.setPosition(0.4);
-//        }
+        intakeServo.set(intakePower);
 
     }
 
     //---------AUTO COMMANDS----------------
+    public void run(boolean forward){
+        if(forward){
+            intakePower = -1;
+        } else {
+            intakePower = 1;
+        }
+        intakeServo.set(intakePower);
+    }
+
     //self explanatory
     public void pickup(){
-        //intakeServo.set(-1);
         intakePower = -1;
-        //color sensor logic - turn off when sample is detected
+
     }
 
     public void drop(){
@@ -146,7 +175,6 @@ public class Intake {
     }
 
     public void stop(){
-        //intakeServo.stop();
         intakePower = 0;
     }
 
@@ -173,8 +201,9 @@ public class Intake {
     public void getTelemetryBRIEF(Telemetry telemetry){
         telemetry.addLine("-----Intake Control Data-----");
         telemetry.addData("Current Sample Color: ", currentSampleColor);
-        telemetry.addData("Intake Full?: ", intakeFull);
+        telemetry.addData("Intake Full?: ", isFull());
         telemetry.addData("Intake Power: ", intakePower);
+        telemetry.addData("Auto Mode?: ", autoMode);
     }
 
     public void getTelemetryFULL(Telemetry telemetry){

@@ -7,7 +7,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 
 @Config
@@ -30,7 +29,7 @@ public class ArmTeleOpPIDTest extends LinearOpMode {
 
         while(opModeIsActive()){
             arm.run_PIDTeleOp();
-            arm.getTelemetryPID(mainTelemetry);
+            arm.getTelemetry(mainTelemetry);
             mainTelemetry.update();
         }
     }

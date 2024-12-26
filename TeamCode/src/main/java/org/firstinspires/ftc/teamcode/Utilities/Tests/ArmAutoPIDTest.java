@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
-import org.firstinspires.ftc.teamcode.Autonomous.Sample_Auto;
-import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +39,7 @@ public class ArmAutoPIDTest extends AutoBase {
 
     public void updateAuto(){
         subsystemsUpdate();
-        arm.getTelemetryPID(mainTelemetry);
+        arm.getTelemetry(mainTelemetry);
         intake.getTelemetryFULL(mainTelemetry);
         mainTelemetry.update();
     }
