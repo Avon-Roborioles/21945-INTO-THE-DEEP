@@ -29,7 +29,7 @@
 
         //absolute positions
         private final int groundPose = 0;
-        private final int autoGround = 900;
+        private final int autoGround = 970;
         private final int basketPose = 5600;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
@@ -82,7 +82,7 @@
         boolean hangPriority = false;
 
         //--------TELEOP COMMANDS---------
-        public void initPID(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleop){
+        public void init(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleop){
             driverOp = gamepad;
             time = new ElapsedTime();
 
@@ -161,7 +161,7 @@
             b_button.readValue();
         }
 
-        public void run_PIDTeleOp(){
+        public void run_teleOp(){
             //update variables
             currentArmPose = armMotor.getCurrentPosition();
             currentExtendPose = extendMotor.getCurrentPosition();

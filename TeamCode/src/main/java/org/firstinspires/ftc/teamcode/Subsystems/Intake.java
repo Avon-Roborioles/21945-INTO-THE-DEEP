@@ -31,6 +31,7 @@ public class Intake {
     int intakePower = 0;
     double intakeDistance = 0; //cm
     boolean autoMode = false;
+    boolean pickup = true;
 
     //Raw Color Readings:
     //Yellow -
@@ -164,21 +165,35 @@ public class Intake {
 
     //self explanatory
     public void pickup(){
+        autoMode = true;
         intakePower = -1;
-
+        pickup = true;
     }
 
     public void drop(){
-        //intakeServo.set(1);
+        autoMode = true;
         intakePower = 1;
-        //color sensor logic - turn off when sample is not detected
+        pickup = false;
     }
 
     public void stop(){
         intakePower = 0;
     }
 
-    public void update(){
+    public void update(){ //auto
+        if(autoMode){
+            if(pickup){
+                if(isFull()){
+                    autoMode = false;
+                }
+            } else {
+                if(!isFull()){
+                    autoMode = false;
+                }
+            }
+        } else {
+            intakePower = 0;
+        }
         intakeServo.set(intakePower);
     }
 

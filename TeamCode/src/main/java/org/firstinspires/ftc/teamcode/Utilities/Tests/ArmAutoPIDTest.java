@@ -14,13 +14,14 @@ import java.util.concurrent.TimeUnit;
 public class ArmAutoPIDTest extends AutoBase {
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public enum State{
-        RUNG,
-        BUCKET,
-        GROUND
+        RETRIEVE,
+        SCORE,
+        FINISH
     }
     public State currentState;
     GamepadEx driverOp;
     boolean objectiveDone = false;
+    int count = 0;
 
     public void waitSeconds(double seconds){
         ElapsedTime time = new ElapsedTime();
@@ -41,6 +42,7 @@ public class ArmAutoPIDTest extends AutoBase {
         subsystemsUpdate();
         arm.getTelemetry(mainTelemetry);
         intake.getTelemetryFULL(mainTelemetry);
+        mainTelemetry.addData("State: ", currentState);
         mainTelemetry.update();
     }
 
@@ -57,27 +59,36 @@ public class ArmAutoPIDTest extends AutoBase {
 
         waitForStart();
 
-        currentState = State.RUNG;
-        arm.setTarget(1000,0);
+        currentState = State.RETRIEVE;
+        arm.setTarget(3000,0); //enough room for extend later
+        intake.pickup();
 
         while(opModeIsActive()){
             switch(currentState){
-                case RUNG:
-                    if(!arm.ArmIsBusy()){
-                        waitSeconds(3);
-                        arm.setTarget(5600,2000);
-                        currentState = State.BUCKET;
-                        break;
+                case RETRIEVE:
+                    if((!arm.ArmIsBusy())){
+                            waitSeconds(1.5);
+                            arm.setTarget(5600, 2000);
+                            currentState = State.SCORE;
+                            break;
                     }
-                case BUCKET:
+                case SCORE:
                     if(!arm.ArmIsBusy()){
-                        waitSeconds(3);
+                        count++;
+                        intake.drop();
+                        waitSeconds(1.5);
 
-                        arm.setTarget(0,0);
-                        currentState = State.GROUND;
-                        break;
+                        if(count == 5){
+                            arm.setTarget(0, 0);
+                            currentState = State.FINISH;
+                            break;
+                        } else {
+                            arm.setTarget(900,2700);
+                            currentState = State.RETRIEVE;
+                            intake.pickup();
+                        }
                     }
-                case GROUND:
+                case FINISH:
                     break;
             }
 

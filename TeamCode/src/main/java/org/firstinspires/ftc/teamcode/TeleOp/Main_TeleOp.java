@@ -38,7 +38,7 @@ public class Main_TeleOp extends LinearOpMode {
         //initialize subsystems
         feedback.init();
         drivetrain.init(hardwareMap, Driver1Op);
-        arm.initPID(hardwareMap,Driver2Op, true);
+        arm.init(hardwareMap,Driver2Op, true);
         intake.init(hardwareMap, Driver2Op);
         //vision.init(hardwareMap);
         //lighting.init(hardwareMap);
@@ -53,7 +53,7 @@ public class Main_TeleOp extends LinearOpMode {
 
 
             //Driver 2 Controls
-            arm.run_PIDTeleOp();
+            arm.run_teleOp();
             intake.run_teleOp();
 
             //Telemetry

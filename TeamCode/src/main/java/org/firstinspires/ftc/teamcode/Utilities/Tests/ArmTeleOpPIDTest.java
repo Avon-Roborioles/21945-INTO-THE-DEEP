@@ -22,13 +22,13 @@ public class ArmTeleOpPIDTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         GamepadEx driverOp = new GamepadEx(gamepad2);
 
-        arm.initPID(hardwareMap,driverOp,true);
+        arm.init(hardwareMap,driverOp,true);
 
 
         waitForStart();
 
         while(opModeIsActive()){
-            arm.run_PIDTeleOp();
+            arm.run_teleOp();
             arm.getTelemetry(mainTelemetry);
             mainTelemetry.update();
         }
