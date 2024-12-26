@@ -59,7 +59,7 @@ public class Main_TeleOp extends LinearOpMode {
             //Telemetry
             drivetrain.getTelemetryBRIEF(mainTelemetry);
             arm.getTelemetry(mainTelemetry);
-            intake.getTelemetryBRIEF(mainTelemetry);
+            intake.getTelemetryFULL(mainTelemetry);
             //vision.getTelemetryBRIEF(telemetry);
             //lighting.getTelemetryBRIEF(telemetry);
             mainTelemetry.addData("OpMode Timer: ", opModeTimer.remainingTime());

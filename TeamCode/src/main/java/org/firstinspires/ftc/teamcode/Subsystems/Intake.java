@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -33,10 +34,10 @@ public class Intake {
     boolean autoMode = false;
     boolean pickup = true;
 
-    //Raw Color Readings:
-    //Yellow -
-    //Red -
-    //Blue -
+    //Raw Color Readings with (Gain 2):
+    //Yellow - 0.031 red, 0.042 green, 0.013 blue
+    //Red - 0.147 red, 0.087 green, 0.053 blue
+    //Blue - 0.008 red, 0.015 green, 0.03 blue
 
 
     ToggleButtonReader y_button, a_button, x_button, b_button; //modes
@@ -57,6 +58,7 @@ public class Intake {
 
         intakeServo = new CRServo(hardwareMap, "intake");
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+        colorSensor.setGain(2);
         intakeServo.setRunMode(Motor.RunMode.RawPower);
         intakeServo.set(intakePower);
 
@@ -206,9 +208,26 @@ public class Intake {
 
     //returns color of sample, returns NONE if no color is detected
     public Sample_Colors get_sample_color(){
-
+        //Raw Color Readings with (Gain 2):
+        //Yellow - 0.031 red, 0.042 green, 0.013 blue
+        //Red - 0.147 red, 0.087 green, 0.053 blue
+        //Blue - 0.008 red, 0.015 green, 0.03 blue
         //logic
+        // Get the normalized colors from the sensor
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        double redValue = colors.red;
 
+        if(isFull()){
+            if(redValue > 0.1){
+                currentSampleColor = Sample_Colors.RED;
+            } else if(redValue > 0.02){
+                currentSampleColor = Sample_Colors.YELLOW;
+            } else {
+                currentSampleColor = Sample_Colors.BLUE;
+            }
+        } else {
+            currentSampleColor = Sample_Colors.NONE;
+        }
         return currentSampleColor;
     }
 
@@ -223,8 +242,9 @@ public class Intake {
 
     public void getTelemetryFULL(Telemetry telemetry){
         telemetry.addLine("-----Intake Control Data-----");
-        telemetry.addData("Current Sample Color: ", currentSampleColor);
-        telemetry.addData("Intake Full?: ", intakeFull);
+        telemetry.addData("Current Sample Color: ", get_sample_color());
+        telemetry.addData("Intake Full?: ", isFull());
         telemetry.addData("Intake Power: ", intakePower);
+        telemetry.addData("Intake Auto Mode: ", autoMode);
     }
 }
