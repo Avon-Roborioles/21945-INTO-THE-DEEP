@@ -52,7 +52,7 @@ public class Main_TeleOp extends LinearOpMode {
             drivetrain.run_teleOp(feedback);
 
             //Driver 2 Controls
-            arm.run_teleOp();
+            arm.run_teleOp(feedback);
             intake.run_teleOp();
 
             //endgame alert to drivers

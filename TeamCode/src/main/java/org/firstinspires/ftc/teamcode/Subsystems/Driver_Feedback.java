@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Driver_Feedback {
     //useful objects & variables
     ElapsedTime endgameTimer;
-    boolean Driver1Alert = false;
-    boolean Driver2Alert = false;
 
     /**
      * creates the end-game timer to alert drivers
@@ -64,6 +62,25 @@ public class Driver_Feedback {
     public void alert_drivers(GamepadEx driver1Op, GamepadEx driver2Op){
         driver1Op.gamepad.rumbleBlips(3);
         driver2Op.gamepad.rumbleBlips(3);
+    }
+
+    public void alert_side(boolean left,GamepadEx driverOp){
+        Gamepad.RumbleEffect leftRumble;
+        Gamepad.RumbleEffect rightRumble;
+
+        leftRumble = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.2,0,500)
+                .build();
+
+        rightRumble = new Gamepad.RumbleEffect.Builder()
+                .addStep(0,0.2,500)
+                .build();
+
+        if(left){
+            driverOp.gamepad.runRumbleEffect(leftRumble);
+        } else {
+            driverOp.gamepad.runRumbleEffect(rightRumble);
+        }
     }
 
 

@@ -277,8 +277,130 @@
             updateToggles();
         }
 
+        public void run_teleOp(Driver_Feedback feedback){
+            //update variables
+            currentArmPose = armMotor.getCurrentPosition();
+            currentExtendPose = extendMotor.getCurrentPosition();
+            leftY = driverOp.getLeftY(); //arm
+            rightY = driverOp.getRightY(); //extend
+            double decelTimeConstant = 0.06; //seconds to decelerate
+
+            //manual arm control with limits
+            //saves armTarget as arm current position for holding later
+            if(leftY > 0){
+                armMode = Arm_Modes.DRIVER_MODE;
+                if(currentArmPose < maxArmPose) {
+                    //int finalTarget = (int) (currentArmPose + ((-armMotor.getVelocity()) * decelTimeConstant));
+                    setTarget(currentArmPose, currentExtendPose);
+                    armPower = 0.7 * Math.abs(leftY); //added sensitivity
+                }
+
+            } else if(leftY < 0){
+                armMode = Arm_Modes.DRIVER_MODE;
+                if(currentArmPose > groundPose) {
+                    //int finalTarget = (int) (currentArmPose + (armMotor.getVelocity() * decelTimeConstant));
+                    setTarget(currentArmPose,currentExtendPose);
+                    armPower = -0.5 * Math.abs(leftY); //added sensitivity
+                }
+            } else {
+                armMode = Arm_Modes.HOLD_MODE;
+            }
+
+            //manual extension control with limits
+            if (rightY < 0) {
+                if(currentExtendPose < maxExtendPose) {
+                    extendHold = false;
+                    setTarget(currentArmPose,currentExtendPose);
+                    extendPower = 1* Math.abs(rightY); //added sensitivity
+                }
+
+            }else if(rightY > 0){
+                if(currentExtendPose > 0) {
+                    extendHold = false;
+                    setTarget(currentArmPose,currentExtendPose);
+                    extendPower = -1* Math.abs(rightY); //added sensitivity
+                }
+            } else {
+                extendHold = true;
+            }
 
 
+            //d-pad height presets
+            if(d_left.wasJustPressed()){ //rung toggle
+                feedback.alert_side(true,driverOp);
+                armMode = Arm_Modes.HOLD_MODE;
+                if(d_left.getState()){
+                    setTarget(rung1Pose,maxExtendPose);
+                } else {
+                    setTarget(rung2Pose,maxExtendPose);
+                }
+
+            } else if(d_right.wasJustPressed()){ //ground
+                feedback.alert_side(true,driverOp);
+                armMode = Arm_Modes.HOLD_MODE;
+                setTarget(autoGround,maxExtendPose);
+
+
+            } else if(d_down.wasJustPressed()){ //ground
+                feedback.alert_side(true,driverOp);
+                armMode = Arm_Modes.HOLD_MODE;
+                setTarget(groundPose,0);
+
+            } else if(d_up.wasJustPressed()){ //basket
+                feedback.alert_side(true,driverOp);
+                armMode = Arm_Modes.HOLD_MODE;
+                setTarget(maxArmPose,maxExtendPose);
+            }
+
+            //y button hang mode
+            if(y_button.wasJustPressed()){
+                feedback.alert_side(false,driverOp);
+                armMode = Arm_Modes.HANG_MODE;
+            }
+
+            if(a_button.wasJustPressed()){
+                feedback.alert_side(false,driverOp);
+            }
+
+            parallelIntakeMode = a_button.getState();
+
+            //control arm power for hang and hold modes
+            if(armMode == Arm_Modes.HOLD_MODE){ //code from update() except motor set power
+                MotionState state = motionProfile.get(time.time());
+
+                double instantTarget = state.getX();
+                double instantVelocity = state.getV();
+
+                double measuredVelocity = armMotor.getVelocity() * -1;
+
+                Vector measuredState = new Vector(new double[] {currentArmPose,measuredVelocity});
+                Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
+
+                try {
+                    armPower = armController.calculate(targetState,measuredState);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                //armMotor.setVelocity(-instantVelocity);
+            } else if(armMode == Arm_Modes.HANG_MODE){
+                armPower = -0.8; //near maximum power to pull up
+            }
+
+            //control extend power
+            if(extendHold){
+                if(parallelIntakeMode) {
+                    if (currentArmPose < autoGround) {
+                        extendTarget = (int) 3.7 * currentArmPose;
+                    }
+                }
+                extendPower = extendController.calculate(extendTarget,currentExtendPose);
+            }
+
+            armMotor.set(armPower);
+            extendMotor.set(extendPower);
+            updateToggles();
+        }
         //--------AUTO COMMANDS------------
         public boolean ArmIsBusy(){
             return instantTarget != armTarget;
@@ -324,7 +446,6 @@
             armMotor.set(armPower);
             extendMotor.set(extendPower);
         }
-
 
         public void getTelemetry(Telemetry telemetry){
             telemetry.addLine("----ARM DATA----");
