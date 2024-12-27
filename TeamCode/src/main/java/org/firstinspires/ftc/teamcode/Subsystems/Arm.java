@@ -29,11 +29,10 @@
 
         //absolute positions
         private final int groundPose = 0;
-        private final int autoGround = 970;
-        private final int basketPose = 5600;
+        private final int autoGround = 760;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
-        private final int maxArmPose = 5750;
+        private final int maxArmPose = 5800;
 
 
         private final int maxExtendPose = 2700;
@@ -63,8 +62,9 @@
         FullStateFeedback armController;
         PIDCoefficients extendCoefficients;
         BasicPID extendController;
-        ElapsedTime time;
-        boolean busy = false;
+        public ElapsedTime time;
+        public boolean busy = false;
+        public boolean parallelIntakeMode = true;
 
         //control variables
         GamepadEx driverOp;
@@ -167,7 +167,6 @@
             currentExtendPose = extendMotor.getCurrentPosition();
             leftY = driverOp.getLeftY(); //arm
             rightY = driverOp.getRightY(); //extend
-            updateToggles();
             double decelTimeConstant = 0.06; //seconds to decelerate
 
             //manual arm control with limits
@@ -219,7 +218,7 @@
                     setTarget(rung2Pose,maxExtendPose);
                 }
 
-            } else if(d_right.wasJustPressed()){
+            } else if(d_right.wasJustPressed()){ //ground
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(autoGround,maxExtendPose);
 
@@ -230,7 +229,7 @@
 
             } else if(d_up.wasJustPressed()){ //basket
                 armMode = Arm_Modes.HOLD_MODE;
-                setTarget(basketPose,maxExtendPose);
+                setTarget(maxArmPose,maxExtendPose);
             }
 
             //y button hang mode
@@ -238,7 +237,7 @@
                 armMode = Arm_Modes.HANG_MODE;
             }
 
-
+            parallelIntakeMode = a_button.getState();
 
             //control arm power for hang and hold modes
             if(armMode == Arm_Modes.HOLD_MODE){ //code from update() except motor set power
@@ -265,6 +264,11 @@
 
             //control extend power
             if(extendHold){
+                if(parallelIntakeMode) {
+                    if (currentArmPose < autoGround) {
+                        extendTarget = (int) 3.7 * currentArmPose;
+                    }
+                }
                 extendPower = extendController.calculate(extendTarget,currentExtendPose);
             }
 
@@ -272,7 +276,6 @@
             extendMotor.set(extendPower);
             updateToggles();
         }
-
 
 
 
@@ -332,5 +335,6 @@
             telemetry.addData("Extend Pose: ",extendMotor.getCurrentPosition());
             telemetry.addData("Extend Target: ", extendTarget);
             telemetry.addData("Extend Power: ", extendPower);
+            telemetry.addData("Parallel Intake Mode: ", parallelIntakeMode);
         }
     }
