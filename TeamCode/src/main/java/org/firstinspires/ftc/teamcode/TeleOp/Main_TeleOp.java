@@ -51,10 +51,14 @@ public class Main_TeleOp extends LinearOpMode {
             //Driver 1 Controls
             drivetrain.run_teleOp(feedback);
 
-
             //Driver 2 Controls
             arm.run_teleOp();
             intake.run_teleOp();
+
+            //endgame alert to drivers
+            if(opModeTimer.remainingTime() == 30){
+                feedback.alert_drivers(Driver1Op,Driver2Op);
+            }
 
             //Telemetry
             drivetrain.getTelemetryBRIEF(mainTelemetry);

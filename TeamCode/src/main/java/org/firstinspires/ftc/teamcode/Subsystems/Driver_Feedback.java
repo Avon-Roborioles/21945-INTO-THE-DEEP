@@ -18,13 +18,7 @@ public class Driver_Feedback {
         endgameTimer = new ElapsedTime(90);
     }
 
-   /**
-    * starts the Endgame Timer
-    */
-    public void startTimer(){
-        endgameTimer.startTime();
 
-    }
 
     /**
      *alerts the specifed driver with a percise amount of strength; mainly used for subsystem aerts
