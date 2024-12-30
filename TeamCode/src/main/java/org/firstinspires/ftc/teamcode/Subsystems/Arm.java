@@ -29,7 +29,7 @@
 
         //absolute positions
         private final int groundPose = 0;
-        private final int autoGround = 760;
+        private final int autoGround = 800;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
         private final int maxArmPose = 5800;
@@ -283,14 +283,14 @@
             currentExtendPose = extendMotor.getCurrentPosition();
             leftY = driverOp.getLeftY(); //arm
             rightY = driverOp.getRightY(); //extend
-            double decelTimeConstant = 0.06; //seconds to decelerate
+            double decelTimeConstant = 0.25; //seconds to decelerate
 
             //manual arm control with limits
             //saves armTarget as arm current position for holding later
             if(leftY > 0){
                 armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose < maxArmPose) {
-                    //int finalTarget = (int) (currentArmPose + ((-armMotor.getVelocity()) * decelTimeConstant));
+                    //int finalTarget = (int) (currentArmPose + (-armMotor.getVelocity() * decelTimeConstant));
                     setTarget(currentArmPose, currentExtendPose);
                     armPower = 0.7 * Math.abs(leftY); //added sensitivity
                 }
@@ -327,6 +327,7 @@
 
             //d-pad height presets
             if(d_left.wasJustPressed()){ //rung toggle
+                parallelIntakeMode = true;
                 feedback.alert_side(true,driverOp);
                 armMode = Arm_Modes.HOLD_MODE;
                 if(d_left.getState()){
@@ -335,34 +336,36 @@
                     setTarget(rung2Pose,maxExtendPose);
                 }
 
-            } else if(d_right.wasJustPressed()){ //ground
+            } else if(d_right.wasJustPressed()){ //intake to ground
+                parallelIntakeMode = false;
                 feedback.alert_side(true,driverOp);
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(autoGround,maxExtendPose);
 
 
             } else if(d_down.wasJustPressed()){ //ground
+                parallelIntakeMode = false;
                 feedback.alert_side(true,driverOp);
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(groundPose,0);
 
             } else if(d_up.wasJustPressed()){ //basket
+                parallelIntakeMode = true;
                 feedback.alert_side(true,driverOp);
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(maxArmPose,maxExtendPose);
             }
 
-            //y button hang mode
-            if(y_button.wasJustPressed()){
+            if(y_button.wasJustPressed()){ //hang
                 feedback.alert_side(false,driverOp);
                 armMode = Arm_Modes.HANG_MODE;
             }
 
-            if(a_button.wasJustPressed()){
+            if(a_button.wasJustPressed()){ //switch on and off parallel intake
                 feedback.alert_side(false,driverOp);
+                parallelIntakeMode = !parallelIntakeMode;
             }
 
-            parallelIntakeMode = a_button.getState();
 
             //control arm power for hang and hold modes
             if(armMode == Arm_Modes.HOLD_MODE){ //code from update() except motor set power
@@ -390,8 +393,8 @@
             //control extend power
             if(extendHold){
                 if(parallelIntakeMode) {
-                    if (currentArmPose < autoGround) {
-                        extendTarget = (int) 3.7 * currentArmPose;
+                    if (currentArmPose < autoGround && currentArmPose > 100) {
+                        extendTarget = (int) 3.5 * currentArmPose;
                     }
                 }
                 extendPower = extendController.calculate(extendTarget,currentExtendPose);
@@ -451,6 +454,7 @@
             telemetry.addLine("----ARM DATA----");
             telemetry.addData("Arm Mode: ", armMode);
             telemetry.addData("Arm Pose: ", armMotor.getCurrentPosition());
+            telemetry.addData("Arm Velocity: ", armMotor.getVelocity());
             telemetry.addData("Arm Target: ", armTarget);
             telemetry.addData("Arm Power: ", armPower);
             telemetry.addData("Extend Pose: ",extendMotor.getCurrentPosition());
