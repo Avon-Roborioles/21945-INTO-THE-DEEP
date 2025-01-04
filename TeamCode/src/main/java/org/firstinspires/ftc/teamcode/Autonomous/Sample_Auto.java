@@ -27,6 +27,7 @@ public class Sample_Auto extends AutoBase {
     AutoPoses AutoPose = getAutoPose();
     GamepadEx driverOp;
     String message = "";
+    ElapsedTime pathTimer;
 
 
     //Finite State Machine (FSM) variables
@@ -173,6 +174,8 @@ public class Sample_Auto extends AutoBase {
 
             driverOp = new GamepadEx(gamepad1);
 
+            pathTimer = new ElapsedTime();
+
             //initialize subsystems
             init_classes(driverOp);
 
@@ -197,7 +200,8 @@ public class Sample_Auto extends AutoBase {
             currentState = State.SCORE_PASSIVE;
             bot.followPath(scorePassive, true);
             intake.pickup(); //should secure passive/loaded sample
-
+            arm.setTarget(4000,200);
+            pathTimer.reset();
 
 
             while (opModeIsActive()) {
@@ -209,16 +213,19 @@ public class Sample_Auto extends AutoBase {
                                 waitSeconds(0.2);
                                 intake.drop(); //score
                                 waitSeconds(1);
-                                //intake.stop();
+                                intake.stop();
+                                arm.setTarget(0,0);
                                 //arm.setPose(Arm.Arm_Modes.GROUND);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
-                                intake.pickup();
+                                pathTimer.reset();
+                                //intake.pickup();
                                 break;
                             }
 
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
+                                arm.setTarget(0,0);
                                 waitSeconds(.5);
                                 //intake.stop();
                                 if (groundSamplesScored == 1) {
@@ -229,6 +236,7 @@ public class Sample_Auto extends AutoBase {
 
                                 currentState = State.SCORE;
                                 bot.followPath(Score, true);
+                                pathTimer.reset();
                                 //TODO move arm up
                                 break;
                             }
@@ -236,28 +244,31 @@ public class Sample_Auto extends AutoBase {
                         case SCORE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.3);
-                                intake.drop();
+                                //intake.drop();
                                 waitSeconds(1);
                                 groundSamplesScored++;
 
                                 if (groundSamplesScored == 1) {
                                     currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                     bot.followPath(Sample2, true);
-                                    intake.pickup();
+                                    pathTimer.reset();
+                                    //intake.pickup();
                                     //TODO move arm down
                                     //TODO run intake (pickup)
                                     break;
                                 } else if (groundSamplesScored == 2) {
                                     currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                     bot.followPath(Sample3, true);
-                                    intake.pickup();
+                                    pathTimer.reset();
+                                    //intake.pickup();
                                     //TODO move arm down
                                     //TODO run intake (pickup)
                                     break;
                                 } else {
                                     currentState = Sample_Auto.State.PARK;
                                     bot.followPath(Park, true);
-                                    intake.pickup();
+                                    pathTimer.reset();
+                                    //intake.pickup();
                                     //TODO move arm down (for parking)
                                     //TODO stop intake
                                     break;
@@ -277,19 +288,20 @@ public class Sample_Auto extends AutoBase {
                             if (!bot.isBusy()) {
                                 //intake.stop();
                                 waitSeconds(.1);
-                                intake.drop();
+                                //intake.drop();
                                 waitSeconds(.1);
                                 //intake.stop();
 
                                 currentState = State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
+                                pathTimer.reset();
                                 break;
 
                             };
                         case GET_GROUND_SAMPLE:
                             //TODO add updateScoreStart()
                             if (!bot.isBusy()) {
-                                intake.pickup();
+                                //intake.pickup();
                                 waitSeconds(1);
                                 //intake.stop();
 
@@ -301,6 +313,7 @@ public class Sample_Auto extends AutoBase {
 
                                 currentState = State.DROPOFF_SAMPLE;
                                 bot.followPath(SampleDropoff, true);
+                                pathTimer.reset();
                                 break;
                             };
                         case DROPOFF_SAMPLE:
@@ -316,6 +329,7 @@ public class Sample_Auto extends AutoBase {
                                 waitSeconds(.3);
                                 currentState = State.SCORE;
                                 bot.followPath(Score, true);
+                                pathTimer.reset();
                                 break;
                             }
                         case SCORE: //TODO------------------
@@ -326,16 +340,19 @@ public class Sample_Auto extends AutoBase {
                                     //sample2
                                     currentState = State.GET_GROUND_SAMPLE;
                                     bot.followPath(Sample2);
+                                    pathTimer.reset();
                                     break;
                                 } else if(groundSamplesScored == 2){
                                     //sample3
                                     currentState = State.GET_GROUND_SAMPLE;
                                     bot.followPath(Sample3);
+                                    pathTimer.reset();
                                     break;
                                 } else {
                                     //park
                                     currentState = State.PARK;
                                     bot.followPath(Park);
+                                    pathTimer.reset();
                                     break;
                                 }
 

@@ -18,13 +18,13 @@ public class PoseStoragePedro {
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose LeftSample1 = new Pose(-41+72,-35+72, Math.toRadians(135)); //Done
+    public static Pose LeftSample1 = new Pose(-39+72,-24+72, Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample2 = new Pose(-50+72,-33+72, Math.toRadians(145)); //Done
+    public static Pose LeftSample2 = new Pose(-48+72,-24+72, Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3 = new Pose(-58+72,-24+72,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3 = new Pose(-56+72,-24+72,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftBucketScore = new Pose(-53+72,-52+72,Math.toRadians(45)); //Done - 225
+    public static Pose LeftBucketScore = new Pose(-51+72,-50+72,Math.toRadians(225)); //Done - 225
 
     public static Pose PitSamples = new Pose(-20+72,-26+72,Math.toRadians(0)); //TODO Hits cage
 
