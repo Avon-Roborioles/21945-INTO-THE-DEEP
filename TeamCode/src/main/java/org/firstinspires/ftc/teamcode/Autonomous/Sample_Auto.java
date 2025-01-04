@@ -210,23 +210,21 @@ public class Sample_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
-                                waitSeconds(0.2);
+                                waitSeconds(0.1);
                                 intake.drop(); //score
                                 waitSeconds(1);
                                 intake.stop();
                                 arm.setTarget(0,0);
-                                //arm.setPose(Arm.Arm_Modes.GROUND);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                 bot.followPath(Sample1, true);
+                                intake.pickup();
                                 pathTimer.reset();
-                                //intake.pickup();
                                 break;
                             }
 
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
-                                arm.setTarget(0,0);
-                                waitSeconds(.5);
+                                waitSeconds(.1);
                                 //intake.stop();
                                 if (groundSamplesScored == 1) {
                                     updateScoreStart(2);
@@ -236,49 +234,44 @@ public class Sample_Auto extends AutoBase {
 
                                 currentState = State.SCORE;
                                 bot.followPath(Score, true);
+                                arm.setTarget(4000,200);
                                 pathTimer.reset();
-                                //TODO move arm up
                                 break;
                             }
 
                         case SCORE:
                             if (!bot.isBusy()) {
-                                waitSeconds(0.3);
-                                //intake.drop();
+                                waitSeconds(0.1);
+                                intake.drop();
                                 waitSeconds(1);
                                 groundSamplesScored++;
 
                                 if (groundSamplesScored == 1) {
                                     currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                     bot.followPath(Sample2, true);
+                                    arm.setTarget(0,0);
+                                    intake.pickup();
                                     pathTimer.reset();
-                                    //intake.pickup();
-                                    //TODO move arm down
-                                    //TODO run intake (pickup)
                                     break;
                                 } else if (groundSamplesScored == 2) {
                                     currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
                                     bot.followPath(Sample3, true);
+                                    arm.setTarget(0,0);
+                                    intake.pickup();
                                     pathTimer.reset();
-                                    //intake.pickup();
-                                    //TODO move arm down
-                                    //TODO run intake (pickup)
                                     break;
                                 } else {
                                     currentState = Sample_Auto.State.PARK;
                                     bot.followPath(Park, true);
+                                    arm.setTarget(0,0); //TODO adjust this so bot touches ascend rung
+                                    intake.stop();
                                     pathTimer.reset();
-                                    //intake.pickup();
-                                    //TODO move arm down (for parking)
-                                    //TODO stop intake
                                     break;
                                 }
                             }
                         case PARK:
                             if (!bot.isBusy()) {
-                                //intake.stop();
-                                waitSeconds(0.3);
-                                //TODO move arm down (a bit for max parking)
+                                waitSeconds(0.1);
                                 currentState = Sample_Auto.State.END;
                             }
                     }
