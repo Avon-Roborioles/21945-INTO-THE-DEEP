@@ -160,6 +160,7 @@ public class Sample_Auto extends AutoBase {
         subsystemsUpdate();
         //arm.runPassiveExtend();
         PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
+        telemetry.addLine("---AUTO DATA---");
         telemetry.addData("Selected Auto Position: ", AutoPose);
         telemetry.addData("Selected Park Position: ", AutoPose);
         telemetry.addData("Current State: ", currentState);
@@ -168,6 +169,12 @@ public class Sample_Auto extends AutoBase {
         telemetry.addData("Heading Position: ", bot.getPose().getHeading());
         telemetry.addData("Message: ", message);
         telemetry.addData("Path Timer: ", pathTimer.time(TimeUnit.SECONDS));
+        if(AutoPose == AutoPoses.LEFT){
+            telemetry.addData("Samples Scored: ", groundSamplesScored);
+        } else {
+            telemetry.addData("Specimens Scored: ", groundSamplesScored);
+        }
+        getSubsystemTelemetry(telemetry);
         telemetry.update();
     }
 

@@ -5,6 +5,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
@@ -137,6 +139,13 @@ public class AutoBase extends LinearOpMode {
         arm.update();
 //        lighting.update();
 //        vision.update();
+    }
+
+    public void getSubsystemTelemetry(Telemetry telemetry){
+        arm.getTelemetry(telemetry);
+        intake.getTelemetryFULL(telemetry);
+        //vision.getTelemetry(telemetry);
+        //lighting.getTelemetry(telemetry);
     }
 
     /**
