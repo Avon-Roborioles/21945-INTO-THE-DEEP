@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 /**
  * The Complete Class for our team's Computer Vision Efforts
  * Features include Specimen Alignment Calculations, Pit Sample Detection, & More
- * TODO - get offset of camera from ground, and center of arm (ideally robot width / 2)
+ * TODO - get offset of camera from ground and camera from bot center
  */
 public class Computer_Vision {
     //LimeLight Pipeline Creation: (General) http://limelight.local:5801/ , (Windows) http://172.28.0.1:5801/ , (Mac) http://172.29.0.1:5801/
@@ -25,7 +25,7 @@ public class Computer_Vision {
 
 
      Documentation Notes
-     One of the most important features we offer is the one-click crosshair. The crosshair, dual crosshair,
+     One of the most important features limelight offers is the one-click crosshair. The crosshair, dual crosshair,
      tx, ty, ta, ts, tvert, and all other standard limelight NetworkTables readings will automatically latch to the
      contour you return from the python runPipeline() function.
 
@@ -56,8 +56,9 @@ public class Computer_Vision {
     LLStatus status;
     long resultAge; //tells us the age (in milliseconds of our results data)
     double targetX, targetY, targetArea; //easy to use values of target from pipeline
-    double[] specimenAlignment; //array of calculated x, y, & heading values from limelight to adjust to hanged specimen
-    double[] closestSample; //used when looking in the pit for a sample that matches our alliance color
+    double specimenAlignment; //array of calculated x, y, & heading values from limelight to adjust to hanged specimen
+    double closestSample; //used when looking in the pit for a sample that matches our alliance color
+    int allianceColor = 0; //0 is red, 1 is blue
 
     public enum SampleColors{
         RED,
@@ -65,6 +66,9 @@ public class Computer_Vision {
         YELLOW
     }
 
+
+    //llrobot array data - {int color}
+    //llpython array data - {int strafeDistance}
 
     //-----------Private Vision Methods-------------------
 
@@ -80,10 +84,10 @@ public class Computer_Vision {
     /**
      * Pulls any Data from Custom Limelight Camera Python Pipelines
      */
-    private double[] getData(){
+    private void getData(){
         pythonResults = result.getPythonOutput();
         resultAge = result.getStaleness();
-        return pythonResults;
+        //return pythonResults;
     }
 
     //----------Common Auto Methods-----------------------
@@ -91,18 +95,27 @@ public class Computer_Vision {
      * Used to setup cameras & vision pipelines
      * @param hardwareMap used to find camera objects
      */
-    public void init(HardwareMap hardwareMap){
+    public void init(HardwareMap hardwareMap, boolean redAlliance){
         //limelight camera initialization
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
         limelight.pipelineSwitch(0); //selects the 1st pipeline saved on the camera (10 saved max)
         limelight.start(); //starts the selected pipeline
+
+        //alliance selection
+        if(redAlliance){
+            allianceColor = 0;
+        } else {
+            allianceColor = 1;
+        }
     }
 
     /**
      * updates all current vision processes and pipelines
      */
     public void update(){
+        limelight.updatePythonInputs(new double[] {allianceColor});
+        getData();
         result = limelight.getLatestResult();
         if(result != null){
             if(result.isValid()){
@@ -119,17 +132,24 @@ public class Computer_Vision {
     /**
      * @return An array of alignment values for Pedro-Pathing (x, y, heading)
      */
-    public double[] getSpecimenAlignment(){
+    public double getSpecimenAlignment(){
         //get values from limelight (ideally, all calculations are offloaded to camera)
-
-        return specimenAlignment;
+        limelight.pipelineSwitch(0);
+        return pythonResults[0];
     }
 
     //TODO
-    public double[] getClosestSample(SampleColors color){
-        //get values from lightlight
+    public double getClosestSample(SampleColors color){
+        //get values from limelight
+        limelight.pipelineSwitch(1);
 
         return closestSample;
+    }
+
+    //TODO - uses field april tags to adjust bot pose on field
+    public double[] getFieldAdjustments(){
+        double[] result = {0,0,0};
+        return result;
     }
 
 

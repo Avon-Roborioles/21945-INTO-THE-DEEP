@@ -54,7 +54,7 @@ public class LED {
 
     //All LED objects
 
-    //----------TELEOP COMMANDS------------------
+    //--------- ALL COMMANDS------------------
     public void init(HardwareMap hardwareMap){
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
     }
@@ -70,9 +70,6 @@ public class LED {
 //        ledCycleDeadline = new Deadline(LED_PERIOD, TimeUnit.SECONDS);
 //        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
     }
-
-
-    //----------AUTO COMMANDS---------------------
 
     /**set all lighting to constant purple
      * - PURPLE, RED, YELLOW, BLUE, GREEN, GRAY
@@ -106,6 +103,9 @@ public class LED {
         }
 
     }
+
+    //updates lighting in auto
+    public void update(){}
 
     //turn off all lighting
     public void OFF(){

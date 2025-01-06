@@ -12,9 +12,10 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 //this class is used by all auto programs to access subsystem controls & AutoMenu
 public class AutoBase extends LinearOpMode {
     //subsystem objects - arm, intake, lift, etc
-    protected org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
     protected org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
     protected org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
+    protected org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
+    protected org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
 
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down,d_left,d_right;
@@ -67,8 +68,6 @@ public class AutoBase extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {}
 
-    public void init_classes(){
-    }
 
     /**
     * used by new auto programs to init subsystems
@@ -92,6 +91,8 @@ public class AutoBase extends LinearOpMode {
 
         intake.init(hardwareMap, driverOp);
         arm.init(hardwareMap, driverOp, false);
+//        lighting.init(hardwareMap);
+//        vision.init(hardwareMap);
     }
 
 
@@ -134,6 +135,8 @@ public class AutoBase extends LinearOpMode {
     public void subsystemsUpdate(){
         intake.update();
         arm.update();
+//        lighting.update();
+//        vision.update();
     }
 
     /**

@@ -306,7 +306,6 @@ public class Sample_Auto extends AutoBase {
                             }
                         case PARK:
                             if (!bot.isBusy()) {
-                                waitSeconds(0.1);
                                 currentState = Sample_Auto.State.END;
                             }
                     }
