@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 //import needed libraries
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
@@ -52,8 +56,6 @@ public class Sample_Auto extends AutoBase {
             scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStoragePedro.LeftBucketScore.getHeading());
             scorePassive.setPathEndVelocityConstraint(20);
 
-            //Sample1 = new Path(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample1.getPoint()));
-            //Sample1.setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample1.getHeading());
             Sample1 = bot.pathBuilder() //drives to control pose first then leftSample1 to scoop sample
                     .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSampleControlPose.getPoint()))
                     .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSampleControlPose.getHeading())
@@ -61,8 +63,7 @@ public class Sample_Auto extends AutoBase {
                     .setConstantHeadingInterpolation(PoseStoragePedro.LeftSampleControlPose.getHeading())
                     .build();
 
-            //Sample2 = new Path(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample2.getPoint()));
-            //Sample2.setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample2.getHeading());
+
             Sample2 = bot.pathBuilder() //drives to sample1 pose first then sample2 pose to scoop sample
                     .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample1.getPoint()))
                     .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample1.getHeading())
@@ -70,8 +71,7 @@ public class Sample_Auto extends AutoBase {
                     .setConstantHeadingInterpolation(PoseStoragePedro.LeftSample1.getHeading())
                     .build();
 
-            //Sample3 = new Path(new BezierLine(PoseStoragePedro.LeftCheckPoint.getPoint(), PoseStoragePedro.LeftSample3.getPoint()));
-            //Sample3.setLinearHeadingInterpolation(PoseStoragePedro.LeftCheckPoint.getHeading(), PoseStoragePedro.LeftSample3.getHeading());
+
             Sample3 = bot.pathBuilder() //drives to sample2 pose first then sample3 to scoop sample
                     .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample2.getPoint()))
                     .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample2.getHeading())
@@ -154,28 +154,35 @@ public class Sample_Auto extends AutoBase {
         }
     }
 
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+    TelemetryPacket fieldPacket = new TelemetryPacket();
+
     //various PID updating & Telemetry Data bundled into one method
     public void updateAuto(){
         bot.update(); //controls Pedro-Pathing logic
         subsystemsUpdate();
         //arm.runPassiveExtend();
         PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
-        telemetry.addLine("---AUTO DATA---");
-        telemetry.addData("Selected Auto Position: ", AutoPose);
-        telemetry.addData("Selected Park Position: ", AutoPose);
-        telemetry.addData("Current State: ", currentState);
-        telemetry.addData("X Position: ", bot.getPose().getX());
-        telemetry.addData("Y Position: ", bot.getPose().getY());
-        telemetry.addData("Heading Position: ", bot.getPose().getHeading());
-        telemetry.addData("Message: ", message);
-        telemetry.addData("Path Timer: ", pathTimer.time(TimeUnit.SECONDS));
+        mainTelemetry.addLine("---AUTO DATA---");
+        mainTelemetry.addData("Selected Auto Position: ", AutoPose);
+        mainTelemetry.addData("Selected Park Position: ", AutoPose);
+        mainTelemetry.addData("Current State: ", currentState);
+        mainTelemetry.addData("X Position: ", bot.getPose().getX());
+        mainTelemetry.addData("Y Position: ", bot.getPose().getY());
+        mainTelemetry.addData("Heading Position: ", bot.getPose().getHeading());
+        mainTelemetry.addData("Message: ", message);
+        mainTelemetry.addData("Path Timer: ", pathTimer.time(TimeUnit.SECONDS));
         if(AutoPose == AutoPoses.LEFT){
-            telemetry.addData("Samples Scored: ", groundSamplesScored);
+            mainTelemetry.addData("Samples Scored: ", groundSamplesScored);
         } else {
-            telemetry.addData("Specimens Scored: ", groundSamplesScored);
+            mainTelemetry.addData("Specimens Scored: ", groundSamplesScored);
         }
-        getSubsystemTelemetry(telemetry);
-        telemetry.update();
+        getSubsystemTelemetry(mainTelemetry);
+
+        //fieldPacket.fieldOverlay()
+
+        mainTelemetry.update();
     }
 
     //vital method to update score paths based on number of samples scored
@@ -207,7 +214,9 @@ public class Sample_Auto extends AutoBase {
         }
     }
 
-        //auto loop
+
+
+    //auto loop
         public void runOpMode () throws InterruptedException {
             bot = new Follower(hardwareMap);
 
@@ -223,9 +232,9 @@ public class Sample_Auto extends AutoBase {
 
             //init loop
             while (opModeInInit()) {
-                runMenu();
+                runMenu(mainTelemetry);
                 AutoPose = getAutoPose();
-                telemetry.update();
+                mainTelemetry.update();
             }
 
             waitForStart();
