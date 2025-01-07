@@ -253,7 +253,7 @@ public class Sample_Auto extends AutoBase {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.1);
-                                intake.drop(); //score
+                                intake.run(false); //score
                                 waitSeconds(1);
                                 intake.stop();
                                 arm.setTarget(0,0);
@@ -284,8 +284,10 @@ public class Sample_Auto extends AutoBase {
                         case SCORE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.1);
-                                intake.drop();
+                                //intake.drop();
+                                intake.run(false);
                                 waitSeconds(1);
+                                intake.stop();
                                 groundSamplesScored++;
 
                                 if (groundSamplesScored == 1) {

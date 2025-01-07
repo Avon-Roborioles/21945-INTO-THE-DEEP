@@ -18,7 +18,7 @@ public class PoseStoragePedro {
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose LeftSample1 = new Pose(-39+72,-24+72, Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample1 = new Pose(-37+72,-24+72, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
 
     public static Pose LeftSample2 = new Pose(-48+72,-24+72, Math.toRadians(180-1e-6)); //Done
 
