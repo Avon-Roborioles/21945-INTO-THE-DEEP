@@ -57,6 +57,7 @@ public class Sample_Auto extends AutoBase {
             Sample1 = bot.pathBuilder() //drives to control pose first then leftSample1 to scoop sample
                     .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSampleControlPose.getPoint()))
                     .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSampleControlPose.getHeading())
+                    .setPathEndVelocityConstraint(10)
                     .addPath(new BezierLine(PoseStoragePedro.LeftSampleControlPose.getPoint(), PoseStoragePedro.LeftSample1.getPoint()))
                     .setConstantHeadingInterpolation(PoseStoragePedro.LeftSampleControlPose.getHeading())
                     .build();
@@ -66,6 +67,7 @@ public class Sample_Auto extends AutoBase {
             Sample2 = bot.pathBuilder() //drives to sample1 pose first then sample2 pose to scoop sample
                     .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample1.getPoint()))
                     .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample1.getHeading())
+                    .setPathEndVelocityConstraint(10)
                     .addPath(new BezierLine(PoseStoragePedro.LeftSample1.getPoint(), PoseStoragePedro.LeftSample2.getPoint()))
                     .setConstantHeadingInterpolation(PoseStoragePedro.LeftSample1.getHeading())
                     .build();
@@ -75,6 +77,7 @@ public class Sample_Auto extends AutoBase {
             Sample3 = bot.pathBuilder() //drives to sample2 pose first then sample3 to scoop sample
                     .addPath(new BezierLine(PoseStoragePedro.LeftBucketScore.getPoint(), PoseStoragePedro.LeftSample2.getPoint()))
                     .setLinearHeadingInterpolation(PoseStoragePedro.LeftBucketScore.getHeading(), PoseStoragePedro.LeftSample2.getHeading())
+                    .setPathEndVelocityConstraint(10)
                     .addPath(new BezierLine(PoseStoragePedro.LeftSample2.getPoint(), PoseStoragePedro.LeftSample3.getPoint()))
                     .setConstantHeadingInterpolation(PoseStoragePedro.LeftSample2.getHeading())
                     .build();
@@ -253,7 +256,7 @@ public class Sample_Auto extends AutoBase {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.1);
-                                intake.run(false); //score
+                                intake.drop(); //score
                                 waitSeconds(1);
                                 intake.stop();
                                 arm.setTarget(0,0);
@@ -284,10 +287,8 @@ public class Sample_Auto extends AutoBase {
                         case SCORE:
                             if (!bot.isBusy()) {
                                 waitSeconds(0.1);
-                                //intake.drop();
-                                intake.run(false);
+                                intake.drop();
                                 waitSeconds(1);
-                                intake.stop();
                                 groundSamplesScored++;
 
                                 if (groundSamplesScored == 1) {
