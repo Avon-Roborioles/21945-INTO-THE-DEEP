@@ -101,7 +101,7 @@ public class AutoBase extends LinearOpMode {
     /**
      * Runs the Main Auto Menu Program to input Auto Pathing Selections
      */
-    public void runMenu(){
+    public void runMenu(Telemetry telemetry){
         //menu code
         if(d_up.getState()){
             //startPose selection
