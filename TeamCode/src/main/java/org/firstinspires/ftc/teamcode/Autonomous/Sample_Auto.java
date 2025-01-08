@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Drawing;
 
 import java.util.concurrent.TimeUnit;
 
@@ -174,6 +175,7 @@ public class Sample_Auto extends AutoBase {
         mainTelemetry.addData("X Position: ", bot.getPose().getX());
         mainTelemetry.addData("Y Position: ", bot.getPose().getY());
         mainTelemetry.addData("Heading Position: ", bot.getPose().getHeading());
+        mainTelemetry.addData("Total Heading: ", bot.getTotalHeading());
         mainTelemetry.addData("Message: ", message);
         mainTelemetry.addData("Path Timer: ", pathTimer.time(TimeUnit.SECONDS));
         if(AutoPose == AutoPoses.LEFT){
@@ -183,7 +185,10 @@ public class Sample_Auto extends AutoBase {
         }
         getSubsystemTelemetry(mainTelemetry);
 
-        //fieldPacket.fieldOverlay()
+        //Draw Bot on Dashboard
+        Drawing.drawPoseHistory(bot.getDashboardPoseTracker(), "#4CAF50");
+        Drawing.drawRobot(bot.getPose(), "#4CAF50");
+        Drawing.sendPacket();
 
         mainTelemetry.update();
     }
@@ -249,6 +254,10 @@ public class Sample_Auto extends AutoBase {
             } else if(AutoPose == AutoPoses.RIGHT){
                 bot.setPose(PoseStoragePedro.RightStartPose);
             }
+
+            //Draw initial bot pose on field (FTC Dashboard)
+            Drawing.drawRobot(bot.getPose(), "#4CAF50");
+            Drawing.sendPacket();
 
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
