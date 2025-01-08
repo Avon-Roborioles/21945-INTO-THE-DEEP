@@ -98,7 +98,7 @@ public class Park extends AutoBase {
 
 
         while(opModeInInit()){
-            runMenu();
+            runMenu(telemetry);
             AutoPose = getAutoPose();
 
             telemetry.update();

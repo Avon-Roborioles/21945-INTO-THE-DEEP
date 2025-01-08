@@ -11,6 +11,12 @@ public class PoseStoragePedro {
     //the maximum distance in each axis in 140" (inches)
     //adding +72" to each coordinate converts RR Poses to PP Poses
 
+    //Equal X & Y change of 0.707 equates to a forward and backward change of 1 inch
+    //add or subtract method below to x & y
+    private static double OneInchMovement(double inches){
+        return 0.707 * inches;
+    }
+
     //dynamic pose variable to save current bot position from auto to teleOp (teleOp will use enhances from Pedro-Pathing)
     public static Pose CurrentPose = null;
 
@@ -24,9 +30,9 @@ public class PoseStoragePedro {
 
     public static Pose LeftSample3 = new Pose(-56+72,-24+72,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSampleControlPose = new Pose(-34+72,-24+72,Math.toRadians(180-1e-6)); //done
+    public static Pose LeftSampleControlPose = new Pose(-35.9+72,-24+72,Math.toRadians(180-1e-6)); //done
 
-    public static Pose LeftBucketScore = new Pose(-51+72,-50+72,Math.toRadians(225)); //Done - 225
+    public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(2))+72,-50-(OneInchMovement(2))+72,Math.toRadians(225)); //Done - 225
 
     public static Pose PitSamples = new Pose(-20+72,-26+72,Math.toRadians(0)); //TODO Hits cage
 

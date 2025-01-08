@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 //import needed libraries
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Bezi
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 
+@Config
 @Autonomous(name="Coordinate Tester", group = "Autos")
 public class CoordinateTester extends AutoBase{
 
@@ -25,6 +27,10 @@ public class CoordinateTester extends AutoBase{
     boolean returnHome;
     GamepadEx driverOp;
     ToggleButtonReader a_button;
+    public int prevArmTarget = 0;
+    public static int armTarget = 0;
+    public int prevExtendTarget = 0;
+    public static int extendTarget = 0;
 
     //Finite State Machine (FSM) variables
     public enum State {
@@ -109,9 +115,19 @@ public class CoordinateTester extends AutoBase{
                         currentState = State.END;
                     }
             }
-
+            
+            if(prevArmTarget != armTarget){
+                prevArmTarget = armTarget;
+                arm.setTarget(armTarget,extendTarget);
+            }
+            if(prevExtendTarget != extendTarget){
+                prevExtendTarget = extendTarget;
+                arm.setTarget(armTarget,extendTarget);
+            }
 
             bot.update(); //controls Pedro-Pathing logic
+            arm.update();
+
             PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
             telemetry.addData("Selected Auto Position: ", AutoPose);
             telemetry.addData("Selected Target Position: ", targetPoseName);
@@ -120,6 +136,8 @@ public class CoordinateTester extends AutoBase{
             telemetry.addData("Y Position: ", bot.getPose().getY());
             telemetry.addData("Heading Position: ", bot.getPose().getHeading());
             telemetry.addData("A Button State: ", a_button.getState());
+            arm.getTelemetry(telemetry);
+
             telemetry.update();
             a_button.readValue(); //updates a_button reader
         }

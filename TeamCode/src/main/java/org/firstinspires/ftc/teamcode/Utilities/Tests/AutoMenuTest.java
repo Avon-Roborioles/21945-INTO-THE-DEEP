@@ -23,7 +23,7 @@ public class AutoMenuTest extends AutoBase {
 
         //show auto menu
         while(opModeInInit()) {
-            runMenu();
+            runMenu(telemetry);
             telemetry.update();
         }
 

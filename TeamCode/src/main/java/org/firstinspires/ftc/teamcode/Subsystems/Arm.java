@@ -35,7 +35,7 @@
         private final int maxArmPose = 5800;
 
 
-        private final int maxExtendPose = 2700;
+        private final int maxExtendPose = 3250;
 
         private int currentArmPose;
         private int currentExtendPose;

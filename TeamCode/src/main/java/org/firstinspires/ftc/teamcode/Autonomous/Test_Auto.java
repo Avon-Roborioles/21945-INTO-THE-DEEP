@@ -67,7 +67,7 @@ public class Test_Auto extends AutoBase{
 
 
         while (opModeInInit()) {
-            runMenu();
+            runMenu(telemetry);
             AutoPose = getAutoPose();
             telemetry.update();
         }
