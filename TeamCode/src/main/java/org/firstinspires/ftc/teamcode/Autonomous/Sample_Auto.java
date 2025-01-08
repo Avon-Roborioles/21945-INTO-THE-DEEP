@@ -160,7 +160,6 @@ public class Sample_Auto extends AutoBase {
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-    TelemetryPacket fieldPacket = new TelemetryPacket();
 
     //various PID updating & Telemetry Data bundled into one method
     public void updateAuto(){
@@ -186,8 +185,8 @@ public class Sample_Auto extends AutoBase {
         getSubsystemTelemetry(mainTelemetry);
 
         //Draw Bot on Dashboard
-        Drawing.drawPoseHistory(bot.getDashboardPoseTracker(), "#4CAF50");
-        Drawing.drawRobot(bot.getPose(), "#4CAF50");
+        Drawing.drawPoseHistory(bot.getDashboardPoseTracker(), "#be87e8"); //Light Purple
+        Drawing.drawRobot(bot.getPose(), "#8F2CDB"); //Main Purple
         Drawing.sendPacket();
 
         mainTelemetry.update();
