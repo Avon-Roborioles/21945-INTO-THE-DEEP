@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
-import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
+import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
 //this class is used by all auto programs to access subsystem controls & AutoMenu
@@ -28,19 +28,19 @@ public class AutoBase extends LinearOpMode {
     }
 
     public Pose[] Coordinates =
-            {PoseStoragePedro.LeftSample1,
-                    PoseStoragePedro.LeftSample2,
-                    PoseStoragePedro.LeftSample3,
-                    PoseStoragePedro.LeftBucketScore,
-                    PoseStoragePedro.PitSamples,
-                    PoseStoragePedro.LeftCheckPoint,
-                    PoseStoragePedro.RightSample1,
-                    PoseStoragePedro.RightSample2,
-                    PoseStoragePedro.RightSample3,
-                    PoseStoragePedro.SampleDropoff,
-                    PoseStoragePedro.SpecimenPickup,
-                    PoseStoragePedro.SpecimenScore,
-                    PoseStoragePedro.RightCheckPoint
+            {PoseStorage.LeftSample1,
+                    PoseStorage.LeftSample2,
+                    PoseStorage.LeftSample3,
+                    PoseStorage.LeftBucketScore,
+                    PoseStorage.PitSamples,
+                    PoseStorage.LeftCheckPoint,
+                    PoseStorage.RightSample1,
+                    PoseStorage.RightSample2,
+                    PoseStorage.RightSample3,
+                    PoseStorage.SampleDropoff,
+                    PoseStorage.SpecimenPickup,
+                    PoseStorage.SpecimenScore,
+                    PoseStorage.RightCheckPoint
             };
 
     public String[] CoordinateNames =

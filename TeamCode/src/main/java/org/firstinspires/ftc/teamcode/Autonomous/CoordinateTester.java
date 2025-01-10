@@ -7,12 +7,12 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
-import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 
 @Config
 @Autonomous(name="Coordinate Tester", group = "Autos")
@@ -44,9 +44,9 @@ public class CoordinateTester extends AutoBase{
     //add all paths/auto objectives here
     public void buildPaths(AutoPoses AutoPose){
         if(AutoPose == AutoPoses.LEFT){
-            startPose = PoseStoragePedro.LeftStartPose;
+            startPose = PoseStorage.LeftStartPose;
         } else if (AutoPose == AutoPoses.RIGHT) {
-            startPose = PoseStoragePedro.RightStartPose;
+            startPose = PoseStorage.RightStartPose;
         }
 
         startToTarget = bot.pathBuilder()
@@ -63,7 +63,7 @@ public class CoordinateTester extends AutoBase{
     public void runOpMode() throws InterruptedException{
         bot = new Follower(hardwareMap);
 
-        startPose = PoseStoragePedro.LeftStartPose;
+        startPose = PoseStorage.LeftStartPose;
         targetPose = Coordinates[0];
         targetPoseName = CoordinateNames[0];
 
@@ -115,7 +115,7 @@ public class CoordinateTester extends AutoBase{
                         currentState = State.END;
                     }
             }
-            
+
             if(prevArmTarget != armTarget){
                 prevArmTarget = armTarget;
                 arm.setTarget(armTarget,extendTarget);
@@ -128,7 +128,7 @@ public class CoordinateTester extends AutoBase{
             bot.update(); //controls Pedro-Pathing logic
             arm.update();
 
-            PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
+            PoseStorage.CurrentPose = bot.getPose(); //updates currentPose variable
             telemetry.addData("Selected Auto Position: ", AutoPose);
             telemetry.addData("Selected Target Position: ", targetPoseName);
             telemetry.addData("Current State: ", currentState);

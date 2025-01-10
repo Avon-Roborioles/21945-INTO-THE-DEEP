@@ -4,12 +4,12 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
-import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 
 @Autonomous(name="Auto Park", group = "Autos")
@@ -36,8 +36,8 @@ public class Park extends AutoBase {
     public void buildPaths(AutoPoses AutoPose){
 
         if(AutoPose == AutoPoses.LEFT){
-            startPose = PoseStoragePedro.LeftStartPose;
-            parkPose = PoseStoragePedro.LeftPark;
+            startPose = PoseStorage.LeftStartPose;
+            parkPose = PoseStorage.LeftPark;
             inverseConstant = -8;
 
             start = bot.pathBuilder()
@@ -60,8 +60,8 @@ public class Park extends AutoBase {
                     .build();
 
         } else if (AutoPose == AutoPoses.RIGHT) {
-            startPose = PoseStoragePedro.RightStartPose;
-            parkPose = PoseStoragePedro.RightPark;
+            startPose = PoseStorage.RightStartPose;
+            parkPose = PoseStorage.RightPark;
             inverseConstant = 10;
 
             start = bot.pathBuilder()
@@ -88,8 +88,8 @@ public class Park extends AutoBase {
     public void runOpMode() throws InterruptedException{
         bot = new Follower(hardwareMap);
 
-        startPose = PoseStoragePedro.LeftStartPose;
-        parkPose = PoseStoragePedro.LeftPark;
+        startPose = PoseStorage.LeftStartPose;
+        parkPose = PoseStorage.LeftPark;
 
         driverOp = new GamepadEx(gamepad1);
 
@@ -133,7 +133,7 @@ public class Park extends AutoBase {
             }
 
             bot.update(); //controls Pedro-Pathing logic
-            PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
+            PoseStorage.CurrentPose = bot.getPose(); //updates currentPose variable
             telemetry.addData("Selected Auto Position: ", AutoPose);
             telemetry.addData("Selected Park Position: ", AutoPose);
             telemetry.addData("Inverse Constant: ", inverseConstant);

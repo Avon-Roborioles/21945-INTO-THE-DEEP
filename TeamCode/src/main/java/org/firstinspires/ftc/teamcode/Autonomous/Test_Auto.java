@@ -4,11 +4,12 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
-import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
-import org.firstinspires.ftc.teamcode.Utilities.PoseStoragePedro;
+
 import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="Test Auto", group = "Autos")
@@ -45,7 +46,7 @@ public class Test_Auto extends AutoBase{
     public void updateAuto(){
         bot.update(); //controls Pedro-Pathing logic
         //TODO - subsystemsUpdate();
-        PoseStoragePedro.CurrentPose = bot.getPose(); //updates currentPose variable
+        PoseStorage.CurrentPose = bot.getPose(); //updates currentPose variable
         telemetry.addData("Selected Auto Position: ", AutoPose);
         telemetry.addData("Selected Park Position: ", AutoPose);
         telemetry.addData("X Position: ", bot.getPose().getX());
@@ -57,8 +58,8 @@ public class Test_Auto extends AutoBase{
 
     public void runOpMode() throws InterruptedException {
         bot = new Follower(hardwareMap);
-        startPose = PoseStoragePedro.LeftStartPose;
-        parkPose = PoseStoragePedro.LeftPark;
+        startPose = PoseStorage.LeftStartPose;
+        parkPose = PoseStorage.LeftPark;
 
         driverOp = new GamepadEx(gamepad1);
 
