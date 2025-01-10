@@ -82,7 +82,7 @@ public class Sample_Auto extends AutoBase {
                     .build();
 
             Sample3Back = bot.pathBuilder()
-                    .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), new Pose(PoseStorage.LeftSample3.getX()+10,PoseStorage.LeftSample3.getY(),PoseStorage.LeftSample3.getHeading()).getPoint()))
+                    .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), PoseStorage.LeftSample3Back.getPoint()))
                     .setConstantHeadingInterpolation(PoseStorage.LeftSample3.getHeading())
                     .build();
 
@@ -121,7 +121,7 @@ public class Sample_Auto extends AutoBase {
                     .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.RightSample2.getPoint()))
                     .setLinearHeadingInterpolation(PoseStorage.SpecimenScore.getHeading(), PoseStorage.RightSample2.getHeading())
                     .build();
-            
+
             Sample3 = bot.pathBuilder()
                     .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.RightSample3.getPoint()))
                     .setLinearHeadingInterpolation(PoseStorage.SpecimenScore.getHeading(), PoseStorage.RightSample3.getHeading())
@@ -203,8 +203,8 @@ public class Sample_Auto extends AutoBase {
                     break;
 
                 case 3:
-                    Score = new Path(new BezierLine(PoseStorage.LeftSample3.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-                    Score.setLinearHeadingInterpolation(PoseStorage.LeftSample3.getHeading(), PoseStorage.LeftBucketScore.getHeading());
+                    Score = new Path(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
+                    Score.setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading());
                     break;
             }
         } else if(AutoPose == AutoPoses.RIGHT){
@@ -288,20 +288,25 @@ public class Sample_Auto extends AutoBase {
 
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
-                                waitSeconds(.1);
-                                //intake.stop();
-                                if (groundSamplesScored == 1) {
-                                    updateScoreStart(2);
-                                } else if (groundSamplesScored == 2) {
-                                    updateScoreStart(3);
-                                }
+                                if(!backPathDone && groundSamplesScored == 2){
+                                    bot.followPath(Sample3Back);
+                                    backPathDone = true;
+                                } else {
+                                    waitSeconds(.1);
+                                    //intake.stop();
+                                    if (groundSamplesScored == 1) {
+                                        updateScoreStart(2);
+                                    } else if (groundSamplesScored == 2) {
+                                        updateScoreStart(3);
+                                    }
 
-                                arm.setTarget(4400,3250);
-                                waitSeconds(2);
-                                currentState = State.SCORE;
-                                bot.followPath(Score, true);
-                                pathTimer.reset();
-                                break;
+                                    arm.setTarget(4400, 3250);
+                                    waitSeconds(2);
+                                    currentState = State.SCORE;
+                                    bot.followPath(Score, true);
+                                    pathTimer.reset();
+                                    break;
+                                }
                             }
 
                         case SCORE:

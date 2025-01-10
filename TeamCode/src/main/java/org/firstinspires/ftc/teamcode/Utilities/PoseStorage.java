@@ -27,6 +27,8 @@ public class PoseStorage {
 
     public static Pose LeftSample3 = new Pose(-56+72,-24+72,Math.toRadians(180-1e-6)); //Done
 
+    public static Pose LeftSample3Back = new Pose(-46+72,-24+72,Math.toRadians(180-1e-6)); //Done
+
     public static Pose LeftSampleControlPose = new Pose(-35.9+72,-24+72,Math.toRadians(180-1e-6)); //done
 
     public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(2))+72,-50-(OneInchMovement(2))+72,Math.toRadians(225)); //Done - 225
