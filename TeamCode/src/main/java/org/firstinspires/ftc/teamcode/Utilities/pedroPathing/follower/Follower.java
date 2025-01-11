@@ -421,6 +421,14 @@ public class Follower {
     }
 
     /**
+     * CUSTOM CODE WRITTEN BY STEPHEN O. - 21945 PURPLE ROBORIOLES
+     * stops teleOpDrive to run Paths again
+     */
+    public void stopTeleOpDrive(){
+        teleopDrive = false;
+    }
+
+    /**
      * This calls an update to the PoseUpdater, which updates the robot's current position estimate.
      * This also updates all the Follower's PIDFs, which updates the motor powers.
      */

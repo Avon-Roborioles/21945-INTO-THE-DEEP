@@ -6,6 +6,7 @@ import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
 /**
  * The Complete Class for our team's Computer Vision Efforts
@@ -147,8 +148,8 @@ public class Computer_Vision {
     }
 
     //TODO - uses field april tags to adjust bot pose on field
-    public double[] getFieldAdjustments(){
-        double[] result = {0,0,0};
+    public Pose getRealPose(){
+        Pose result = new Pose(0,0,0);
         return result;
     }
 

@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.*;
 import java.util.concurrent.TimeUnit;
 
 //@Photon
-@TeleOp(name="Main TeleOp")
-public class Main_TeleOp extends LinearOpMode {
+@TeleOp(name="TeleOp w/ No Slides")
+public class V1_TeleOp extends LinearOpMode {
 
     //create subsystem objects
     private final org.firstinspires.ftc.teamcode.Subsystems.Driver_Feedback feedback = new Driver_Feedback();

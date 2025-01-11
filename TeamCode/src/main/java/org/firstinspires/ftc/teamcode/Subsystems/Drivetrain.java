@@ -25,8 +25,8 @@ public class Drivetrain {
     private DcMotorEx rightRear;
 
     //FTC Lib & Pedro-Pathing objects
-    MecanumDrive drivetrain;
     Follower pedroDrivetrain;
+    boolean teleOpDrive = true;
 
     IMU imu;
     GamepadEx driverOp;
@@ -96,38 +96,43 @@ public class Drivetrain {
     }
 
     public void run_teleOp(Driver_Feedback feedback){
-        strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
-        forwardSpeed = driverOp.getLeftY() * speedLimit;
-        turnSpeed = -driverOp.getRightX() * speedLimit;
-        //gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        if(teleOpDrive) {
+            strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
+            forwardSpeed = driverOp.getLeftY() * speedLimit;
+            turnSpeed = -driverOp.getRightX() * speedLimit;
+            //gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-        double strafeAbsolute = Math.abs(strafeSpeed);
-        double forwardAbsolute = Math.abs(forwardSpeed);
-        double turnAbsolute = Math.abs(turnSpeed);
+            double strafeAbsolute = Math.abs(strafeSpeed);
+            double forwardAbsolute = Math.abs(forwardSpeed);
+            double turnAbsolute = Math.abs(turnSpeed);
 
 
-        //Robot Centric and Field Centric Modes
-        if(y_button.wasJustPressed()){ //robot
-            robotCentricMode = true;
+            //Robot Centric and Field Centric Modes
+            if (y_button.wasJustPressed()) { //robot
+                robotCentricMode = true;
 
-        } else if(a_button.wasJustPressed()){ //field
-            robotCentricMode = false;
+            } else if (a_button.wasJustPressed()) { //field
+                robotCentricMode = false;
+            }
+
+            //Speed Controls - set top speed percentage
+            if (d_up.wasJustPressed()) {
+                speedLimit = 1;
+            } else if (d_right.wasJustPressed()) {
+                speedLimit = 0.7;
+            } else if (d_left.wasJustPressed()) {
+                speedLimit = 0.5;
+            } else if (d_down.wasJustPressed()) {
+                speedLimit = 0.3;
+            }
+
+
+            //Pedro-Pathing TeleOp Control
+            pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed, strafeSpeed, turnSpeed, robotCentricMode);
+        } else {
+            //logic to get out of autoDrive
         }
 
-        //Speed Controls - set top speed percentage
-        if(d_up.wasJustPressed()){
-            speedLimit = 1;
-        } else if(d_right.wasJustPressed()){
-            speedLimit = 0.7;
-        } else if(d_left.wasJustPressed()){
-            speedLimit = 0.5;
-        } else if(d_down.wasJustPressed()){
-            speedLimit = 0.3;
-        }
-
-
-        //Pedro-Pathing TeleOp Control
-        pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed,strafeSpeed,turnSpeed, robotCentricMode);
         pedroDrivetrain.update();
         updateToggles();
 
@@ -147,27 +152,6 @@ public class Drivetrain {
 //        }
     }
 
-    public void run_fieldCentric(){
-        //update Telemetry Variables
-        strafeSpeed = driverOp.getLeftX() * -1; //changed to negative to fix inverted controls
-        forwardSpeed = driverOp.getLeftY() * -1;
-        turnSpeed = driverOp.getRightX() * -1;
-        gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
-        //uses FTCLib Library to control all logic of Field Centric Driving
-        drivetrain.driveFieldCentric(
-                strafeSpeed,
-                forwardSpeed,
-                turnSpeed,
-                gyroAngle
-        );
-
-        //absolute values of driver inputs used for haptic feedback functions
-        double strafeAbsolute = Math.abs(strafeSpeed);
-        double forwardAbsolute = Math.abs(forwardSpeed);
-        double turnAbsolute = Math.abs(turnSpeed);
-
-    }
 
     //most important info of drivetrain to reduce clutter
     public void getTelemetryBRIEF(Telemetry telemetry){

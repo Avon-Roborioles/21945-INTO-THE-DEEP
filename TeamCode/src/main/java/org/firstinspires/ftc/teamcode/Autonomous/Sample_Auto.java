@@ -35,7 +35,7 @@ public class Sample_Auto extends AutoBase {
 
     //Finite State Machine (FSM) variables
     public enum State {
-        SCORE_PASSIVE, //path to buckets core (left)/sample dropoff (right) from startPose
+        SCORE_PASSIVE, //path to buckets (left)/sample dropoff (right) from startPose
         GET_GROUND_SAMPLE,
         DROPOFF_SAMPLE, //right side only
         PICKUP_SPECIMEN, //right side only
@@ -336,10 +336,10 @@ public class Sample_Auto extends AutoBase {
                                     pathTimer.reset();
                                     break;
                                 } else {
-                                    currentState = Sample_Auto.State.PARK;                                    bot.setMaxPower(1);
+                                    currentState = Sample_Auto.State.PARK;
                                     bot.setMaxPower(.9);
                                     bot.followPath(Park, true);
-                                    arm.setTarget(2700,0); //TODO adjust this so bot touches ascend rung
+                                    arm.setTarget(2700,0);
                                     intake.stop();
                                     pathTimer.reset();
                                     break;
