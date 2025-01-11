@@ -64,7 +64,7 @@
         BasicPID extendController;
         public ElapsedTime time;
         public boolean busy = false;
-        public boolean parallelIntakeMode = true;
+        public boolean parallelIntakeMode = false; //default
 
         //control variables
         GamepadEx driverOp;

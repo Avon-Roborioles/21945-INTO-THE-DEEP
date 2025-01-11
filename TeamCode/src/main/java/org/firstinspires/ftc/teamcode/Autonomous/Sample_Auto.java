@@ -252,7 +252,7 @@ public class Sample_Auto extends AutoBase {
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
             } else if(AutoPose == AutoPoses.RIGHT){
-                bot.setPose(PoseStorage.RightStartPose);
+                bot.setPose(PoseStorage.RightStartPose); //different from bot.setPose()
             }
 
             //Draw initial bot pose on field (FTC Dashboard)
@@ -262,8 +262,9 @@ public class Sample_Auto extends AutoBase {
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
             intake.pickup(); //should secure passive/loaded sample
-            arm.setTarget(4400,3250);
-            waitSeconds(2);
+            arm.setTarget(5600,3250);
+            //waitSeconds(0.5);
+            bot.setMaxPower(0.7);
             bot.followPath(scorePassive, true);
             pathTimer.reset();
 
@@ -289,6 +290,7 @@ public class Sample_Auto extends AutoBase {
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
                                 if(!backPathDone && groundSamplesScored == 2){
+                                    waitSeconds(.7);
                                     bot.followPath(Sample3Back);
                                     backPathDone = true;
                                 } else {
@@ -300,9 +302,10 @@ public class Sample_Auto extends AutoBase {
                                         updateScoreStart(3);
                                     }
 
-                                    arm.setTarget(4400, 3250);
-                                    waitSeconds(2);
+                                    arm.setTarget(5600, 3250);
+                                    waitSeconds(1);
                                     currentState = State.SCORE;
+                                    bot.setMaxPower(0.7);
                                     bot.followPath(Score, true);
                                     pathTimer.reset();
                                     break;
@@ -318,6 +321,7 @@ public class Sample_Auto extends AutoBase {
 
                                 if (groundSamplesScored == 1) {
                                     currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                    bot.setMaxPower(.9);
                                     bot.followPath(Sample2, true);
                                     arm.setTarget(0,0);
                                     intake.pickup();
@@ -325,15 +329,17 @@ public class Sample_Auto extends AutoBase {
                                     break;
                                 } else if (groundSamplesScored == 2) {
                                     currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                    bot.setMaxPower(.9);
                                     bot.followPath(Sample3, true);
                                     arm.setTarget(0,0);
                                     intake.pickup();
                                     pathTimer.reset();
                                     break;
                                 } else {
-                                    currentState = Sample_Auto.State.PARK;
+                                    currentState = Sample_Auto.State.PARK;                                    bot.setMaxPower(1);
+                                    bot.setMaxPower(.9);
                                     bot.followPath(Park, true);
-                                    arm.setTarget(0,0); //TODO adjust this so bot touches ascend rung
+                                    arm.setTarget(2700,0); //TODO adjust this so bot touches ascend rung
                                     intake.stop();
                                     pathTimer.reset();
                                     break;

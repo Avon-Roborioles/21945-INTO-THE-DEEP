@@ -32,6 +32,14 @@ public class Pose {
     }
 
     /**
+     * CUSTOM CODE ADDED BY STEPHEN O. - 21945 PURPLE ROBORIOLES
+     *
+     */
+    public Pose convertToRR(){
+        return null;
+    }
+
+    /**
      * This creates a new Pose from x and y inputs. The heading is set to 0.
      *
      * @param setX the initial x value

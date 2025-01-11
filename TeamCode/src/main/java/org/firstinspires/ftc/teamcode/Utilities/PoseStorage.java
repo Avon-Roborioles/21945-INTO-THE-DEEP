@@ -10,8 +10,14 @@ public class PoseStorage {
 
     //Equal X & Y change of 0.707 equates to a forward and backward change of 1 inch
     //add or subtract method below to x & y
+
+    /**
+     * positive is forward, negative is backward
+     * @param inches forward
+     * @return
+     */
     private static double OneInchMovement(double inches){
-        return 0.707 * inches;
+        return -0.707 * inches;
     }
 
     //dynamic pose variable to save current bot position from auto to teleOp (teleOp will use enhances from Pedro-Pathing)
@@ -21,23 +27,23 @@ public class PoseStorage {
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose LeftSample1 = new Pose(-37+72,-24+72, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
+    public static Pose LeftSample1 = new Pose(-35+72,-24+72, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
 
     public static Pose LeftSample2 = new Pose(-48+72,-24+72, Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3 = new Pose(-56+72,-24+72,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3 = new Pose(-48+72,-24+72,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3Back = new Pose(-46+72,-24+72,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3Back = new Pose(-37+72,-24+72,Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftSampleControlPose = new Pose(-35.9+72,-24+72,Math.toRadians(180-1e-6)); //done
 
-    public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(2))+72,-50-(OneInchMovement(2))+72,Math.toRadians(225)); //Done - 225
+    public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(-1))+72,-50-(OneInchMovement(-1))+72,Math.toRadians(45)); //Done - 225
 
     public static Pose PitSamples = new Pose(-20+72,-26+72,Math.toRadians(0)); //TODO Hits cage
 
     public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 
-    public static Pose LeftPark = new Pose(-30+72,83, Math.toRadians(0)); //Done
+    public static Pose LeftPark = new Pose(-20+72,83, Math.toRadians(0)); //Done
 
 
 

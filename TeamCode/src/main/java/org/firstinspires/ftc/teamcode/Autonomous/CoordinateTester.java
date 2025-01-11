@@ -107,6 +107,7 @@ public class CoordinateTester extends AutoBase{
                         if(a_button.wasJustPressed() && returnHome) {
                             currentState = State.RETURN;
                             bot.followPath(targetToStart);
+                            arm.setTarget(0,0);
                         }
                         break;
                     }

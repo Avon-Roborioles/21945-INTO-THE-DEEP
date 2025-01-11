@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -33,6 +34,7 @@ public class Intake {
     double intakeDistance = 0; //cm
     boolean autoMode = false;
     boolean pickup = true;
+    ElapsedTime time;
 
     //Raw Color Readings with (Gain 2):
     //Yellow - 0.031 red, 0.042 green, 0.013 blue
@@ -61,6 +63,7 @@ public class Intake {
         colorSensor.setGain(2);
         intakeServo.setRunMode(Motor.RunMode.RawPower);
         intakeServo.set(intakePower);
+        time = new ElapsedTime();
 
         //---initialize toggles & buttons---
         d_up = new ToggleButtonReader(
@@ -174,8 +177,9 @@ public class Intake {
 
     public void drop(){
         autoMode = true;
-        intakePower = 1;
+        intakePower = -1;
         pickup = false;
+        time.reset();
     }
 
     public void stop(){
@@ -189,7 +193,7 @@ public class Intake {
                     autoMode = false;
                 }
             } else {
-                if(!isFull()){
+                if(!isFull() && time.seconds() > 1.5){
                     autoMode = false;
                 }
             }
@@ -246,5 +250,6 @@ public class Intake {
         telemetry.addData("Intake Full?: ", isFull());
         telemetry.addData("Intake Power: ", intakePower);
         telemetry.addData("Intake Auto Mode: ", autoMode);
+        telemetry.addData("Intake Drop Timer: ", time.seconds());
     }
 }
