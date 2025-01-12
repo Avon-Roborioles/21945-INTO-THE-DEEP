@@ -131,11 +131,15 @@ public class Drivetrain {
             if(PoseStorage.allianceSide == AutoBase.AutoPoses.LEFT){
                 //create left side paths
                 scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftBucketScore.getPoint()));
+                scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftBucketScore.getHeading());
                 pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftPitSamples.getPoint()));
+                pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftPitSamples.getHeading());
             } else {
                 //create right side paths
                 scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.SpecimenScore.getPoint()));
+                scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.SpecimenScore.getHeading());
                 pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.RightPitSamples.getPoint()));
+                pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.RightPitSamples.getHeading());
             }
 
             if(left_bumper.wasJustPressed()){
@@ -192,7 +196,6 @@ public class Drivetrain {
 //            strength = 0;
 //        }
     }
-
 
     //most important info of drivetrain to reduce clutter
     public void getTelemetryBRIEF(Telemetry telemetry){
