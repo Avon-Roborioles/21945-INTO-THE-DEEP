@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
+import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
@@ -23,6 +24,7 @@ public class PoseStorage {
     //dynamic pose variable to save current bot position from auto to teleOp (teleOp will use enhances from Pedro-Pathing)
     public static Pose CurrentPose = null;
 
+    public static AutoBase.AutoPoses allianceSide = AutoBase.AutoPoses.LEFT; //useful variable for selected alliance from auto
 
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
@@ -39,11 +41,11 @@ public class PoseStorage {
 
     public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(-1))+72,-50-(OneInchMovement(-1))+72,Math.toRadians(45)); //Done - 225
 
-    public static Pose PitSamples = new Pose(-20+72,-26+72,Math.toRadians(0)); //TODO Hits cage
+    public static Pose LeftPitSamples = new Pose(-18+72,72,Math.toRadians(0)); //done
 
     public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 
-    public static Pose LeftPark = new Pose(-20+72,83, Math.toRadians(0)); //Done
+    public static Pose LeftPark = new Pose(-20+72,72, Math.toRadians(0)); //Done - 83 y
 
 
 
@@ -62,6 +64,8 @@ public class PoseStorage {
 
     public static Pose SpecimenScore = new Pose(0+72,-35+72,Math.toRadians(90)); //done
 
+    public static Pose RightPitSamples = new Pose(90,72,Math.toRadians(180-1e-6)); //TODO
+
     public static Pose RightCheckPoint = new Pose(19+72,-39+72, Math.toRadians(180)); //TODO
 
     public static Pose RightPark = new Pose(35+72,-50+72, Math.toRadians(90)); //Done - (-31), 51, 0
@@ -70,7 +74,7 @@ public class PoseStorage {
     //useful points to hold during auto - allows us to keep our stance against aggressive bots
     public static Point BucketScorePoint = LeftBucketScore.getPoint();
 
-    public static Point PitSamplesPoint = PitSamples.getPoint();
+    public static Point PitSamplesPoint = LeftPitSamples.getPoint();
 
 
 

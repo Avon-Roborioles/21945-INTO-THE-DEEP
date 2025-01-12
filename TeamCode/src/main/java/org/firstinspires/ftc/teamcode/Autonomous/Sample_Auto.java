@@ -242,6 +242,7 @@ public class Sample_Auto extends AutoBase {
             while (opModeInInit()) {
                 runMenu(mainTelemetry);
                 AutoPose = getAutoPose();
+                PoseStorage.allianceSide = getAutoPose();
                 mainTelemetry.update();
             }
 

@@ -2,19 +2,20 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 //import needed libraries
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
+import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerConstants;
 
 public class Drivetrain {
@@ -27,8 +28,9 @@ public class Drivetrain {
     //FTC Lib & Pedro-Pathing objects
     Follower pedroDrivetrain;
     boolean teleOpDrive = true;
+    Path scorePath;
+    Path pickupPath;
 
-    IMU imu;
     GamepadEx driverOp;
     RevHubOrientationOnRobot.LogoFacingDirection logoDirection;
     RevHubOrientationOnRobot.UsbFacingDirection usbDirection;
@@ -36,7 +38,6 @@ public class Drivetrain {
     double strafeSpeed = 0;
     double forwardSpeed = 0;
     double turnSpeed = 0;
-    double gyroAngle = 0;
     int strength = 0;
     boolean robotCentricMode = true;
     double speedLimit = 1;
@@ -49,6 +50,7 @@ public class Drivetrain {
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
         pedroDrivetrain = new Follower(hardwareMap);
+        pedroDrivetrain.setPose(PoseStorage.CurrentPose); //takes last recorded pose from auto
 
         //imu = hardwareMap.get(IMU.class, "imu");
         driverOp = gamepad;
@@ -72,6 +74,15 @@ public class Drivetrain {
                 driverOp, GamepadKeys.Button.DPAD_RIGHT
         );
 
+        left_bumper = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.LEFT_BUMPER
+        );
+
+        right_bumper = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.RIGHT_BUMPER
+        );
+
+
 
         //adding snappy breaking to drive motors
         leftFront = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftFrontMotorName);
@@ -94,6 +105,8 @@ public class Drivetrain {
         d_right.readValue();
         d_left.readValue();
         d_down.readValue();
+        left_bumper.readValue();
+        right_bumper.readValue();
     }
 
     public void run_teleOp(Driver_Feedback feedback){
@@ -101,7 +114,6 @@ public class Drivetrain {
             strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
             forwardSpeed = driverOp.getLeftY() * speedLimit;
             turnSpeed = -driverOp.getRightX() * speedLimit;
-            //gyroAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             double strafeAbsolute = Math.abs(strafeSpeed);
             double forwardAbsolute = Math.abs(forwardSpeed);
@@ -111,9 +123,31 @@ public class Drivetrain {
             //Robot Centric and Field Centric Modes
             if (y_button.wasJustPressed()) { //robot
                 robotCentricMode = true;
-
             } else if (a_button.wasJustPressed()) { //field
                 robotCentricMode = false;
+            }
+
+            //Constant Path Creation + Controls
+            if(PoseStorage.allianceSide == AutoBase.AutoPoses.LEFT){
+                //create left side paths
+                scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftBucketScore.getPoint()));
+                pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftPitSamples.getPoint()));
+            } else {
+                //create right side paths
+                scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.SpecimenScore.getPoint()));
+                pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.RightPitSamples.getPoint()));
+            }
+
+            if(left_bumper.wasJustPressed()){
+                pedroDrivetrain.stopTeleOpDrive();
+                teleOpDrive = false;
+                pedroDrivetrain.setMaxPower(speedLimit);
+                pedroDrivetrain.followPath(scorePath,true);
+            } else if(right_bumper.wasJustPressed()){
+                pedroDrivetrain.stopTeleOpDrive();
+                teleOpDrive = false;
+                pedroDrivetrain.setMaxPower(speedLimit);
+                pedroDrivetrain.followPath(pickupPath,true);
             }
 
             //Speed Controls - set top speed percentage
@@ -132,6 +166,12 @@ public class Drivetrain {
             pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed, strafeSpeed, turnSpeed, robotCentricMode);
         } else {
             //logic to get out of autoDrive
+            if(Math.abs(driverOp.getLeftX()) > 0 ||Math.abs(driverOp.getRightX()) > 0 || Math.abs(driverOp.getLeftY()) > 0){
+                pedroDrivetrain.breakFollowing();
+                teleOpDrive = true;
+                pedroDrivetrain.setMaxPower(1);
+                pedroDrivetrain.startTeleopDrive();
+            }
         }
 
         pedroDrivetrain.update();
