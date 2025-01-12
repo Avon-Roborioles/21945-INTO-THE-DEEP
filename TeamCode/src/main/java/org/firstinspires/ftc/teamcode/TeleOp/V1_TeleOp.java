@@ -3,23 +3,23 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.util.Timing.Timer;
+
+import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
 
 import java.util.concurrent.TimeUnit;
 
 //@Photon
 @TeleOp(name="TeleOp w/ No Slides")
-public class V1_TeleOp extends LinearOpMode {
+public class V1_TeleOp extends AutoBase {
 
     //create subsystem objects
     private final org.firstinspires.ftc.teamcode.Subsystems.Driver_Feedback feedback = new Driver_Feedback();
     private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
     private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
     private final org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
-    //private final org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
     //private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
 
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -43,6 +43,12 @@ public class V1_TeleOp extends LinearOpMode {
         //vision.init(hardwareMap);
         //lighting.init(hardwareMap);
 
+        initTeleOpMenu(Driver1Op);
+
+        while(opModeInInit()){
+            runTeleOpMenu(mainTelemetry);
+        }
+
         waitForStart();
 
         opModeTimer.start();
@@ -64,7 +70,6 @@ public class V1_TeleOp extends LinearOpMode {
             drivetrain.getTelemetryBRIEF(mainTelemetry);
             arm.getTelemetry(mainTelemetry);
             intake.getTelemetryFULL(mainTelemetry);
-            //vision.getTelemetryBRIEF(telemetry);
             //lighting.getTelemetryBRIEF(telemetry);
             mainTelemetry.addData("OpMode Timer: ", opModeTimer.remainingTime());
             mainTelemetry.update();

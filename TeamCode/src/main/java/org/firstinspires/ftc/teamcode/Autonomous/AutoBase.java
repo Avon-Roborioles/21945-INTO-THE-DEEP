@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
 //this class is used by all auto programs to access subsystem controls & AutoMenu
+//all teleOp programs also use AutoBase to access their respective TeleOp Menus
 public class AutoBase extends LinearOpMode {
     //subsystem objects - arm, intake, lift, etc
     protected org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
@@ -97,6 +98,33 @@ public class AutoBase extends LinearOpMode {
 //        vision.init(hardwareMap);
     }
 
+    /**
+     * used by teleOp programs
+     */
+    public void initTeleOpMenu(GamepadEx driverOp){
+        d_up = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_UP
+        );
+    }
+
+    /**
+     * Selected Correct AutoPose fed into drivetrain
+     */
+    public void runTeleOpMenu(Telemetry telemetry){
+        //menu code
+        if(d_up.getState()){
+            //startPose selection
+            AutoPose = AutoPoses.RIGHT;
+        } else {
+            AutoPose = AutoPoses.LEFT;
+        }
+
+        //menu
+        telemetry.addLine("Select the StartPose by Toggling the D-pad Up Button");
+        telemetry.addData("Current StartPose Selected: ", AutoPose);
+
+        d_up.readValue();
+    }
 
     /**
      * Runs the Main Auto Menu Program to input Auto Pathing Selections

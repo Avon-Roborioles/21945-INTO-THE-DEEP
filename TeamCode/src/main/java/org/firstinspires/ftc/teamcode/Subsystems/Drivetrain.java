@@ -96,6 +96,10 @@ public class Drivetrain {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         pedroDrivetrain.startTeleopDrive();
+
+        if(PoseStorage.CurrentPose != null){ //uses last known pose from Auto as start in TeleOp
+            pedroDrivetrain.setPose(PoseStorage.CurrentPose);
+        }
     }
 
     private void updateToggles(){
