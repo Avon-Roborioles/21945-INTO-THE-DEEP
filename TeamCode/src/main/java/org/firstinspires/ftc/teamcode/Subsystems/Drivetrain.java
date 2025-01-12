@@ -44,6 +44,7 @@ public class Drivetrain {
 
     ToggleButtonReader y_button, a_button; //drive modes
     ToggleButtonReader d_up, d_down, d_left, d_right; //speed control
+    ToggleButtonReader left_bumper, right_bumper; //auto path
 
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
