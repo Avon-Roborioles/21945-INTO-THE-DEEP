@@ -32,7 +32,7 @@
         private final int autoGround = 800;
         private final int rung1Pose = 2000;
         private final int rung2Pose = 2700;
-        private final int maxArmPose = 6000;
+        private final int maxArmPose = 5800;
 
 
         private final int maxExtendPose = 3250;
@@ -167,25 +167,28 @@
             currentExtendPose = extendMotor.getCurrentPosition();
             leftY = driverOp.getLeftY(); //arm
             rightY = driverOp.getRightY(); //extend
-            double decelTimeConstant = 0.06; //seconds to decelerate
+            double decelTimeConstant = 0.25; //seconds to decelerate
 
             //manual arm control with limits
             //saves armTarget as arm current position for holding later
             if(leftY > 0){
-                armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose < maxArmPose) {
-                    //int finalTarget = (int) (currentArmPose + ((-armMotor.getVelocity()) * decelTimeConstant));
+                    armMode = Arm_Modes.DRIVER_MODE;
                     setTarget(currentArmPose, currentExtendPose);
                     armPower = 0.7 * Math.abs(leftY); //added sensitivity
+                } else {
+                    armMode = Arm_Modes.HOLD_MODE;
                 }
 
             } else if(leftY < 0){
-                armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose > groundPose) {
-                    //int finalTarget = (int) (currentArmPose + (armMotor.getVelocity() * decelTimeConstant));
+                    armMode = Arm_Modes.DRIVER_MODE;
                     setTarget(currentArmPose,currentExtendPose);
                     armPower = -0.5 * Math.abs(leftY); //added sensitivity
+                } else {
+                    armMode = Arm_Modes.HOLD_MODE;
                 }
+
             } else {
                 armMode = Arm_Modes.HOLD_MODE;
             }
@@ -211,6 +214,7 @@
 
             //d-pad height presets
             if(d_left.wasJustPressed()){ //rung toggle
+                parallelIntakeMode = true;
                 armMode = Arm_Modes.HOLD_MODE;
                 if(d_left.getState()){
                     setTarget(rung1Pose,maxExtendPose);
@@ -218,26 +222,31 @@
                     setTarget(rung2Pose,maxExtendPose);
                 }
 
-            } else if(d_right.wasJustPressed()){ //ground
+            } else if(d_right.wasJustPressed()){ //intake to ground
+                parallelIntakeMode = false;
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(autoGround,maxExtendPose);
 
 
             } else if(d_down.wasJustPressed()){ //ground
+                parallelIntakeMode = false;
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(groundPose,0);
 
             } else if(d_up.wasJustPressed()){ //basket
+                parallelIntakeMode = true;
                 armMode = Arm_Modes.HOLD_MODE;
                 setTarget(maxArmPose,maxExtendPose);
             }
 
-            //y button hang mode
-            if(y_button.wasJustPressed()){
+            if(y_button.wasJustPressed()){ //hang
                 armMode = Arm_Modes.HANG_MODE;
             }
 
-            parallelIntakeMode = a_button.getState();
+            if(a_button.wasJustPressed()){ //switch on and off parallel intake
+                parallelIntakeMode = !parallelIntakeMode;
+            }
+
 
             //control arm power for hang and hold modes
             if(armMode == Arm_Modes.HOLD_MODE){ //code from update() except motor set power
@@ -265,8 +274,8 @@
             //control extend power
             if(extendHold){
                 if(parallelIntakeMode) {
-                    if (currentArmPose < autoGround) {
-                        extendTarget = (int) 3.7 * currentArmPose;
+                    if (currentArmPose < autoGround && currentArmPose > 100) {
+                        extendTarget = (int) 3.5 * currentArmPose;
                     }
                 }
                 extendPower = extendController.calculate(extendTarget,currentExtendPose);
@@ -288,20 +297,23 @@
             //manual arm control with limits
             //saves armTarget as arm current position for holding later
             if(leftY > 0){
-                armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose < maxArmPose) {
-                    //int finalTarget = (int) (currentArmPose + (-armMotor.getVelocity() * decelTimeConstant));
+                    armMode = Arm_Modes.DRIVER_MODE;
                     setTarget(currentArmPose, currentExtendPose);
                     armPower = 0.7 * Math.abs(leftY); //added sensitivity
+                } else {
+                    armMode = Arm_Modes.HOLD_MODE;
                 }
 
             } else if(leftY < 0){
-                armMode = Arm_Modes.DRIVER_MODE;
                 if(currentArmPose > groundPose) {
-                    //int finalTarget = (int) (currentArmPose + (armMotor.getVelocity() * decelTimeConstant));
+                    armMode = Arm_Modes.DRIVER_MODE;
                     setTarget(currentArmPose,currentExtendPose);
                     armPower = -0.5 * Math.abs(leftY); //added sensitivity
+                } else {
+                    armMode = Arm_Modes.HOLD_MODE;
                 }
+
             } else {
                 armMode = Arm_Modes.HOLD_MODE;
             }
@@ -356,9 +368,10 @@
                 setTarget(maxArmPose,maxExtendPose);
             }
 
-            if(y_button.wasJustPressed()){ //hang
-                feedback.alert_side(false,driverOp);
-                armMode = Arm_Modes.HANG_MODE;
+            if(y_button.isDown()){ //hang
+                //feedback.alert_side(false,driverOp);
+                armMode = Arm_Modes.DRIVER_MODE;
+                armPower = -.8;
             }
 
             if(a_button.wasJustPressed()){ //switch on and off parallel intake
@@ -404,6 +417,7 @@
             extendMotor.set(extendPower);
             updateToggles();
         }
+
         //--------AUTO COMMANDS------------
         public boolean ArmIsBusy(){
             return instantTarget != armTarget;

@@ -50,7 +50,7 @@ public class Drivetrain {
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
         pedroDrivetrain = new Follower(hardwareMap);
-        pedroDrivetrain.setPose(PoseStorage.CurrentPose); //takes last recorded pose from auto
+        //pedroDrivetrain.setPose(PoseStorage.CurrentPose); //takes last recorded pose from auto
 
         //imu = hardwareMap.get(IMU.class, "imu");
         driverOp = gamepad;
@@ -97,9 +97,9 @@ public class Drivetrain {
 
         pedroDrivetrain.startTeleopDrive();
 
-        if(PoseStorage.CurrentPose != null){ //uses last known pose from Auto as start in TeleOp
-            pedroDrivetrain.setPose(PoseStorage.CurrentPose);
-        }
+//        if(PoseStorage.CurrentPose != null){ //uses last known pose from Auto as start in TeleOp
+//            pedroDrivetrain.setPose(PoseStorage.CurrentPose);
+//        }
     }
 
     private void updateToggles(){
@@ -114,7 +114,7 @@ public class Drivetrain {
     }
 
     public void run_teleOp(Driver_Feedback feedback){
-        if(teleOpDrive) {
+       // if(teleOpDrive) {
             strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
             forwardSpeed = driverOp.getLeftY() * speedLimit;
             turnSpeed = -driverOp.getRightX() * speedLimit;
@@ -172,19 +172,18 @@ public class Drivetrain {
 
             //Pedro-Pathing TeleOp Control
             pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed, strafeSpeed, turnSpeed, robotCentricMode);
-        } else {
-            //logic to get out of autoDrive
-            if(Math.abs(driverOp.getLeftX()) > 0 ||Math.abs(driverOp.getRightX()) > 0 || Math.abs(driverOp.getLeftY()) > 0){
-                pedroDrivetrain.breakFollowing();
-                teleOpDrive = true;
-                pedroDrivetrain.setMaxPower(1);
-                pedroDrivetrain.startTeleopDrive();
-            }
-        }
+//        } else {
+//            //logic to get out of autoDrive
+//            if(Math.abs(driverOp.getLeftX()) > 0 ||Math.abs(driverOp.getRightX()) > 0 || Math.abs(driverOp.getLeftY()) > 0){
+//                pedroDrivetrain.breakFollowing();
+//                teleOpDrive = true;
+//                pedroDrivetrain.setMaxPower(1);
+//                pedroDrivetrain.startTeleopDrive();
+//            }
+//        }
 
         pedroDrivetrain.update();
         updateToggles();
-
 
         //TODO Driver Alerts for Speed
 //        if(strafeAbsolute == 1 || forwardAbsolute == 1 || turnAbsolute == 1){

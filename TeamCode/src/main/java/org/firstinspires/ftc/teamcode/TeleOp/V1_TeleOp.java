@@ -43,11 +43,11 @@ public class V1_TeleOp extends AutoBase {
         //vision.init(hardwareMap);
         //lighting.init(hardwareMap);
 
-        initTeleOpMenu(Driver1Op);
+        //initTeleOpMenu(Driver1Op);
 
-        while(opModeInInit()){
-            runTeleOpMenu(mainTelemetry);
-        }
+//        while(opModeInInit()){
+//            runTeleOpMenu(mainTelemetry);
+//        }
 
         waitForStart();
 

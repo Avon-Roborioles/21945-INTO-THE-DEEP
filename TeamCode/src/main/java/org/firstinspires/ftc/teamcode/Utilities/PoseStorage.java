@@ -29,23 +29,23 @@ public class PoseStorage {
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose LeftSample1 = new Pose(-35+72,-24+72, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
+    public static Pose LeftSample1 = new Pose(37,49.2, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
 
-    public static Pose LeftSample2 = new Pose(-48+72,-24+72, Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample2 = new Pose(26,49.2, Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3 = new Pose(-48+72,-24+72,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3 = new Pose(21,49.2,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3Back = new Pose(-37+72,-24+72,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3Back = new Pose(37,-24+72,Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftSampleControlPose = new Pose(-35.9+72,-24+72,Math.toRadians(180-1e-6)); //done
 
-    public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(-1))+72,-50-(OneInchMovement(-1))+72,Math.toRadians(45)); //Done - 225
+    public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(-5))+72,-50-(OneInchMovement(-3.8))+72,Math.toRadians(45)); //Done - 225
 
     public static Pose LeftPitSamples = new Pose(-18+72,72,Math.toRadians(0)); //done
 
     public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 
-    public static Pose LeftPark = new Pose(-20+72,72, Math.toRadians(0)); //Done - 83 y
+    public static Pose LeftPark = new Pose(49,69, Math.toRadians(0)); //Done - 83 y
 
 
 
