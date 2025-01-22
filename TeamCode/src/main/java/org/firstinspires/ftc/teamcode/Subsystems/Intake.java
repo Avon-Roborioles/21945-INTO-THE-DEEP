@@ -207,7 +207,7 @@ public class Intake {
     //checks if a sample is collected by a valid color detection
     public boolean isFull(){
         intakeDistance = ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM);
-        return intakeDistance < 5.0;
+        return intakeDistance < 6.5; //5
     }
 
     //returns color of sample, returns NONE if no color is detected

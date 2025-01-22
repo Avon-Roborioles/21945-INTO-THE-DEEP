@@ -83,7 +83,6 @@ public class Drivetrain {
         );
 
 
-
         //adding snappy breaking to drive motors
         leftFront = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftFrontMotorName);
         leftRear = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftRearMotorName);
@@ -146,17 +145,18 @@ public class Drivetrain {
                 pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.RightPitSamples.getHeading());
             }
 
-            if(left_bumper.wasJustPressed()){
-                pedroDrivetrain.stopTeleOpDrive();
-                teleOpDrive = false;
-                pedroDrivetrain.setMaxPower(speedLimit);
-                pedroDrivetrain.followPath(scorePath,true);
-            } else if(right_bumper.wasJustPressed()){
-                pedroDrivetrain.stopTeleOpDrive();
-                teleOpDrive = false;
-                pedroDrivetrain.setMaxPower(speedLimit);
-                pedroDrivetrain.followPath(pickupPath,true);
-            }
+            //TODO - need to test before implementation
+//            if(left_bumper.wasJustPressed()){
+//                pedroDrivetrain.stopTeleOpDrive();
+//                teleOpDrive = false;
+//                pedroDrivetrain.setMaxPower(speedLimit);
+//                pedroDrivetrain.followPath(scorePath,true);
+//            } else if(right_bumper.wasJustPressed()){
+//                pedroDrivetrain.stopTeleOpDrive();
+//                teleOpDrive = false;
+//                pedroDrivetrain.setMaxPower(speedLimit);
+//                pedroDrivetrain.followPath(pickupPath,true);
+//            }
 
             //Speed Controls - set top speed percentage
             if (d_up.wasJustPressed()) {

@@ -63,7 +63,7 @@ public class AutoBase extends LinearOpMode {
     public Pose currentCoordinate = Coordinates[0];
     public String currentCoordinateName = CoordinateNames[0];
     public AutoPoses AutoPose = AutoPoses.RIGHT; //default is right (samples)
-    public int cycleCount = 1; //number of times to go to pit
+    public int cycleCount = 3; //number of times to go to pit
     public int coordinateCount = 1;
     public boolean returnHome = false; //yes or no for returning to startPose during test autos
 
@@ -114,14 +114,15 @@ public class AutoBase extends LinearOpMode {
         //menu code
         if(d_up.getState()){
             //startPose selection
-            AutoPose = AutoPoses.RIGHT;
+            PoseStorage.ranAuto = true;
         } else {
-            AutoPose = AutoPoses.LEFT;
+            PoseStorage.ranAuto = false;
         }
 
         //menu
-        telemetry.addLine("Select the StartPose by Toggling the D-pad Up Button");
-        telemetry.addData("Current StartPose Selected: ", AutoPose);
+        telemetry.addLine("Select if Auto Ran or Not");
+        telemetry.addData("Current StartPose Selected: ", PoseStorage.ranAuto);
+        telemetry.update();
 
         d_up.readValue();
     }
@@ -172,8 +173,7 @@ public class AutoBase extends LinearOpMode {
     public void getSubsystemTelemetry(Telemetry telemetry){
         arm.getTelemetry(telemetry);
         intake.getTelemetryFULL(telemetry);
-        //vision.getTelemetry(telemetry);
-        //lighting.getTelemetry(telemetry);
+
     }
 
     /**

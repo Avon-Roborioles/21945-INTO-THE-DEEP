@@ -65,21 +65,12 @@ public class Park extends AutoBase {
             inverseConstant = 10;
 
             start = bot.pathBuilder()
-                    //get in line to drive to parkPose
-                    .addPath(new BezierLine(startPose.getPoint(), new Pose(startPose.getX(), startPose.getY() + 20,startPose.getHeading()).getPoint())) //heading doesn't matter
-                    .setLinearHeadingInterpolation(startPose.getHeading(), Math.toRadians(180-1e-6))
-
-                    //waitSeconds(.1)
-
-                    //drive to point close to parkPose
-                    .addPath(new BezierLine(new Pose(startPose.getX(), startPose.getY() + 20,startPose.getHeading()).getPoint(), new Pose(parkPose.getX() - 5, startPose.getY() + 20,startPose.getHeading()).getPoint())) //heading doesn't matter
-                    .setConstantHeadingInterpolation(Math.toRadians(180-1e-6))
                     .build();
 
             park = bot.pathBuilder() //TODO use pathBuilder(bot) to test waitSeconds
                     //drive to parkPose
-                    .addPath(new BezierLine(new Pose(parkPose.getX() - 5, startPose.getY() + 20,startPose.getHeading()).getPoint(), new Point(parkPose)))
-                    .setLinearHeadingInterpolation(Math.toRadians(180-1e-6), parkPose.getHeading())
+                    .addPath(new BezierLine(startPose.getPoint(),parkPose.getPoint()))
+                    .setConstantHeadingInterpolation(parkPose.getHeading())
                     .build();
         }
 
@@ -105,6 +96,7 @@ public class Park extends AutoBase {
         }
 
         waitForStart();
+        PoseStorage.ranAuto = true;
 
         buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
 

@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.util.Timing.Timer;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Subsystems.*;
+import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 
 import java.util.concurrent.TimeUnit;
 
@@ -43,11 +44,11 @@ public class V1_TeleOp extends AutoBase {
         //vision.init(hardwareMap);
         //lighting.init(hardwareMap);
 
-        //initTeleOpMenu(Driver1Op);
+        initTeleOpMenu(Driver1Op);
 
-//        while(opModeInInit()){
-//            runTeleOpMenu(mainTelemetry);
-//        }
+        while(opModeInInit()){
+            runTeleOpMenu(mainTelemetry);
+        }
 
         waitForStart();
 
@@ -67,6 +68,7 @@ public class V1_TeleOp extends AutoBase {
             }
 
             //Telemetry
+            mainTelemetry.addData("Auto Ran: ", PoseStorage.ranAuto);
             drivetrain.getTelemetryBRIEF(mainTelemetry);
             arm.getTelemetry(mainTelemetry);
             intake.getTelemetryFULL(mainTelemetry);

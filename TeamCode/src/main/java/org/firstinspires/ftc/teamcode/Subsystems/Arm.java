@@ -18,6 +18,7 @@
     import com.qualcomm.robotcore.util.ElapsedTime;
 
     import org.firstinspires.ftc.robotcore.external.Telemetry;
+    import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 
     //robot subsystem for extendable arm
     public class Arm {
@@ -28,14 +29,15 @@
         public static final double ENCODER_RESOLUTION = 1425; //TODO switch to 2,786 when new motor is installed
 
         //absolute positions
-        private final int groundPose = 0;
-        private final int autoGround = 800;
-        private final int rung1Pose = 2000;
-        private final int rung2Pose = 2700;
-        private final int maxArmPose = 5800;
+        private int groundPose = 0;
+        private int autoGround = 800;
+        private int rung1Pose = 2000;
+        private int rung2Pose = 2700;
+        private int maxArmPose = 5800;
 
 
-        private final int maxExtendPose = 3250;
+        private int maxExtendPose = 4000;
+        private int minExtendPose = 0;
 
         private int currentArmPose;
         private int currentExtendPose;
@@ -55,7 +57,7 @@
         private final double kpArm = 0.002;
         private final double kpExtend = 0.01; //0.05
         private final double ka = 0.0004;
-        private final double MAX_VELOCITY = 2000;
+        private final double MAX_VELOCITY = 6000;
         private final double MAX_ACCELERATION = 4000;
         MotionProfile motionProfile;
         Vector armCoefficients;
@@ -121,11 +123,27 @@
 
             //arm
             armMotor = new MotorEx(hardwareMap,"armMotor");
+
+            //resets if auto wasn't ran; ignores if true
             armMotor.setInverted(true);
             armMotor.encoder.setDirection(Motor.Direction.REVERSE);
             armMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             armMotor.stopAndResetEncoder();
             armMotor.setRunMode(Motor.RunMode.RawPower);
+            armTarget = armMotor.getCurrentPosition();
+
+
+            if(PoseStorage.ranAuto){
+                //absolute positions
+               groundPose = -3000;
+               autoGround = -1560;
+//               rung1Pose = 2000;
+       //        rung2Pose = 2700;
+               maxArmPose = 3050;
+
+               maxExtendPose = 2410;
+               minExtendPose = -1680;
+            }
 
             motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
 
@@ -327,7 +345,7 @@
                 }
 
             }else if(rightY > 0){
-                if(currentExtendPose > 0) {
+                if(currentExtendPose > minExtendPose) {
                     extendHold = false;
                     setTarget(currentArmPose,currentExtendPose);
                     extendPower = -1* Math.abs(rightY); //added sensitivity
@@ -372,6 +390,9 @@
                 //feedback.alert_side(false,driverOp);
                 armMode = Arm_Modes.DRIVER_MODE;
                 armPower = -.8;
+            }
+            if(y_button.wasJustPressed()){
+                feedback.alert_side(false,driverOp);
             }
 
             if(a_button.wasJustPressed()){ //switch on and off parallel intake

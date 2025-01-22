@@ -26,12 +26,15 @@ public class PoseStorage {
 
     public static AutoBase.AutoPoses allianceSide = AutoBase.AutoPoses.LEFT; //useful variable for selected alliance from auto
 
+    //used to determine arm pose (auto is on rung, no auto is 0)
+    public static boolean ranAuto = false;
+
     //Left Side Poses - Samples
     public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
 
     public static Pose LeftSample1 = new Pose(37,49.2, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
 
-    public static Pose LeftSample2 = new Pose(26,49.2, Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample2 = new Pose(25.7,49.2, Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftSample3 = new Pose(21,49.2,Math.toRadians(180-1e-6)); //Done
 
@@ -45,7 +48,7 @@ public class PoseStorage {
 
     public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 
-    public static Pose LeftPark = new Pose(49,69, Math.toRadians(0)); //Done - 83 y
+    public static Pose LeftPark = new Pose(48,69, Math.toRadians(0)); //Done - 83 y
 
 
 
@@ -70,11 +73,6 @@ public class PoseStorage {
 
     public static Pose RightPark = new Pose(35+72,-50+72, Math.toRadians(90)); //Done - (-31), 51, 0
 
-
-    //useful points to hold during auto - allows us to keep our stance against aggressive bots
-    public static Point BucketScorePoint = LeftBucketScore.getPoint();
-
-    public static Point PitSamplesPoint = LeftPitSamples.getPoint();
 
 
 

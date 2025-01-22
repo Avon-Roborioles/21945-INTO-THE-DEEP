@@ -31,6 +31,7 @@ public class Sample_Auto extends AutoBase {
     String message = "";
     ElapsedTime pathTimer;
     ElapsedTime opModeTimer;
+    double endTime = 0;
     boolean backPathDone = false;
 
 
@@ -172,7 +173,14 @@ public class Sample_Auto extends AutoBase {
         //arm.runPassiveExtend();
         PoseStorage.CurrentPose = bot.getPose(); //updates currentPose variable
         mainTelemetry.addLine("---AUTO DATA---");
-        mainTelemetry.addData("OpMode Timer: ", opModeTimer.seconds());
+        mainTelemetry.addData("Auto Ran: ", PoseStorage.ranAuto);
+
+        if(endTime != 0){
+            mainTelemetry.addData("OpMode Timer: ", endTime);
+        } else {
+            mainTelemetry.addData("OpMode Timer: ", opModeTimer.seconds());
+        }
+
         mainTelemetry.addData("Selected Auto Position: ", AutoPose);
         mainTelemetry.addData("Selected Park Position: ", AutoPose);
         mainTelemetry.addData("Current State: ", currentState);
@@ -232,6 +240,8 @@ public class Sample_Auto extends AutoBase {
         public void runOpMode () throws InterruptedException {
             bot = new Follower(hardwareMap);
 
+            PoseStorage.ranAuto = false; //TODO ??? false before
+
             startPose = PoseStorage.LeftStartPose;
             parkPose = PoseStorage.LeftPark;
 
@@ -268,9 +278,9 @@ public class Sample_Auto extends AutoBase {
             // starting path & FSM
             currentState = State.SCORE_PASSIVE;
             intake.pickup(); //should secure passive/loaded sample
-            arm.setTarget(5500,5500); //5600,3250
-            //waitSeconds(0.5);
-            bot.setMaxPower(0.7);
+            arm.setTarget(5550,4000); //5600,3250
+            waitSeconds(0.01);
+            bot.setMaxPower(0.9); //.7
             bot.followPath(scorePassive, true);
             pathTimer.reset();
 
@@ -281,9 +291,9 @@ public class Sample_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
-                                waitSeconds(1);
+                                waitSeconds(.05);
                                 intake.drop(); //score
-                                waitSeconds(1);
+                                waitSeconds(.1); //.3
                                 intake.stop();
                                 arm.setTarget(0,0);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
@@ -296,11 +306,11 @@ public class Sample_Auto extends AutoBase {
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
                                 if(!backPathDone && groundSamplesScored == 2){
-                                    waitSeconds(.7);
+                                    waitSeconds(.05); //.1
                                     backPathDone = true;
                                     bot.followPath(Sample3Back);
                                 } else {
-                                    waitSeconds(.1);
+                                    waitSeconds(.05); //.1
                                     //intake.stop();
                                     if (groundSamplesScored == 1) {
                                         updateScoreStart(2);
@@ -308,10 +318,10 @@ public class Sample_Auto extends AutoBase {
                                         updateScoreStart(3);
                                     }
 
-                                    arm.setTarget(5500, 5500);
-                                    waitSeconds(1);
+                                    arm.setTarget(5550, 4000);
+                                    waitSeconds(.05); //.1
                                     currentState = State.SCORE;
-                                    bot.setMaxPower(0.7);
+                                    bot.setMaxPower(0.9); //.5
                                     bot.followPath(Score, true);
                                     pathTimer.reset();
                                     break;
@@ -320,32 +330,34 @@ public class Sample_Auto extends AutoBase {
 
                         case SCORE:
                             if (!bot.isBusy()) {
-                                waitSeconds(1);
+                                waitSeconds(.1);
                                 intake.drop();
-                                waitSeconds(1);
+                                waitSeconds(.1); //.3
                                 groundSamplesScored++;
 
-                                if (groundSamplesScored == 1) {
-                                    currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
-                                    bot.setMaxPower(.9);
-                                    bot.followPath(Sample2, true);
-                                    arm.setTarget(0,0);
-                                    intake.pickup();
-                                    pathTimer.reset();
-                                    break;
-                                } else if (groundSamplesScored == 2) {
-                                    currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
-                                    bot.setMaxPower(.9);
-                                    bot.followPath(Sample3, true);
-                                    arm.setTarget(0,0);
-                                    intake.pickup();
-                                    pathTimer.reset();
-                                    break;
+                                if(groundSamplesScored < cycleCount) {
+                                    if (groundSamplesScored == 1) {
+                                        currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                        bot.setMaxPower(.9);
+                                        bot.followPath(Sample2, true);
+                                        arm.setTarget(0, 0);
+                                        intake.pickup();
+                                        pathTimer.reset();
+                                        break;
+                                    } else if (groundSamplesScored == 2) {
+                                        currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
+                                        bot.setMaxPower(.9);
+                                        bot.followPath(Sample3, true);
+                                        arm.setTarget(0, 0);
+                                        intake.pickup();
+                                        pathTimer.reset();
+                                        break;
+                                    }
                                 } else {
                                     currentState = Sample_Auto.State.PARK;
                                     bot.setMaxPower(.9);
                                     bot.followPath(Park, true);
-                                    arm.setTarget(2800,1000);
+                                    arm.setTarget(2800, 1000);
                                     intake.stop();
                                     pathTimer.reset();
                                     break;
@@ -353,7 +365,8 @@ public class Sample_Auto extends AutoBase {
                             }
                         case PARK:
                             if (!bot.isBusy()) {
-                                waitSeconds(.1);
+                                PoseStorage.ranAuto = true;
+                                endTime = opModeTimer.seconds();
                                 arm.setTarget(2700,1000);
                                 currentState = Sample_Auto.State.END;
                             }
