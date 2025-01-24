@@ -30,19 +30,20 @@ public class PoseStorage {
     public static boolean ranAuto = false;
 
     //Left Side Poses - Samples
-    public static Pose LeftStartPose = new Pose(-35+72,-60+72, Math.toRadians(90)); //Done
+    public static Pose LeftStartPose = new Pose(37,12, Math.toRadians(90)); //Done
 
+    //Sample 1 is outside, Sample 3 is inside
     public static Pose LeftSample1 = new Pose(37,49.2, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
 
     public static Pose LeftSample2 = new Pose(25.7,49.2, Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftSample3 = new Pose(21,49.2,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3Back = new Pose(37,-24+72,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3Back = new Pose(37,48,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSampleControlPose = new Pose(-35.9+72,-24+72,Math.toRadians(180-1e-6)); //done
+    public static Pose LeftSampleControlPose = new Pose(36.1,48,Math.toRadians(180-1e-6)); //done
 
-    public static Pose LeftBucketScore = new Pose(-51-(OneInchMovement(-5))+72,-50-(OneInchMovement(-3.8))+72,Math.toRadians(45)); //Done - 225
+    public static Pose LeftBucketScore = new Pose(21-(OneInchMovement(-5)),-50-(OneInchMovement(-3.8))+72,Math.toRadians(45)); //Done - 225
 
     public static Pose LeftPitSamples = new Pose(-18+72,72,Math.toRadians(0)); //done
 
