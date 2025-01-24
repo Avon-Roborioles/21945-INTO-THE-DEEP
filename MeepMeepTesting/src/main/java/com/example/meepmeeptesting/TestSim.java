@@ -1,9 +1,12 @@
 package com.example.meepmeeptesting;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.noahbres.meepmeep.MeepMeep;
-import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
-import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+//import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
+import org.rowlandhall.meepmeep.MeepMeep;
+import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
+import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 import java.awt.Image;
 import java.io.File;
@@ -13,20 +16,21 @@ import javax.imageio.ImageIO;
 
 public class TestSim {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(600);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15).followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0)).forward(30).turn(Math.toRadians(90)).forward(30).turn(Math.toRadians(90)).forward(30).turn(Math.toRadians(90)).forward(30).turn(Math.toRadians(90)).build());
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 14.5)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(SimPoseStorage.RightStartPose)
 
-        //used for custom backgrounds
-//        Image img = null;
-//        try { img = ImageIO.read(new File("PATH TO IMAGE")); }
-//        catch (IOException e) {}
+
 //
-//        meepMeep.setBackground(img);
 
-        //wait until the new game field background is released to use this
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();
+                                .waitSeconds(2000)
+                                .build());
+
+
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK).setDarkMode(true).setBackgroundAlpha(0.95f).addEntity(myBot).start();
     }
 }

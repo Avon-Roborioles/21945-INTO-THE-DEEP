@@ -1,0 +1,98 @@
+-----Notes Written by Stephen Onochie - October 2024-----
+
+*Email to Contact for Pedro-Pathing Questions
+scottsbots10158@gmail.com
+
+1) Pedro Pathing General Overview
+https://youtu.be/HI7eyLLpCgM?si=k9-jPhOipYutlmta
+    - Pedro Pathing is reactive as it can adjust on the fly compared to RoadRunner
+    - Paths are made with Bezier Curves (easy to change and get position from)
+    - Can constantly adjust heading on the fly (saves time)
+    - Paths are made with 4 Vectors in mind (centripetal, translational, heading, drive)
+    - Pedro-Pathing has the ability to actively hold positions on the fields (highly resistant to bumps/collisions)
+    - Can also use TeleOp Enhancements to reduce centripetal force
+
+
+2) Tuning Guide
+https://youtu.be/3EXX5_KwfVM?si=m2FTLV3hWIvxZgn7
+    *Prerequisites
+        - Must use an omnidirectional drivetrain (mecanum for the win lol)
+        - Must operate in radians and inches
+        - must weigh robot in kg (metric system for the win lol)
+    *Tuning your Localizer (SparkFun only for Team 21)
+        Manual Tuners
+        - Translational PID
+        - Heading PID
+        - Drive PID
+        - Centripetal Force Correction
+        Automatic Tuners
+        - Velocity Tuners (Forward, Lateral)
+        - Zero Power Acceleration Tuners
+
+    *Making Paths
+    - Field runs 0" -> 140" both ways (X & Y Axis)
+    - Pedro uses a Coordinate System like RoadRunner
+    - ***Key Difference is Pedro sets origin at Bottom Left unlike the Field Center like RR******
+    - Can just add 72 to value in right quadrant to combat this
+
+        *Defining a Pose
+        - can be defined with or without heading
+        - headings for vector poses at set at 0 degrees automatically
+        Pose VECTORPOSE = new Pose(double x,double y);
+        Pose BESTPOSE = new Pose(double x,double y,double Math.toHeading(degrees)); //use Math.toHeading() to convert degrees to radians
+
+        *Creating Points
+        - Points are just built from the Poses you have created or you can define them separately
+        - Used for either Lines or Curves
+        Point BESTPOINT = new Point(Pose pose);
+        - Points are best for general coordinates on the field while poses are for robot positions
+        - underlying logic behind creating points is stated below
+            Point(Pose pose){
+              setCoordinates(pose.getX(), pose.getY(), CARTESIAN);
+            }
+
+        *Creating Bezier Lines
+        - just needs a start point and end point
+        - moves robot in straight line
+        - mainly used for linear points
+        - this is just a line but extends the Bezier Curve class so things work (directly from documentation)
+        BezierLine BESTLINE = new BezierLine(Point startPoint, Point endPoint);
+
+        *Bezier Curves
+        - uses 3 or more control points to create the bezier curve (sounds fun lol)
+        - moves robot in a custom curved path
+        - add more control points if path isn't consistent
+        BezierCurve BESTCURVE = new BezierCurve(Point point1, Point point2, Point point3,...);
+
+        *Constant Heading Interpolation
+        - this is how you set your heading per line or curve you create
+        - should add this at the end of every line/curve
+        .setConstantHeadingInterpolation(double setHeading)
+        ----OR (Real Example)-----
+        .setConstantHeadingInterpolation(Sample1Pose.getHeading())
+
+        *Path Chains
+        - the "meat and potatoes" of all auto pathing
+        -paths must be built in a function & run first thing in auto to build actual paths "BuildPaths();"
+        - make sure to have follower and start pose initialized at the beginning of auto
+        - must define at the beginning in order to create your path (directly below)
+        private PathChain firstCycletoSample, firstCycleScore, firstCyclePitIntake, GoToPark;
+
+            *Example
+            firstCycleToSample = follower.pathBuilder()
+            .addPath(new BezierCurve(new Point(StartPose), new Point(45,34,35), new Point(34,24,67))
+            .setConstantInterpolation(Sample1Pose.getHeading())
+            .setPathEndTimeoutConstraint(0)
+            .build();
+
+        *Holding Points
+        - Holds points last created by your control point and allows to pull from the
+        end tangent and theta to grab your angle
+        HoldPoint(BezierPoint point, double heading);
+
+        *TeleOp Enhancements
+        - allows for smoother tuning
+        - must init your drive and heading vectors
+        - refer to example for use case
+
+

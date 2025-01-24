@@ -2,6 +2,8 @@
 
 ## Team Focus -> Custom Fabrication
 
+## Robot Codename -> Godzilla - Incredible, unstoppable titan of FTC!
+
 ---
 
 ## Key Tools and Technologies
@@ -9,7 +11,9 @@
 - **Language**: Java
 - **IDE**: Android Studio
 - **Version Control**: Git, GitHub
-- **Libraries**: FTC SDK, RoadRunner (Auto-Pathing), OpenCV (Computer Vision), FTCLib (Shortcuts), MeepMeep (Simulations)
+- **Libraries**: FTC SDK, Pedro-Pathing (Autonomous Movements), OpenCV & Limelight (Computer Vision), 
+  - FTCLib (Hardware Objects & Shortcuts),CTRL-ALT-FTC (PID Controllers), RoadRunner (Motion Profiles),
+  - Photon (Faster OpMode Loops)
 
 ---
 
@@ -29,13 +33,19 @@
 
 - **Commit messages** should clearly explain what changes were made.
 - **Branches**:
-  - `master`: Production-ready code only.
+  - `master`: Competition-ready code only.
   - `development`: Ongoing work and testing.
-  - Create feature-specific branches when working on new functionality or testing.
+  - `SparkFun-Odometry`: Stephen's Research with the SparkFun Odometry Sensor for Auto.
+  - `Three-Wheel-Odometry`: Jerry's Efforts and learning towards using the typical 3-Odometry Setup.
+  - `Vision-Research`: Team's Ongoing Testing with LimeLight Camera Integration
+  - Create feature-specific branches from `development` when working on new functionality or testing.
+ 
+ ![Team 21 Branch Model from drawio](https://github.com/user-attachments/assets/269d7843-88c6-4af4-81c2-9edc9b5c96a7)
+
 
 - **Pull Requests**: All major updates should be submitted via a pull request for review.
 
-- **Testing**: Test code thoroughly before merging into `main`.
+- **Testing**: Test code thoroughly before merging into `master`.
 
 ---
 
