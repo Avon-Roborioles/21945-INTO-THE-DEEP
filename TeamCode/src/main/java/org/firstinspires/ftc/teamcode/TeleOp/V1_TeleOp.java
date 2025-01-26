@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import java.util.concurrent.TimeUnit;
 
 //@Photon
-@TeleOp(name="TeleOp w/ No Slides")
+@TeleOp(name="TeleOp w/ No Lift")
 public class V1_TeleOp extends AutoBase {
 
     //create subsystem objects

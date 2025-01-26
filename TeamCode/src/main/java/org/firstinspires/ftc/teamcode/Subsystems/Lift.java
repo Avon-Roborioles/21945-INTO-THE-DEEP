@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 //import needed libraries
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FullStateFeedback;
-import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.ThermalEquilibrium.homeostasis.Utils.Vector;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
@@ -13,7 +11,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -21,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //robot subsystem for slides + specimen intake
-public class Slides {
+public class Lift {
     //motor objects & related variables
     MotorEx slidesMotor;
     Servo intakeServo; //0 is open, 1 is close
@@ -194,11 +191,11 @@ public class Slides {
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----SLIDES DATA----");
-        telemetry.addData("Slides Mode: ", slideMode);
-        telemetry.addData("Slides Pose: ", slidesMotor.getCurrentPosition());
-        telemetry.addData("Slides Velocity: ", slidesMotor.getVelocity());
-        telemetry.addData("Slides Power: ", slidesPower);
-        telemetry.addData("Slides Busy?: ", IsBusy());
+        telemetry.addData("Lift Mode: ", slideMode);
+        telemetry.addData("Lift Pose: ", slidesMotor.getCurrentPosition());
+        telemetry.addData("Lift Velocity: ", slidesMotor.getVelocity());
+        telemetry.addData("Lift Power: ", slidesPower);
+        telemetry.addData("Lift Busy?: ", IsBusy());
         telemetry.addData("Specimen Intake Pose: ", intakeServo.getPosition());
         telemetry.addData("Specimen Intake Busy?: ", intakeIsBusy());
     }
