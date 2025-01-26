@@ -72,8 +72,7 @@ public class PoseStorage {
 
     public static Pose RightCheckPoint = new Pose(19+72,-39+72, Math.toRadians(180)); //TODO
 
-    public static Pose RightPark = new Pose(112,-50+72, Math.toRadians(90)); //Done - (-31), 51, 0
-
+    public static Pose RightPark = new Pose(112,-50+72, Math.toRadians(90)); //112, 22, 90
 
 
 

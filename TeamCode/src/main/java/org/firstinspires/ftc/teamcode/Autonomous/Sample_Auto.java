@@ -336,7 +336,7 @@ public class Sample_Auto extends AutoBase {
                                     }
 
                                     arm.setTarget(5550, 4000);
-                                    waitSeconds(.05); //.1
+                                    waitSeconds(.01); //.1
                                     currentState = State.SCORE;
                                     bot.setMaxPower(0.9); //.5
                                     bot.followPath(Score, true);

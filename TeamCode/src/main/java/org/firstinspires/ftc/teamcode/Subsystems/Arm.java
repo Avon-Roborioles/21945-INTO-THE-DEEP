@@ -324,13 +324,11 @@
                 }
 
             } else if(leftY < 0){
-                if(currentArmPose > groundPose) {
+
                     armMode = Arm_Modes.DRIVER_MODE;
                     setTarget(currentArmPose,currentExtendPose);
                     armPower = -0.5 * Math.abs(leftY); //added sensitivity
-                } else {
-                    armMode = Arm_Modes.HOLD_MODE;
-                }
+
 
             } else {
                 armMode = Arm_Modes.HOLD_MODE;
