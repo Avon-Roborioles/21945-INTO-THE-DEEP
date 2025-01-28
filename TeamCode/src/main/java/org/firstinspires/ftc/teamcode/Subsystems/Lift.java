@@ -42,8 +42,8 @@ public class Lift {
     public double intakeTarget = 0;
 
     //Motion Profile + Full State Feedback PID Controller
-    private final double kp = 0; //position
-    private final double ka = 0; //velocity
+    private final double kp = 0; //TODO position
+    private final double ka = 0; //TODO velocity
     private final double MAX_VELOCITY = 0; //TODO
     private final double MAX_ACCELERATION = 0; //TODO
     MotionProfile motionProfile;
