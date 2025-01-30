@@ -155,12 +155,28 @@ public class Sample_Auto extends AutoBase {
         }
     }
 
-    //native wait method
+    //native wait method - seconds
     public void waitSeconds(double seconds){
         ElapsedTime time = new ElapsedTime();
         time.reset();
 
         while(seconds >= time.time(TimeUnit.SECONDS)){
+            updateAuto();
+            if(isStopRequested()){
+                break;
+            }
+            if(!opModeIsActive()){
+                break;
+            }
+        }
+    }
+
+    //native wait method - milliseconds
+    public void waitMilliSeconds(double milliseconds){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
+        while(milliseconds >= time.time(TimeUnit.MILLISECONDS)){
             updateAuto();
             if(isStopRequested()){
                 break;

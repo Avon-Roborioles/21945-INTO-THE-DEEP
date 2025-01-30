@@ -31,15 +31,24 @@ public class TestSim {
                                 .lineToLinearHeading(SimPoseStorage.SpecimenScore)
                                 .waitSeconds(.01)
 
-                                //move sample 1 in observation zone - TODO (make
+                                //move sample 1 in observation zone - TODO pathChain with tangential heading (looks cool lol)
                                 .lineToLinearHeading(SimPoseStorage.RightSample1Start)
-                                .splineToLinearHeading(SimPoseStorage.RightSample1,SimPoseStorage.RightSample1.getHeading())
+                                .lineToLinearHeading(SimPoseStorage.RightSample1Curve)
+                                .lineToLinearHeading(SimPoseStorage.RightSample1)
+                                .lineToLinearHeading(SimPoseStorage.RightSample1Push)
 
-                                //move sample 2 in observation zone
+                                //move sample 2 in observation zone - TODO pathChain with constant heading
+                                .lineToLinearHeading(SimPoseStorage.RightSample1)
+                                .lineToLinearHeading(SimPoseStorage.RightSample2)
+                                .lineToLinearHeading(SimPoseStorage.RightSample2Push)
 
-                                //move sample 3 in observation zone
+                                //move sample 3 in observation zone - TODO pathChain with constant heading
+                                .lineToLinearHeading(SimPoseStorage.RightSample2)
+                                .lineToLinearHeading(SimPoseStorage.RightSample3)
+                                .lineToLinearHeading(SimPoseStorage.RightSample3Push)
 
                                 //pickup specimen 1
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
 
                                 //score specimen 1
 
@@ -49,11 +58,11 @@ public class TestSim {
 
                                 //pickup specimen 3
 
+                                //score specimen 3
+
+                                //pickup specimen 4
+
                                 //score specimen 4
-
-                                //pickup specimen 5
-
-                                //score specimen 5
 
                                 //park
 
