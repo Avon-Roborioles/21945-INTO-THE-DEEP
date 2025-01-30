@@ -25,7 +25,7 @@
         //motor objects & related variables
         MotorEx armMotor;
         MotorEx extendMotor;
-        public static final double GEAR_RATIO = 0.3; // Output 60 Teeth, Input 20 Teeth
+        public static final double GEAR_RATIO = 0.3; // Output 44 Teeth, Input 12 Teeth
         public static final double ENCODER_RESOLUTION = 1425; //TODO switch to 2,786 when new motor is installed
 
         //absolute positions

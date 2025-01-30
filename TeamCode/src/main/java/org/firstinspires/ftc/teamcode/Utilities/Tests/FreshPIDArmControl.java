@@ -45,7 +45,7 @@ public class FreshPIDArmControl extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        driverOp = new GamepadEx(gamepad2);
+        driverOp = new GamepadEx(gamepad1);
         leftY = driverOp.getLeftY();
         time = new ElapsedTime();
 

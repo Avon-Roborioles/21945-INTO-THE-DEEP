@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Utilities;
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
-
 public class PoseStorage {
     //**Reminder that Pedro-Pathing's Origin is at the bottom left of the field
     //the maximum distance in each axis in 140" (inches)
@@ -66,7 +65,7 @@ public class PoseStorage {
 
     public static Pose SpecimenPickup = new Pose(43+72,-50+72,Math.toRadians(-90)); //done - 50, -56
 
-    public static Pose SpecimenScore = new Pose(0+72,-35+72,Math.toRadians(90)); //done
+    public static Pose SpecimenScore = new Pose(0+72,-35+72,Math.toRadians(180-1e-6)); //done
 
     public static Pose RightPitSamples = new Pose(90,72,Math.toRadians(180-1e-6)); //TODO
 

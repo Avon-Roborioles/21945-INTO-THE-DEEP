@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Vector;
@@ -146,6 +148,18 @@ public class Pose {
     public Point getPoint(){
         return new Point(getX(), getY(), Point.CARTESIAN);
     }
+
+
+    /**
+     * This returns a RoadRunner equivalent pose object used for simulations (MeepMeep)
+     * CUSTOM CODE WRITTEN BY STEPHEN O. - TEAM 21945
+     * @return returns a RoadRunner pose object
+     */
+
+    public Pose2d RR(){
+        return new Pose2d(getX()-72, getY()-72, getHeading());
+    }
+
 
     public void add(Pose pose) {
         setX(x + pose.getX());
