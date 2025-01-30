@@ -57,8 +57,8 @@
         private final double kpArm = 0.002;
         private final double kpExtend = 0.01; //0.05
         private final double ka = 0.0004;
-        private final double MAX_VELOCITY = 6000;
-        private final double MAX_ACCELERATION = 4000;
+        private final double MAX_VELOCITY = 50000;
+        private final double MAX_ACCELERATION = 50000;
         MotionProfile motionProfile;
         Vector armCoefficients;
         FullStateFeedback armController;
