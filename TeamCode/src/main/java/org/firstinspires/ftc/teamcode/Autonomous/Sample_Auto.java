@@ -49,6 +49,7 @@ public class Sample_Auto extends AutoBase {
 
     public State currentState;
     public int groundSamplesScored = 0;
+    public int specimenScored = 0;
 
 
     //add all paths/auto objectives here
@@ -290,7 +291,7 @@ public class Sample_Auto extends AutoBase {
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;
                 intake.pickup(); //should secure passive/loaded sample
-                arm.setTarget(5650,4000); //5600,3250
+                arm.setTarget(5700,4000); //5600,3250
                 //waitSeconds(0.01);
                 bot.setMaxPower(1); //.9
                 bot.followPath(scorePassive, true);
@@ -301,14 +302,14 @@ public class Sample_Auto extends AutoBase {
                 currentState = State.SCORE_PASSIVE;
                 bot.setMaxPower(1); //.9
                 bot.followPath(scorePassive, true);
+                //TODO raise lift to high rung
+                //TODO close specimen claw
                 pathTimer.reset();
             }
 
             //Draw initial bot pose on field (FTC Dashboard)
             Drawing.drawRobot(bot.getPose(), "#4CAF50");
             Drawing.sendPacket();
-
-
 
 
             while (opModeIsActive()) {
@@ -349,7 +350,7 @@ public class Sample_Auto extends AutoBase {
                                         updateScoreStart(3);
                                     }
 
-                                    arm.setTarget(5650, 4000);
+                                    arm.setTarget(5700, 4000);
                                     //waitSeconds(.01); //.1
                                     currentState = State.SCORE;
                                     bot.setMaxPower(1); //.9
@@ -406,7 +407,9 @@ public class Sample_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if(!bot.isBusy()) {
-                                //logic
+                                waitMilliSeconds(500);
+                                //TODO score lift command (slide down, claw open)
+
                                 break;
                             }
                         case MOVE_SAMPLES:
@@ -421,6 +424,7 @@ public class Sample_Auto extends AutoBase {
                             }
                         case SCORE:
                             if(!bot.isBusy()) {
+                                specimenScored++;
                                 //logic
                                 break;
                             }

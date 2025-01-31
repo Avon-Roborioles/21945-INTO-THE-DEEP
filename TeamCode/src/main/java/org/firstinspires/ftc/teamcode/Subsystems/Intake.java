@@ -30,7 +30,7 @@ public class Intake {
     //useful variables
     boolean intakeFull = true;
     Sample_Colors currentSampleColor;
-    int intakePower = 0;
+    double intakePower = 0;
     double intakeDistance = 0; //cm
     boolean autoMode = false;
     boolean pickup = true;
@@ -171,7 +171,7 @@ public class Intake {
     //self explanatory
     public void pickup(){
         autoMode = true;
-        intakePower = -1;
+        intakePower = -0.85;
         pickup = true;
     }
 

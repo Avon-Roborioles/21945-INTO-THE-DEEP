@@ -63,7 +63,7 @@ public class AutoBase extends LinearOpMode {
     public Pose currentCoordinate = Coordinates[0];
     public String currentCoordinateName = CoordinateNames[0];
     public AutoPoses AutoPose = AutoPoses.RIGHT; //default is right (samples)
-    public int cycleCount = 2; //number of times to go to pit
+    public int cycleCount = 3; //number of times to go to pit
     public int coordinateCount = 1;
     public boolean returnHome = false; //yes or no for returning to startPose during test autos
 
