@@ -55,15 +55,28 @@ public class PoseStorage {
     //Right Side Poses - Specimen
     public static Pose RightStartPose = new Pose(11+72,-60+72, Math.toRadians(90)); //Done
 
+    public static Pose RightSample1Start = new Pose(35+72,-35+72,Math.toRadians(180));
+
+    public static Pose RightSample1Curve = new Pose(38+72,-12+72,Math.toRadians(180));
+
     public static Pose RightSample1 = new Pose(45+72,-12+72,Math.toRadians(180)); //DONE 35
+
+    public static Pose RightSample1Push = new Pose(45+72,-57+72,Math.toRadians(180));
+
 
     public static Pose RightSample2 = new Pose(49+72,-35+72,Math.toRadians(180)); //Done
 
+    public static Pose RightSample2Push = new Pose(54+72,-57+72,Math.toRadians(180));
+
+
     public static Pose RightSample3 = new Pose(56+72,-35+72,Math.toRadians(180)); //Done
+
+    public static Pose RightSample3Push = new Pose(61+72, -57+72,Math.toRadians(180));
+
 
     public static Pose SampleDropoff = new Pose(52+72,-50+72,Math.toRadians(-55)); //done - 40,-49,180
 
-    public static Pose SpecimenPickup = new Pose(43+72,-50+72,Math.toRadians(-90)); //done - 50, -56
+    public static Pose SpecimenPickup = new Pose(40+72,-57+72,Math.toRadians(0)); //done - 50, -56
 
     public static Pose SpecimenScore = new Pose(0+72,-35+72,Math.toRadians(180-1e-6)); //done
 
@@ -71,7 +84,7 @@ public class PoseStorage {
 
     public static Pose RightCheckPoint = new Pose(19+72,-39+72, Math.toRadians(180)); //TODO
 
-    public static Pose RightPark = new Pose(112,-50+72, Math.toRadians(90)); //112, 22, 90
+    public static Pose RightPark = new Pose(50+72,-54+72, Math.toRadians(180-1e-6)); //112, 22, 90
 
 
 

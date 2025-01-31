@@ -40,7 +40,7 @@ public class Sample_Auto extends AutoBase {
     public enum State {
         SCORE_PASSIVE, //path to buckets (left)/sample dropoff (right) from startPose
         GET_GROUND_SAMPLE,
-        DROPOFF_SAMPLE, //right side only
+        MOVE_SAMPLES, //right side only
         PICKUP_SPECIMEN, //right side only
         SCORE,
         PARK,
@@ -107,10 +107,7 @@ public class Sample_Auto extends AutoBase {
         } else if (AutoPose == AutoPoses.RIGHT) {
             scorePassive = new Path(new BezierLine(startPose.getPoint(), PoseStorage.SpecimenScore.getPoint()));
             scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStorage.SpecimenScore.getHeading());
-            scorePassive.setPathEndVelocityConstraint(20);
-//            scorePassive = new Path(new BezierLine(startPose.getPoint(), PoseStorage.RightPark.getPoint()));
-//            scorePassive.setLinearHeadingInterpolation(startPose.getHeading(), PoseStorage.RightPark.getHeading());
-//            //scorePassive.setPathEndVelocityConstraint(20);
+
 
             scorePassiveChain = bot.pathBuilder()
                     .addPath(new BezierLine(startPose.getPoint(), new Point(new Pose(startPose.getX(),startPose.getY()+3,startPose.getHeading()))))
@@ -302,9 +299,6 @@ public class Sample_Auto extends AutoBase {
                 bot.setPose(PoseStorage.RightStartPose); //different from bot.setPose()
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;
-                //intake.pickup(); //should secure passive/loaded sample
-                //arm.setTarget(5550,4000); //5600,3250
-                //waitSeconds(0.01);
                 bot.setMaxPower(1); //.9
                 bot.followPath(scorePassive, true);
                 pathTimer.reset();
@@ -409,85 +403,30 @@ public class Sample_Auto extends AutoBase {
                             }
                     }
                 } else if(AutoPose == AutoPoses.RIGHT){
-                                            switch(currentState){
+                    switch(currentState) {
                         case SCORE_PASSIVE:
-                            if (!bot.isBusy()) {
-                                //intake.stop();
-                                waitSeconds(.1);
-                                //intake.drop();
-                                waitSeconds(.1);
-                                //intake.stop();
-
-                                currentState = State.GET_GROUND_SAMPLE;
-                                bot.followPath(Sample1, true);
-                                pathTimer.reset();
-                                break;
-
-                            };
-                        case GET_GROUND_SAMPLE:
-                            //TODO add updateScoreStart()
-                            if (!bot.isBusy()) {
-                                //intake.pickup();
-                                waitSeconds(1);
-                                //intake.stop();
-
-                                if(groundSamplesScored == 1){
-                                    updateScoreStart(2);
-                                } else if(groundSamplesScored == 2){
-                                    updateScoreStart(3);
-                                }
-
-                                currentState = State.DROPOFF_SAMPLE;
-                                bot.followPath(SampleDropoff, true);
-                                pathTimer.reset();
-                                break;
-                            };
-                        case DROPOFF_SAMPLE:
-                            if (!bot.isBusy()) {
-                                waitSeconds(0.3);
-
-                                currentState = State.PICKUP_SPECIMEN;
-                                bot.followPath(PickupSpecimen, true);
-                                break;
-                            };
-                        case PICKUP_SPECIMEN:
-                            if(!bot.isBusy()){
-                                waitSeconds(.3);
-                                currentState = State.SCORE;
-                                bot.followPath(Score, true);
-                                pathTimer.reset();
+                            if(!bot.isBusy()) {
+                                //logic
                                 break;
                             }
-                        case SCORE: //TODO------------------
-                            if (!bot.isBusy()) {
-                                waitSeconds(.3);
-                                groundSamplesScored++;
-                                if(groundSamplesScored == 1){
-                                    //sample2
-                                    currentState = State.GET_GROUND_SAMPLE;
-                                    bot.followPath(Sample2);
-                                    pathTimer.reset();
-                                    break;
-                                } else if(groundSamplesScored == 2){
-                                    //sample3
-                                    currentState = State.GET_GROUND_SAMPLE;
-                                    bot.followPath(Sample3);
-                                    pathTimer.reset();
-                                    break;
-                                } else {
-                                    //park
-                                    currentState = State.PARK;
-                                    bot.followPath(Park);
-                                    pathTimer.reset();
-                                    break;
-                                }
-
+                        case MOVE_SAMPLES:
+                            if(!bot.isBusy()) {
+                                //logic
+                                break;
+                            }
+                        case PICKUP_SPECIMEN:
+                            if(!bot.isBusy()) {
+                                //logic
+                                break;
+                            }
+                        case SCORE:
+                            if(!bot.isBusy()) {
+                                //logic
+                                break;
                             }
                         case PARK:
-                            if (!bot.isBusy()) {
-                                waitSeconds(0.3);
-                                //TODO move arm down (a bit for max parking)
-                                currentState = Sample_Auto.State.END;
+                            if(!bot.isBusy()) {
+                                //logic
                                 break;
                             }
                     }

@@ -65,11 +65,11 @@ public class TestSim {
                                 //score specimen 3
                                 .lineToLinearHeading(SimPoseStorage.SpecimenScore)
 
-                                //pickup specimen 4
-                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
-
-                                //score specimen 4
-                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
+//                                //pickup specimen 4
+//                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
+//
+//                                //score specimen 4
+//                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
 
                                 //park
                                 .lineToLinearHeading(SimPoseStorage.RightPark)
