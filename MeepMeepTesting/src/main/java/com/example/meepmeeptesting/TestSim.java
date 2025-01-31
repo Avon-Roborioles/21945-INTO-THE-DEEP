@@ -24,7 +24,7 @@ public class TestSim {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 14.5)
+                .setConstraints(50, 50, Math.toRadians(180), Math.toRadians(180), 14.5)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(SimPoseStorage.RightStartPose)
                                 //score preload
@@ -51,20 +51,28 @@ public class TestSim {
                                 .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
 
                                 //score specimen 1
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
 
                                 //pickup specimen 2
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
 
                                 //score specimen 2
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
 
                                 //pickup specimen 3
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
 
                                 //score specimen 3
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
 
                                 //pickup specimen 4
+                                .lineToLinearHeading(SimPoseStorage.SpecimenPickup)
 
                                 //score specimen 4
+                                .lineToLinearHeading(SimPoseStorage.SpecimenScore)
 
                                 //park
+                                .lineToLinearHeading(SimPoseStorage.RightPark)
 
                                 //--------------------------
                                 .waitSeconds(2000)

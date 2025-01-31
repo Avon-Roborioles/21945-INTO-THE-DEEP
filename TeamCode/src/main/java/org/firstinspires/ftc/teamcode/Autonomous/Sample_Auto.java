@@ -323,9 +323,10 @@ public class Sample_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if (!bot.isBusy()) {
+                                waitMilliSeconds(500);
                                 //waitSeconds(.05);
                                 intake.drop(); //score
-                                waitSeconds(.1); //.3
+                                waitMilliSeconds(500);
                                 intake.stop();
                                 arm.setTarget(0,0);
                                 currentState = Sample_Auto.State.GET_GROUND_SAMPLE;
@@ -366,9 +367,9 @@ public class Sample_Auto extends AutoBase {
 
                         case SCORE:
                             if (!bot.isBusy()) {
-                                //waitSeconds(.1);
+                                waitMilliSeconds(500);
                                 intake.drop();
-                                waitSeconds(.1); //.3
+                                waitMilliSeconds(500);
                                 groundSamplesScored++;
 
                                 if(groundSamplesScored < cycleCount) {
