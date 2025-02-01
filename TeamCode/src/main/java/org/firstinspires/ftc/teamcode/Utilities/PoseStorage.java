@@ -55,22 +55,22 @@ public class PoseStorage {
     //Right Side Poses - Specimen
     public static Pose RightStartPose = new Pose(11+72,-60+72, Math.toRadians(90)); //Done
 
-    public static Pose RightSample1Start = new Pose(35+72,-35+72,Math.toRadians(180));
-
-    public static Pose RightSample1Curve = new Pose(38+72,-12+72,Math.toRadians(180));
 
     public static Pose RightSample1 = new Pose(45+72,-12+72,Math.toRadians(180)); //DONE 35
-
+//    public static Point RightSample1Control1 = new Point();
+//    public static Point RightSample1Control2 = new Point();
     public static Pose RightSample1Push = new Pose(45+72,-57+72,Math.toRadians(180));
 
 
     public static Pose RightSample2 = new Pose(49+72,-35+72,Math.toRadians(180)); //Done
-
+//    public static Point RightSample2Control1 = new Point();
+//    public static Point RightSample2Control2 = new Point();
     public static Pose RightSample2Push = new Pose(54+72,-57+72,Math.toRadians(180));
 
 
     public static Pose RightSample3 = new Pose(56+72,-35+72,Math.toRadians(180)); //Done
-
+//    public static Point RightSample3Control1 = new Point();
+//    public static Point RightSample3Control2 = new Point();
     public static Pose RightSample3Push = new Pose(61+72, -57+72,Math.toRadians(180));
 
 

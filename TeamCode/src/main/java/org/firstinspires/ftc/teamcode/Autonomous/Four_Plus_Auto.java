@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 //TODO check if we're missing TrajectorySequence
 
 @Disabled
-//@Autonomous(name="3 Plus Sample Auto", group = "Right Autos")
-public class SamplePlus_Auto extends AutoBase {
+//@Autonomous(name="4+ Cycle Auto", group = "Right Autos")
+public class Four_Plus_Auto extends AutoBase {
     public void runOpMode() throws InterruptedException{
         //important variables
         GamepadEx driverOp = new GamepadEx(gamepad1);
