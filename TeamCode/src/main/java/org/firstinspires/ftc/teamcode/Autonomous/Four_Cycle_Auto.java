@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
@@ -108,23 +109,39 @@ public class Four_Cycle_Auto extends AutoBase {
         } else if (AutoPose == AutoPoses.RIGHT) {
 
             scorePassiveChain = bot.pathBuilder()
+                    .addPath(new BezierLine(startPose.getPoint(),PoseStorage.SpecimenScore.getPoint()))
+                    .setLinearHeadingInterpolation(startPose.getHeading(),PoseStorage.SpecimenScore.getHeading())
                     .build();
 
             Sample1 = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.RightSample1Start.getPoint()))
+                    .addPath(new BezierCurve(PoseStorage.RightSample1Start.getPoint(),PoseStorage.RightSample1Control1,PoseStorage.RightSample1Control2, PoseStorage.RightSample1.getPoint()))
+                    .setTangentHeadingInterpolation()
+                    .setReversed(true)
+                    .addPath(new BezierLine(PoseStorage.RightSample1.getPoint(),PoseStorage.RightSample1Push.getPoint()))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             Sample2 = bot.pathBuilder()
+                    .addPath(new BezierCurve(PoseStorage.RightSample1Push.getPoint(),PoseStorage.RightSample2Control1,PoseStorage.RightSample2.getPoint()))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .addPath(new BezierLine(PoseStorage.RightSample2.getPoint(),PoseStorage.RightSample2Push.getPoint()))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             Sample3 = bot.pathBuilder()
+                    .addPath(new BezierCurve(PoseStorage.RightSample2Push.getPoint(),PoseStorage.RightSample3Control1,PoseStorage.RightSample3.getPoint()))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .addPath(new BezierLine(PoseStorage.RightSample3.getPoint(),PoseStorage.RightSample3Push.getPoint()))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
 
             specimenPickup = bot.pathBuilder()
                     .build();
 
-//            Score = new Path();
+            Score = new Path(new BezierLine(PoseStorage.SpecimenPickup.getPoint(),PoseStorage.SpecimenScore.getPoint()));
 
-            //Park = new Path();
+            Park = new Path(new BezierLine(PoseStorage.SpecimenScore.getPoint(),PoseStorage.RightPark.getPoint()));
 
              }
     }
@@ -277,7 +294,7 @@ public class Four_Cycle_Auto extends AutoBase {
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;
                 bot.setMaxPower(1); //.9
-                bot.followPath(scorePassive, true);
+                bot.followPath(scorePassiveChain, true);
                 //TODO raise lift to high rung
                 //TODO close specimen claw
                 pathTimer.reset();
@@ -385,11 +402,18 @@ public class Four_Cycle_Auto extends AutoBase {
                             if(!bot.isBusy()) {
                                 waitMilliSeconds(500);
                                 //TODO score lift command (slide down, claw open)
-
+                                currentState = State.MOVE_SAMPLES;
+                                bot.followPath(Sample1);
                                 break;
                             }
                         case MOVE_SAMPLES:
                             if(!bot.isBusy()) {
+                                specimenScored++;
+                                if(specimenScored == 1){
+                                    bot.followPath(Sample2);
+                                } else if(specimenScored == 2){
+                                    bot.followPath(Sample3);
+                                }
                                 //logic
                                 break;
                             }

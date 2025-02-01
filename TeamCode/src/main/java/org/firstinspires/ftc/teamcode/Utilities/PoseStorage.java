@@ -53,32 +53,31 @@ public class PoseStorage {
 
 
     //Right Side Poses - Specimen
-    public static Pose RightStartPose = new Pose(11+72,-60+72, Math.toRadians(90)); //Done
+    public static Pose RightStartPose = new Pose(83,12, Math.toRadians(90)); //Done
 
 
-    public static Pose RightSample1 = new Pose(45+72,-12+72,Math.toRadians(180)); //DONE 35
-//    public static Point RightSample1Control1 = new Point();
-//    public static Point RightSample1Control2 = new Point();
-    public static Pose RightSample1Push = new Pose(45+72,-57+72,Math.toRadians(180));
+    public static Pose RightSample1Start = new Pose(107,37,Math.toRadians(180));
+    public static Point RightSample1Control1 = new Point(113.5,48.6,1);
+    public static Point RightSample1Control2 = new Point(102.9,59.9,1);
+    public static Pose RightSample1 = new Pose(117,60,Math.toRadians(180)); //DONE 35
+    public static Pose RightSample1Push = new Pose(117,20,Math.toRadians(180));
 
 
-    public static Pose RightSample2 = new Pose(49+72,-35+72,Math.toRadians(180)); //Done
-//    public static Point RightSample2Control1 = new Point();
-//    public static Point RightSample2Control2 = new Point();
-    public static Pose RightSample2Push = new Pose(54+72,-57+72,Math.toRadians(180));
+    public static Pose RightSample2 = new Pose(126,60,Math.toRadians(180)); //Done
+    public static Point RightSample2Control1 = new Point(108.8,82.4,1);
+    public static Pose RightSample2Push = new Pose(126,20,Math.toRadians(180));
 
 
-    public static Pose RightSample3 = new Pose(56+72,-35+72,Math.toRadians(180)); //Done
-//    public static Point RightSample3Control1 = new Point();
-//    public static Point RightSample3Control2 = new Point();
-    public static Pose RightSample3Push = new Pose(61+72, -57+72,Math.toRadians(180));
+    public static Pose RightSample3 = new Pose(133,60,Math.toRadians(180)); //Done
+    public static Point RightSample3Control1 = new Point(115.5,82.6,1);
+    public static Pose RightSample3Push = new Pose(133, 20,Math.toRadians(180));
 
 
     public static Pose SampleDropoff = new Pose(52+72,-50+72,Math.toRadians(-55)); //done - 40,-49,180
 
     public static Pose SpecimenPickup = new Pose(40+72,-57+72,Math.toRadians(0)); //done - 50, -56
 
-    public static Pose SpecimenScore = new Pose(0+72,-35+72,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore = new Pose(72,37,Math.toRadians(180-1e-6)); //done
 
     public static Pose RightPitSamples = new Pose(90,72,Math.toRadians(180-1e-6)); //TODO
 
