@@ -51,6 +51,7 @@ public class Four_Cycle_Auto extends AutoBase {
     public State currentState;
     public int groundSamplesScored = 0;
     public int specimenScored = 0;
+    public int groundSamplesRetrieved = 0;
 
 
     //add all paths/auto objectives here
@@ -91,7 +92,7 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             Sample3Back = bot.pathBuilder()
-                    .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), new Pose(PoseStorage.LeftSample3.getX()-3,PoseStorage.LeftSample3.getY(),PoseStorage.LeftSample3.getHeading()).getPoint()))
+                    .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), new Pose(PoseStorage.LeftSample3.getX()-5.3,PoseStorage.LeftSample3.getY(),PoseStorage.LeftSample3.getHeading()).getPoint()))
                     .setConstantHeadingInterpolation(PoseStorage.LeftSample3.getHeading())
                     .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), PoseStorage.LeftSample3Back.getPoint()))
                     .setConstantHeadingInterpolation(PoseStorage.LeftSample3.getHeading())
@@ -114,7 +115,8 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             Sample1 = bot.pathBuilder()
-                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.RightSample1Start.getPoint()))
+                    .addPath(new BezierLine(startPose.getPoint(), PoseStorage.RightSample1Start.getPoint()))
+                    .setLinearHeadingInterpolation(startPose.getHeading(),PoseStorage.RightSample1Start.getHeading())
                     .addPath(new BezierCurve(PoseStorage.RightSample1Start.getPoint(),PoseStorage.RightSample1Control1,PoseStorage.RightSample1Control2, PoseStorage.RightSample1.getPoint()))
                     .setTangentHeadingInterpolation()
                     .setReversed(true)
@@ -137,6 +139,7 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             specimenPickup = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.RightSample3Push.getPoint(),PoseStorage.SpecimenPickup.getPoint()))
                     .build();
 
             Score = new Path(new BezierLine(PoseStorage.SpecimenPickup.getPoint(),PoseStorage.SpecimenScore.getPoint()));
@@ -236,15 +239,10 @@ public class Four_Cycle_Auto extends AutoBase {
             }
         } else if(AutoPose == AutoPoses.RIGHT){
             switch(sampleNumber){
-                case 2:
-                    SampleDropoff = new Path(new BezierLine(PoseStorage.RightSample2.getPoint(), PoseStorage.SampleDropoff.getPoint()));
-                    SampleDropoff.setLinearHeadingInterpolation(PoseStorage.RightSample2.getHeading(), PoseStorage.SampleDropoff.getHeading());
-                    break;
-
-                case 3:
-                    SampleDropoff = new Path(new BezierLine(PoseStorage.RightSample3.getPoint(), PoseStorage.SampleDropoff.getPoint()));
-                    SampleDropoff.setLinearHeadingInterpolation(PoseStorage.RightSample3.getHeading(), PoseStorage.SampleDropoff.getHeading());
-                    break;
+                default:
+                    specimenPickup = bot.pathBuilder()
+                            .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.SpecimenPickup.getPoint()))
+                            .build();
             }
         }
     }
@@ -314,7 +312,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 waitMilliSeconds(500);
                                 //waitSeconds(.05);
                                 intake.drop(); //score
-                                waitMilliSeconds(500);
+                                waitMilliSeconds(600);
                                 intake.stop();
                                 arm.setTarget(0,0);
                                 currentState = Four_Cycle_Auto.State.GET_GROUND_SAMPLE;
@@ -326,12 +324,14 @@ public class Four_Cycle_Auto extends AutoBase {
 
                         case GET_GROUND_SAMPLE:
                             if (!bot.isBusy()) {
+                                waitMilliSeconds(500);
                                 if(!back2PathDone && groundSamplesScored == 1){
                                    // waitSeconds(.01);
                                     back2PathDone = true;
                                     bot.followPath(Sample2Back);
                                 }else if(!back3PathDone && groundSamplesScored == 2){
                                     //waitSeconds(.01); //.1
+                                    intake.pickup(); //TODO
                                     back3PathDone = true;
                                     bot.followPath(Sample3Back);
                                 } else {
@@ -357,7 +357,7 @@ public class Four_Cycle_Auto extends AutoBase {
                             if (!bot.isBusy()) {
                                 waitMilliSeconds(500);
                                 intake.drop();
-                                waitMilliSeconds(500);
+                                waitMilliSeconds(600);
                                 groundSamplesScored++;
 
                                 if(groundSamplesScored < cycleCount) {
@@ -408,29 +408,43 @@ public class Four_Cycle_Auto extends AutoBase {
                             }
                         case MOVE_SAMPLES:
                             if(!bot.isBusy()) {
-                                specimenScored++;
-                                if(specimenScored == 1){
+                                groundSamplesRetrieved++;
+                                if(groundSamplesRetrieved == 1){
                                     bot.followPath(Sample2);
-                                } else if(specimenScored == 2){
+                                } else if(groundSamplesRetrieved == 2){
                                     bot.followPath(Sample3);
+                                } else {
+                                    currentState = State.PICKUP_SPECIMEN;
+                                    bot.followPath(specimenPickup);
+                                    updateScoreStart(1); //update for later
                                 }
                                 //logic
                                 break;
                             }
                         case PICKUP_SPECIMEN:
                             if(!bot.isBusy()) {
-                                //logic
+                                currentState = State.SCORE;
+                                bot.followPath(Score);
                                 break;
                             }
                         case SCORE:
                             if(!bot.isBusy()) {
                                 specimenScored++;
                                 //logic
+                                if(specimenScored < cycleCount){
+                                    currentState = State.PICKUP_SPECIMEN;
+                                    bot.followPath(specimenPickup);
+                                } else {
+                                    currentState = State.PARK;
+                                    bot.followPath(Park);
+                                }
                                 break;
                             }
                         case PARK:
                             if(!bot.isBusy()) {
                                 //logic
+                                currentState = State.END;
+                                endTime = opModeTimer.seconds();
                                 break;
                             }
                     }

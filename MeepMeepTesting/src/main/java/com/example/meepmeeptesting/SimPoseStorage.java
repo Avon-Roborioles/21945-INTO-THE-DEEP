@@ -51,7 +51,7 @@ public class SimPoseStorage {
 
    public static Pose2d SampleDropoff = new Pose2d(54,-49,Math.toRadians(-45)); //TODO
 
-   public static Pose2d SamplePushDropoff -35+72,= new Pose2d(59, -49, Math.toRadians(180));
+   public static Pose2d SamplePushDropoff = new Pose2d(59, -49, Math.toRadians(180));
 
    public static Pose2d SpecimenPickup = new Pose2d(40,-57,Math.toRadians(0)); //TODO
 

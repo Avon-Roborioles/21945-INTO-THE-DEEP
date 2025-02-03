@@ -34,15 +34,15 @@ public class PoseStorage {
     //Sample 1 is outside, Sample 3 is inside
     public static Pose LeftSample1 = new Pose(36,49.2, Math.toRadians(180-1e-6)); //Done / Previous -39+72,-24+72, Math.toRadians(180-1e-6)
 
-    public static Pose LeftSample2 = new Pose(25.7,49.2, Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample2 = new Pose(24,48, Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3 = new Pose(21,49.2,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3 = new Pose(21,45.5,Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3Back = new Pose(37,48,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3Back = new Pose(33,47,Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftSampleControlPose = new Pose(36.1,48,Math.toRadians(180-1e-6)); //done
 
-    public static Pose LeftBucketScore = new Pose(21-(OneInchMovement(-6.3)),-50-(OneInchMovement(-4.8))+72,Math.toRadians(45)); //Done - 225
+    public static Pose LeftBucketScore = new Pose(21-(OneInchMovement(-8.7)),-50-(OneInchMovement(-6.9))+72,Math.toRadians(45)); //Done - 225
 
     public static Pose LeftPitSamples = new Pose(-18+72,72,Math.toRadians(0)); //done
 
