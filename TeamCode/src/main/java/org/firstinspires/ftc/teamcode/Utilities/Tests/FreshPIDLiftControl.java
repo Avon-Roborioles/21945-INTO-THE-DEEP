@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Utilities.Tests;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FullStateFeedback;
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
+import com.ThermalEquilibrium.homeostasis.Utils.Vector;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -22,7 +26,7 @@ public class FreshPIDLiftControl extends LinearOpMode {
     public double previousTarget = 0;
     public static double liftTarget = 0;
     public static double intakeTarget = 0;
-    public double slidesPower = 0;
+    public double liftPower = 0;
     public static double kp = 0;
     public static double ka = 0;
     public static double maxVelocity = 0;
@@ -44,13 +48,66 @@ public class FreshPIDLiftControl extends LinearOpMode {
         MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         MotorEx liftMotor = new MotorEx(hardwareMap,"liftMotor");
-        //reversing motor if needed
+        //reverse motor if needed
         liftMotor.setRunMode(Motor.RunMode.RawPower);
 
 
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), maxVelocity,maxAcceleration);
 
         waitForStart();
+
+        previousTarget = liftTarget;
+
+        while(opModeIsActive()){
+            motionComplete = Math.abs(liftTarget - liftMotor.getCurrentPosition()) < 50;
+            boolean overshoot = false;
+            profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), maxVelocity,maxAcceleration,maxJerk,overshoot);
+
+
+            if(previousTarget != liftTarget){
+                previousTarget = liftTarget;
+                time.reset();
+            }
+
+            //---------------------------------
+            Vector liftCoefficients = new Vector(new double[] {kp, ka});
+            FullStateFeedback armController = new FullStateFeedback(liftCoefficients);
+
+            MotionState state = profile.get(time.time());
+
+            double instantTarget = state.getX();
+            double instantVelocity = state.getV();
+            double instantAcceleration = state.getA();
+
+            double measuredPosition = liftMotor.getCurrentPosition();
+            double measuredVelocity = liftMotor.getVelocity(); //* -1;
+            double measuredAcceleration = liftMotor.getAcceleration(); //* -1;
+
+            Vector measuredState = new Vector(new double[] {measuredPosition,measuredVelocity});
+            Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
+
+            try {
+                liftPower = armController.calculate(targetState,measuredState);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            liftMotor.setVelocity(instantVelocity);//(-instantVelocity);
+            liftMotor.set(liftPower);
+
+
+            //telemetry
+            mainTelemetry.addData("Lift Pose: ", liftMotor.getCurrentPosition());
+            mainTelemetry.addData("Previous Target: ", previousTarget);
+            mainTelemetry.addData("Instant Target: ", instantTarget);
+            mainTelemetry.addData("Lift Target: ", liftTarget);
+            mainTelemetry.addData("Instant Velocity: ", instantVelocity);
+            mainTelemetry.addData("Measured Velocity: ", measuredVelocity);
+            mainTelemetry.addData("Instant Acceleration: ", instantAcceleration);
+            mainTelemetry.addData("Measured Acceleration: ", measuredAcceleration);
+            mainTelemetry.addData("Lift Power: ", liftPower);
+            mainTelemetry.update();
+        }
 
     }
 }
