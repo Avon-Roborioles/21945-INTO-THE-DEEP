@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class Four_Cycle_Auto extends AutoBase {
     //important variables
     Path scorePassive, Score, Park, SampleDropoff, PickupSpecimen;
-    PathChain scorePassiveChain, Sample1, Sample2, Sample3, Sample3Back, Sample2Back, specimenPickup;
+    PathChain scorePassiveChain, Sample1, Sample2, Sample3, Sample3Back, Sample2Back, specimenPickup, specimenAlignment;
     Pose startPose;
     Pose parkPose;
     Follower bot;
@@ -35,6 +35,7 @@ public class Four_Cycle_Auto extends AutoBase {
     double endTime = 0;
     boolean back2PathDone = false;
     boolean back3PathDone = false;
+    boolean alignPathDone = false;
 
 
     //Finite State Machine (FSM) variables
@@ -224,7 +225,22 @@ public class Four_Cycle_Auto extends AutoBase {
     }
 
     public void buildStrafePath(double length){
+        Pose specimenPickup = PoseStorage.SpecimenPickup;
+                if(length != 0){
+                    //strafe slowly
 
+                    //drive into specimen
+
+                    //drive back to pickup pose
+                } else {
+                    specimenAlignment = bot.pathBuilder()
+                            //drive into specimen
+                            .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX(),specimenPickup.getY()-5,specimenPickup.getHeading()).getPoint()))
+
+                            //drive back to pickup pose
+
+                            .build();
+                }
     }
 
     //vital method to update score paths based on number of samples scored
@@ -428,9 +444,19 @@ public class Four_Cycle_Auto extends AutoBase {
                             }
                         case PICKUP_SPECIMEN:
                             if(!bot.isBusy()) {
-                                currentState = State.SCORE;
-                                bot.followPath(Score);
-                                break;
+                                if(!alignPathDone){
+                                    alignPathDone = true;
+                                    //TODO - vision.switchToAlignment Pipeline
+                                    waitMilliSeconds(500);
+                                    //TODO buildStrafePath(vision.getAlignment());
+                                    buildStrafePath(0);
+                                    bot.followPath(specimenAlignment);
+                                } else {
+                                    currentState = State.SCORE;
+                                    bot.followPath(Score);
+                                    break;
+                                }
+
                             }
                         case SCORE:
                             if(!bot.isBusy()) {
