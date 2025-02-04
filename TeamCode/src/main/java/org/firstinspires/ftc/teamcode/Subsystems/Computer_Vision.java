@@ -147,6 +147,10 @@ public class Computer_Vision {
         return closestSample;
     }
 
+    /**
+     *
+     * @return
+     */
     //TODO - uses field april tags to adjust bot pose on field
     public Pose getRealPose(){
         Pose result = new Pose(0,0,0);

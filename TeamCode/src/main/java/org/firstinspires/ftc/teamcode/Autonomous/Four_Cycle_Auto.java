@@ -223,6 +223,10 @@ public class Four_Cycle_Auto extends AutoBase {
         mainTelemetry.update();
     }
 
+    public void buildStrafePath(double length){
+
+    }
+
     //vital method to update score paths based on number of samples scored
     public void updateScoreStart(int sampleNumber){
         if(AutoPose == AutoPoses.LEFT){
@@ -276,6 +280,7 @@ public class Four_Cycle_Auto extends AutoBase {
             waitForStart();
 
             buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
+
 
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
