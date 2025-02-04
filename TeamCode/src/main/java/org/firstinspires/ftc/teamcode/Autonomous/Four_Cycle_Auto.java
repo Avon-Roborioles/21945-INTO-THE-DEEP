@@ -227,17 +227,34 @@ public class Four_Cycle_Auto extends AutoBase {
     public void buildStrafePath(double length){
         Pose specimenPickup = PoseStorage.SpecimenPickup;
                 if(length != 0){
-                    //strafe slowly
+                    specimenAlignment = bot.pathBuilder()
+                            //strafe slowly
+                            .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .addParametricCallback(0,()->{
+                                bot.setMaxPower(0.5); //slow speed
+                            })
 
-                    //drive into specimen
+                            //drive into specimen
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 5,specimenPickup.getHeading()).getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .addParametricCallback(0,()->{
+                                bot.setMaxPower(1);
+                            })
 
-                    //drive back to pickup pose
+                            //drive back to pickup pose
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 5,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .build();
                 } else {
                     specimenAlignment = bot.pathBuilder()
                             //drive into specimen
                             .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX(),specimenPickup.getY()-5,specimenPickup.getHeading()).getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
 
                             //drive back to pickup pose
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX(),specimenPickup.getY()-5,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
 
                             .build();
                 }
@@ -464,6 +481,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 //logic
                                 if(specimenScored < cycleCount){
                                     currentState = State.PICKUP_SPECIMEN;
+                                    alignPathDone = false;
                                     bot.followPath(specimenPickup);
                                 } else {
                                     currentState = State.PARK;
