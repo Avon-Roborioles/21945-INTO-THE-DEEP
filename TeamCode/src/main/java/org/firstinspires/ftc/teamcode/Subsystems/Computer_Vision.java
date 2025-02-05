@@ -88,6 +88,7 @@ public class Computer_Vision {
     private void getData(){
         pythonResults = result.getPythonOutput();
         resultAge = result.getStaleness();
+
         //return pythonResults;
     }
 
@@ -136,7 +137,10 @@ public class Computer_Vision {
     public double getSpecimenAlignment(){
         //get values from limelight (ideally, all calculations are offloaded to camera)
         limelight.pipelineSwitch(0);
-        return pythonResults[0];
+        double angle_in_radians = Math.toRadians(targetX);
+        double cotangent = Math.cos(angle_in_radians) / Math.sin(angle_in_radians);
+        return 6 * cotangent;
+
     }
 
     //TODO

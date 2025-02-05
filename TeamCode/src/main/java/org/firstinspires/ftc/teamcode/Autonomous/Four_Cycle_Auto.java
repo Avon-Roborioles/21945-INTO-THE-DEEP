@@ -275,12 +275,9 @@ public class Four_Cycle_Auto extends AutoBase {
                     break;
             }
         } else if(AutoPose == AutoPoses.RIGHT){
-            switch(sampleNumber){
-                default:
-                    specimenPickup = bot.pathBuilder()
-                            .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.SpecimenPickup.getPoint()))
-                            .build();
-            }
+            specimenPickup = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.SpecimenPickup.getPoint()))
+                    .build();
         }
     }
 
