@@ -48,9 +48,9 @@ public class FreshPIDLiftControl extends LinearOpMode {
         MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         MotorEx liftMotor = new MotorEx(hardwareMap,"liftMotor");
-        //reverse motor if needed
         liftMotor.setRunMode(Motor.RunMode.RawPower);
-
+        //liftMotor.setInverted(true);
+        //liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
 
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), maxVelocity,maxAcceleration);
 
