@@ -220,14 +220,18 @@ public class Intake {
         // Get the normalized colors from the sensor
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
         double redValue = colors.red;
+        double greenValue = colors.green;
+        double blueValue = colors.blue;
 
         if(isFull()){
-            if(redValue > 0.1){
+            if(redValue > greenValue && redValue > blueValue){
                 currentSampleColor = Sample_Colors.RED;
-            } else if(redValue > 0.02){
+            } else if(blueValue > redValue){
+                currentSampleColor = Sample_Colors.BLUE;
+            } else if(greenValue > redValue){
                 currentSampleColor = Sample_Colors.YELLOW;
             } else {
-                currentSampleColor = Sample_Colors.BLUE;
+                currentSampleColor = Sample_Colors.NONE;
             }
         } else {
             currentSampleColor = Sample_Colors.NONE;

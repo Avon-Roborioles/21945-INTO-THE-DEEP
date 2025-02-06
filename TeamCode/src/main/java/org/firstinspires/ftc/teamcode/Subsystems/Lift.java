@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 //robot subsystem for slides + specimen intake
 public class Lift {
     //motor objects & related variables
-    MotorEx slidesMotor;
+    MotorEx liftMotor;
     Servo intakeServo; //0 is open, 1 is close
 
     //TODO - absolute positions
@@ -86,17 +86,17 @@ public class Lift {
         );
 
         //slides
-        slidesMotor = new MotorEx(hardwareMap,"slidesMotor");
+        liftMotor = new MotorEx(hardwareMap,"slidesMotor");
         //slidesMotor.setInverted(true);
-        slidesMotor.encoder.setDirection(Motor.Direction.REVERSE);
-        slidesMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        slidesMotor.stopAndResetEncoder();
-        slidesMotor.setRunMode(Motor.RunMode.RawPower);
+        //liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        liftMotor.stopAndResetEncoder();
+        liftMotor.setRunMode(Motor.RunMode.RawPower);
 
-        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(slidesMotor.getCurrentPosition(),0), new MotionState(slidesTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
+        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(slidesTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
 
         //intake
-        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        //intakeServo = hardwareMap.get(Servo.class, "intakeServo");
     }
 
     private void updateToggles(){
@@ -121,7 +121,7 @@ public class Lift {
 
     public void setTarget(int slides){
         slidesTarget = Math.min(slides, maxPose);
-        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(slidesMotor.getCurrentPosition(),0), new MotionState(slidesTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
+        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(slidesTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
         time.reset();
     }
 
@@ -158,8 +158,8 @@ public class Lift {
         instantTarget = state.getX();
         double instantVelocity = state.getV();
 
-        double measuredPosition = slidesMotor.getCurrentPosition();
-        double measuredVelocity = slidesMotor.getVelocity(); //* -1;
+        double measuredPosition = liftMotor.getCurrentPosition();
+        double measuredVelocity = liftMotor.getVelocity(); //* -1;
 
         Vector measuredState = new Vector(new double[] {measuredPosition,measuredVelocity});
         Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
@@ -169,7 +169,7 @@ public class Lift {
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        slidesMotor.setVelocity(-instantVelocity);
+        liftMotor.setVelocity(-instantVelocity);
 
         //intake auto sequence
         if(autoMode){
@@ -192,11 +192,11 @@ public class Lift {
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----SLIDES DATA----");
         telemetry.addData("Lift Mode: ", slideMode);
-        telemetry.addData("Lift Pose: ", slidesMotor.getCurrentPosition());
-        telemetry.addData("Lift Velocity: ", slidesMotor.getVelocity());
+        telemetry.addData("Lift Pose: ", liftMotor.getCurrentPosition());
+        telemetry.addData("Lift Velocity: ", liftMotor.getVelocity());
         telemetry.addData("Lift Power: ", slidesPower);
         telemetry.addData("Lift Busy?: ", IsBusy());
-        telemetry.addData("Specimen Intake Pose: ", intakeServo.getPosition());
-        telemetry.addData("Specimen Intake Busy?: ", intakeIsBusy());
+//        telemetry.addData("Specimen Intake Pose: ", intakeServo.getPosition());
+//        telemetry.addData("Specimen Intake Busy?: ", intakeIsBusy());
     }
 }
