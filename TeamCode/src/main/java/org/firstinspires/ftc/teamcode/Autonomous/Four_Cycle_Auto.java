@@ -243,7 +243,7 @@ public class Four_Cycle_Auto extends AutoBase {
                             })
 
                             //drive back to pickup pose
-                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 5,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 2,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
                             .setConstantHeadingInterpolation(Math.toRadians(0))
                             .build();
                 } else {
@@ -253,7 +253,7 @@ public class Four_Cycle_Auto extends AutoBase {
                             .setConstantHeadingInterpolation(Math.toRadians(0))
 
                             //drive back to pickup pose
-                            .addPath(new BezierLine(new Pose(specimenPickup.getX(),specimenPickup.getY()-5,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX(),specimenPickup.getY()-2,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
                             .setConstantHeadingInterpolation(Math.toRadians(0))
 
                             .build();
@@ -441,6 +441,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 bot.followPath(Sample1);
                                 break;
                             }
+
                         case MOVE_SAMPLES:
                             if(!bot.isBusy()) {
                                 groundSamplesRetrieved++;
@@ -456,6 +457,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 //logic
                                 break;
                             }
+
                         case PICKUP_SPECIMEN:
                             if(!bot.isBusy()) {
                                 if(!alignPathDone){
@@ -470,8 +472,8 @@ public class Four_Cycle_Auto extends AutoBase {
                                     bot.followPath(Score);
                                     break;
                                 }
-
                             }
+
                         case SCORE:
                             if(!bot.isBusy()) {
                                 specimenScored++;
@@ -486,6 +488,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 }
                                 break;
                             }
+
                         case PARK:
                             if(!bot.isBusy()) {
                                 //logic
