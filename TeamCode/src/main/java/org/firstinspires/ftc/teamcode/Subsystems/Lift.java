@@ -27,18 +27,19 @@ public class Lift {
     private final int fencePose = 0;
     private final int highRungPose = 0;
     private final int lowRungPose = 0;
-    private final int maxPose = 0;
+    private int maxPose = 0;
+    private int groundPose = 0;
 
-    private int currentSlidesPose;
+    private int currentLiftPose;
     private int currentGrabberPose;
-    private Slide_Modes slideMode;
+    private Lift_Modes liftMode;
     private boolean autoMode = false;
     private boolean pickup = false;
 
     //slides PID variables + intake target
     public double instantTarget = 0;
-    public double slidesTarget = 0;
-    public double slidesPower = 0;
+    public double liftTarget = 0;
+    public double liftPower = 0;
     public double intakeTarget = 0;
 
     //Motion Profile + Full State Feedback PID Controller
@@ -47,18 +48,18 @@ public class Lift {
     private final double MAX_VELOCITY = 0; //TODO
     private final double MAX_ACCELERATION = 0; //TODO
     MotionProfile motionProfile;
-    Vector slidesCoefficients;
-    FullStateFeedback slidesController;
+    Vector liftCoefficients;
+    FullStateFeedback liftController;
     public ElapsedTime time;
     public boolean busy = false;
 
     //Control Variables
     GamepadEx driverOp;
-    ToggleButtonReader y_button, a_button, x_button, b_button; //modes
+    ToggleButtonReader leftBumper, rightBumper, a_button, x_button, b_button;
     double rightY;
 
     //enum commands for slide modes
-    public enum Slide_Modes {
+    public enum Lift_Modes {
         DRIVER_MODE,
         HOLD_MODE
     }
@@ -67,23 +68,14 @@ public class Lift {
     public void init(HardwareMap hardwareMap, GamepadEx gamepad, boolean teleOp){
         driverOp = gamepad;
         time = new ElapsedTime();
+        liftCoefficients = new Vector(new double[] {kp,ka});
+        liftController = new FullStateFeedback(liftCoefficients);
 
-        slidesCoefficients = new Vector(new double[] {kp,ka});
-        slidesController = new FullStateFeedback(slidesCoefficients);
-
-        //---initialize toggles & buttons---
-        y_button = new ToggleButtonReader(
-                driverOp, GamepadKeys.Button.Y
-        );
-        a_button = new ToggleButtonReader(
-                driverOp, GamepadKeys.Button.A
-        );
-        x_button = new ToggleButtonReader(
-                driverOp, GamepadKeys.Button.X
-        );
-        b_button = new ToggleButtonReader(
-                driverOp, GamepadKeys.Button.B
-        );
+       leftBumper = new ToggleButtonReader(driverOp, GamepadKeys.Button.LEFT_BUMPER);
+       rightBumper = new ToggleButtonReader(driverOp, GamepadKeys.Button.RIGHT_BUMPER);
+       a_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.A);
+       x_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.X);
+       b_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.B);
 
         //slides
         liftMotor = new MotorEx(hardwareMap,"slidesMotor");
@@ -93,35 +85,161 @@ public class Lift {
         liftMotor.stopAndResetEncoder();
         liftMotor.setRunMode(Motor.RunMode.RawPower);
 
-        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(slidesTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
+        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
 
         //intake
         //intakeServo = hardwareMap.get(Servo.class, "intakeServo");
     }
 
     private void updateToggles(){
-        y_button.readValue();
-        a_button.readValue();
-        x_button.readValue();
-        b_button.readValue();
+       leftBumper.readValue();
+       rightBumper.readValue();
+       a_button.readValue();
+       x_button.readValue();;
+       b_button.readValue();
     }
 
-    public void run_teleOp(){} //TODO
+    public void run_teleOp(){
+        //control logic
+        currentLiftPose = liftMotor.getCurrentPosition();
 
-    public void run_teleOp(Driver_Feedback feedback){} //TODO
+        //control
+        if(leftBumper.isDown()){
+            if(currentLiftPose < maxPose){
+                liftMode = Lift_Modes.DRIVER_MODE;
+                setTarget(currentLiftPose);
+                liftPower = 0.9;
+            } else {
+                liftMode = Lift_Modes.HOLD_MODE;
+            }
+        } else if(rightBumper.isDown()){
+            if(currentLiftPose > groundPose){
+                liftMode = Lift_Modes.DRIVER_MODE;
+                setTarget(currentLiftPose);
+                liftPower = -0.3;
+            } else liftMode = Lift_Modes.HOLD_MODE;
+        } else {
+            liftMode = Lift_Modes.HOLD_MODE;
+        }
+
+        //preset
+        if(x_button.wasJustPressed()){
+            setTarget(lowRungPose);
+            liftMode = Lift_Modes.HOLD_MODE;
+        }
+        if(b_button.wasJustPressed()){
+            setTarget(highRungPose);
+            liftMode = Lift_Modes.HOLD_MODE;
+        }
+        if(a_button.wasJustPressed()){
+            setTarget(fencePose);
+            liftMode = Lift_Modes.HOLD_MODE;
+        }
+
+        //modes
+        if(liftMode == Lift_Modes.HOLD_MODE){
+            MotionState state = motionProfile.get(time.time());
+
+            double instantTarget = state.getX();
+            double instantVelocity = state.getV();
+
+            double measuredVelocity = liftMotor.getVelocity() * -1;
+
+            Vector measuredState = new Vector(new double[] {currentLiftPose,measuredVelocity});
+            Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
+
+            try {
+                liftPower = liftController.calculate(targetState,measuredState);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        liftMotor.set(liftPower);
+
+        //haptic feedback
+
+        updateToggles();
+    }
+
+    public void run_teleOp(Driver_Feedback feedback){
+       //control logic
+        currentLiftPose = liftMotor.getCurrentPosition();
+
+        //control
+        if(leftBumper.isDown()){
+            if(currentLiftPose < maxPose){
+                liftMode = Lift_Modes.DRIVER_MODE;
+                setTarget(currentLiftPose);
+                liftPower = 0.9;
+            } else {
+                liftMode = Lift_Modes.HOLD_MODE;
+            }
+        } else if(rightBumper.isDown()){
+            if(currentLiftPose > groundPose){
+                liftMode = Lift_Modes.DRIVER_MODE;
+                setTarget(currentLiftPose);
+                liftPower = -0.3;
+            } else liftMode = Lift_Modes.HOLD_MODE;
+        } else {
+            liftMode = Lift_Modes.HOLD_MODE;
+        }
+
+        //preset
+        if(x_button.wasJustPressed()){
+            setTarget(lowRungPose);
+            liftMode = Lift_Modes.HOLD_MODE;
+            feedback.alert_side(false, driverOp);
+        }
+        if(b_button.wasJustPressed()){
+            setTarget(highRungPose);
+            liftMode = Lift_Modes.HOLD_MODE;
+            feedback.alert_side(false, driverOp);
+        }
+        if(a_button.wasJustPressed()){
+            setTarget(fencePose);
+            liftMode = Lift_Modes.HOLD_MODE;
+            feedback.alert_side(false, driverOp);
+        }
+
+        //modes
+        if(liftMode == Lift_Modes.HOLD_MODE){
+            MotionState state = motionProfile.get(time.time());
+
+            double instantTarget = state.getX();
+            double instantVelocity = state.getV();
+
+            double measuredVelocity = liftMotor.getVelocity() * -1;
+
+            Vector measuredState = new Vector(new double[] {currentLiftPose,measuredVelocity});
+            Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
+
+            try {
+                liftPower = liftController.calculate(targetState,measuredState);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        liftMotor.set(liftPower);
+
+       //haptic feedback
+
+       updateToggles();
+    }
 
     //--------AUTO COMMANDS------------
     public boolean IsBusy(){
-        return instantTarget != slidesTarget;
+        return instantTarget != liftTarget;
     }
 
     public boolean intakeIsBusy(){
         return intakeServo.getPosition() != intakeTarget;
     }
 
-    public void setTarget(int slides){
-        slidesTarget = Math.min(slides, maxPose);
-        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(slidesTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
+    public void setTarget(double target){
+        liftTarget = Math.min(target, maxPose);
+        motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
         time.reset();
     }
 
@@ -165,7 +283,7 @@ public class Lift {
         Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
 
         try {
-            slidesPower = slidesController.calculate(targetState,measuredState);
+            liftPower = liftController.calculate(targetState,measuredState);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -191,10 +309,10 @@ public class Lift {
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----SLIDES DATA----");
-        telemetry.addData("Lift Mode: ", slideMode);
+        telemetry.addData("Lift Mode: ", liftMode);
         telemetry.addData("Lift Pose: ", liftMotor.getCurrentPosition());
         telemetry.addData("Lift Velocity: ", liftMotor.getVelocity());
-        telemetry.addData("Lift Power: ", slidesPower);
+        telemetry.addData("Lift Power: ", liftPower);
         telemetry.addData("Lift Busy?: ", IsBusy());
 //        telemetry.addData("Specimen Intake Pose: ", intakeServo.getPosition());
 //        telemetry.addData("Specimen Intake Busy?: ", intakeIsBusy());
