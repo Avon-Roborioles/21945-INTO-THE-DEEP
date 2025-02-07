@@ -25,7 +25,6 @@ public class FreshPIDLiftControl extends LinearOpMode {
 
     public double previousTarget = 0;
     public static double liftTarget = 0;
-    public static double intakeTarget = 0;
     public double liftPower = 0;
     public static double kp = 0;
     public static double ka = 0;
@@ -49,8 +48,8 @@ public class FreshPIDLiftControl extends LinearOpMode {
 
         MotorEx liftMotor = new MotorEx(hardwareMap,"liftMotor");
         liftMotor.setRunMode(Motor.RunMode.RawPower);
-        //liftMotor.setInverted(true);
-        //liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        liftMotor.setInverted(true);
+        liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
 
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), maxVelocity,maxAcceleration);
 
@@ -80,8 +79,8 @@ public class FreshPIDLiftControl extends LinearOpMode {
             double instantAcceleration = state.getA();
 
             double measuredPosition = liftMotor.getCurrentPosition();
-            double measuredVelocity = liftMotor.getVelocity(); //* -1;
-            double measuredAcceleration = liftMotor.getAcceleration(); //* -1;
+            double measuredVelocity = liftMotor.getVelocity() * -1;
+            double measuredAcceleration = liftMotor.getAcceleration() * -1;
 
             Vector measuredState = new Vector(new double[] {measuredPosition,measuredVelocity});
             Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
@@ -92,7 +91,7 @@ public class FreshPIDLiftControl extends LinearOpMode {
                 throw new RuntimeException(e);
             }
 
-            liftMotor.setVelocity(instantVelocity);//(-instantVelocity);
+            liftMotor.setVelocity(-instantVelocity);//(-instantVelocity);
             liftMotor.set(liftPower);
 
 

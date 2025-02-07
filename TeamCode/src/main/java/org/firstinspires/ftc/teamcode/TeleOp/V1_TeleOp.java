@@ -21,7 +21,6 @@ public class V1_TeleOp extends AutoBase {
     private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();
     private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
     private final org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
-    private final org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
     //private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
 
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -42,7 +41,6 @@ public class V1_TeleOp extends AutoBase {
         drivetrain.init(hardwareMap, Driver1Op);
         arm.init(hardwareMap,Driver2Op, true);
         intake.init(hardwareMap, Driver2Op);
-        vision.init(hardwareMap,true);
         //vision.init(hardwareMap);
         //lighting.init(hardwareMap);
 

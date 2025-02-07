@@ -21,13 +21,14 @@ public class LiftTeleOpTest extends LinearOpMode {
 
         liftMotor.setRunMode(Motor.RunMode.RawPower);
         liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        //liftMotor.setInverted(true);
-        //liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        liftMotor.setInverted(true);
+        liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
 
 
         waitForStart();
 
         while(opModeIsActive()){
+            rightY = driverOp.getRightY();
             if(rightY > 0){
                 liftMotor.set(0.8 * rightY);
             } else if(rightY < 0){
