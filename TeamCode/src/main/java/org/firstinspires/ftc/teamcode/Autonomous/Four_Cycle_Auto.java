@@ -328,8 +328,7 @@ public class Four_Cycle_Auto extends AutoBase {
                 currentState = State.SCORE_PASSIVE;
                 bot.setMaxPower(1); //.9
                 bot.followPath(scorePassiveChain, true);
-                //TODO raise lift to high rung
-                //TODO close specimen claw
+                lift.setTarget(1700);
                 pathTimer.reset();
             }
 
@@ -435,6 +434,8 @@ public class Four_Cycle_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if(!bot.isBusy()) {
+                                waitMilliSeconds(500);
+                                lift.setTarget(1400);
                                 waitMilliSeconds(500);
                                 //TODO score lift command (slide down, claw open)
                                 currentState = State.MOVE_SAMPLES;

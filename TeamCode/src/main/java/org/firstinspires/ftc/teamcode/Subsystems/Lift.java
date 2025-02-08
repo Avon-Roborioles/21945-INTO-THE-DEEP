@@ -25,7 +25,7 @@ public class Lift {
 
     //TODO - absolute positions
     private final int fencePose = 0;
-    private final int highRungPose = 0;
+    private final int highRungPose = 1700;
     private final int lowRungPose = 0;
     private int maxPose = 0;
     private int groundPose = 0;
@@ -43,10 +43,10 @@ public class Lift {
     public double intakeTarget = 0;
 
     //Motion Profile + Full State Feedback PID Controller
-    private final double kp = 0; //TODO position
-    private final double ka = 0; //TODO velocity
-    private final double MAX_VELOCITY = 0; //TODO
-    private final double MAX_ACCELERATION = 0; //TODO
+    private final double kp = 0.01;
+    private final double ka = 0.0001;
+    private final double MAX_VELOCITY = 400;
+    private final double MAX_ACCELERATION = 500;
     MotionProfile motionProfile;
     Vector liftCoefficients;
     FullStateFeedback liftController;
@@ -78,7 +78,7 @@ public class Lift {
        b_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.B);
 
         //slides
-        liftMotor = new MotorEx(hardwareMap,"slidesMotor");
+        liftMotor = new MotorEx(hardwareMap,"liftMotor");
         //slidesMotor.setInverted(true);
         //liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
         liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
