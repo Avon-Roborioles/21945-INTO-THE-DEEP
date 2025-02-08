@@ -27,7 +27,7 @@ public class Lift {
     private final int fencePose = 0;
     private final int highRungPose = 1700;
     private final int lowRungPose = 0;
-    private int maxPose = 0;
+    private int maxPose = 2910;
     private int groundPose = 0;
 
     private int currentLiftPose;
@@ -45,8 +45,8 @@ public class Lift {
     //Motion Profile + Full State Feedback PID Controller
     private final double kp = 0.01;
     private final double ka = 0.0001;
-    private final double MAX_VELOCITY = 400;
-    private final double MAX_ACCELERATION = 500;
+    private final double MAX_VELOCITY = 1000;
+    private final double MAX_ACCELERATION = 1000;
     MotionProfile motionProfile;
     Vector liftCoefficients;
     FullStateFeedback liftController;
@@ -84,6 +84,8 @@ public class Lift {
         liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         liftMotor.stopAndResetEncoder();
         liftMotor.setRunMode(Motor.RunMode.RawPower);
+        liftMotor.setInverted(true);
+        liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
 
         motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
 
@@ -170,7 +172,7 @@ public class Lift {
         if(leftBumper.isDown()){
             if(currentLiftPose < maxPose){
                 liftMode = Lift_Modes.DRIVER_MODE;
-                setTarget(currentLiftPose);
+                setTarget(currentLiftPose - 1);
                 liftPower = 0.9;
             } else {
                 liftMode = Lift_Modes.HOLD_MODE;
@@ -178,7 +180,7 @@ public class Lift {
         } else if(rightBumper.isDown()){
             if(currentLiftPose > groundPose){
                 liftMode = Lift_Modes.DRIVER_MODE;
-                setTarget(currentLiftPose);
+                setTarget(currentLiftPose + 1);
                 liftPower = -0.3;
             } else liftMode = Lift_Modes.HOLD_MODE;
         } else {
@@ -238,7 +240,7 @@ public class Lift {
     }
 
     public void setTarget(double target){
-        liftTarget = Math.min(target, maxPose);
+        liftTarget = target;
         motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
         time.reset();
     }
@@ -270,14 +272,13 @@ public class Lift {
     }
 
     public void update(){
-        //slides
         MotionState state = motionProfile.get(time.time());
 
         instantTarget = state.getX();
         double instantVelocity = state.getV();
 
         double measuredPosition = liftMotor.getCurrentPosition();
-        double measuredVelocity = liftMotor.getVelocity(); //* -1;
+        double measuredVelocity = liftMotor.getVelocity() * -1;
 
         Vector measuredState = new Vector(new double[] {measuredPosition,measuredVelocity});
         Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
@@ -287,30 +288,32 @@ public class Lift {
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        liftMotor.setVelocity(-instantVelocity);
+        //liftMotor.setVelocity(-instantVelocity);
+        liftMotor.set(liftPower);
 
-        //intake auto sequence
-        if(autoMode){
-            if(pickup){ //raise slides after intake is closed
-                if(!intakeIsBusy()){
-                    setTarget(highRungPose);
-                    autoMode = false;
-                }
-            } else { //score - lower slides, wait .2 sec, then open intake
-                if(!IsBusy()){
-                    if(time.seconds() >= 0.2){
-                        grab(false);
-                        autoMode = false;
-                    }
-                }
-            }
-        }
+//        //intake auto sequence
+//        if(autoMode){
+//            if(pickup){ //raise slides after intake is closed
+//                if(!intakeIsBusy()){
+//                    setTarget(highRungPose);
+//                    autoMode = false;
+//                }
+//            } else { //score - lower slides, wait .2 sec, then open intake
+//                if(!IsBusy()){
+//                    if(time.seconds() >= 0.2){
+//                        grab(false);
+//                        autoMode = false;
+//                    }
+//                }
+//            }
+//        }
     }
 
     public void getTelemetry(Telemetry telemetry){
-        telemetry.addLine("----SLIDES DATA----");
+        telemetry.addLine("----LIFT DATA----");
         telemetry.addData("Lift Mode: ", liftMode);
         telemetry.addData("Lift Pose: ", liftMotor.getCurrentPosition());
+        telemetry.addData("Lif Target: ", liftTarget);
         telemetry.addData("Lift Velocity: ", liftMotor.getVelocity());
         telemetry.addData("Lift Power: ", liftPower);
         telemetry.addData("Lift Busy?: ", IsBusy());

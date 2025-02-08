@@ -176,7 +176,7 @@ public class AutoBase extends LinearOpMode {
     public void getSubsystemTelemetry(Telemetry telemetry){
         arm.getTelemetry(telemetry);
         intake.getTelemetryFULL(telemetry);
-
+        lift.getTelemetry(telemetry);
     }
 
     /**

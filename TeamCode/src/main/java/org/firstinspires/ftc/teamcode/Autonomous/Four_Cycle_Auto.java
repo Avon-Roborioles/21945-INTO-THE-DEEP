@@ -327,8 +327,8 @@ public class Four_Cycle_Auto extends AutoBase {
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;
                 bot.setMaxPower(1); //.9
-                bot.followPath(scorePassiveChain, true);
                 lift.setTarget(1700);
+                bot.followPath(scorePassiveChain, true);
                 pathTimer.reset();
             }
 
