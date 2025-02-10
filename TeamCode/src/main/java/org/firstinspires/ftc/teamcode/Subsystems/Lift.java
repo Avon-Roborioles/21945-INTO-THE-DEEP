@@ -26,13 +26,13 @@ public class Lift {
     //TODO - absolute positions
     private final int fencePose = 0;
     private final int highRungPose = 1700;
-    private final int lowRungPose = 0;
+    private final int lowRungPose = 1400;
     private int maxPose = 2200;
     private int groundPose = 0;
 
     private int currentLiftPose;
     private int currentGrabberPose;
-    private Lift_Modes liftMode;
+    private Lift_Modes liftMode = Lift_Modes.HOLD_MODE;
     private boolean autoMode = false;
     private boolean pickup = false;
 
@@ -45,8 +45,8 @@ public class Lift {
     //Motion Profile + Full State Feedback PID Controller
     private final double kp = 0.009;
     private final double ka = 0.0001;
-    private final double MAX_VELOCITY = 400;
-    private final double MAX_ACCELERATION = 500;
+    private final double MAX_VELOCITY = 2000;
+    private final double MAX_ACCELERATION = 2000;
     private final double maxPower = 0.8;
     MotionProfile motionProfile;
     Vector liftCoefficients;
@@ -62,7 +62,8 @@ public class Lift {
     //enum commands for slide modes
     public enum Lift_Modes {
         DRIVER_MODE,
-        HOLD_MODE
+        HOLD_MODE,
+        AUTO_MODE
     }
 
     //--------TELEOP COMMANDS---------
@@ -80,18 +81,12 @@ public class Lift {
 
         //slides
         liftMotor = new MotorEx(hardwareMap,"liftMotor");
-        //slidesMotor.setInverted(true);
-        //liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
-        liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        liftMotor.stopAndResetEncoder();
         liftMotor.setRunMode(Motor.RunMode.RawPower);
-        liftMotor.setInverted(true);
-        liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
+        liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+//        liftMotor.setInverted(true);
+//        liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
 
         motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(liftMotor.getCurrentPosition(),0), new MotionState(liftTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
-
-        //intake
-        //intakeServo = hardwareMap.get(Servo.class, "intakeServo");
     }
 
     private void updateToggles(){
@@ -168,24 +163,21 @@ public class Lift {
     public void run_teleOp(Driver_Feedback feedback){
        //control logic
         currentLiftPose = liftMotor.getCurrentPosition();
+        double velocityAddon = liftMotor.getVelocity() * 0.05;
 
-        //control
         if(leftBumper.isDown()){
-            if(currentLiftPose < maxPose){
-                liftMode = Lift_Modes.DRIVER_MODE;
-                setTarget(currentLiftPose);
-                liftPower = 0.6;
-            } else {
-                liftMode = Lift_Modes.HOLD_MODE;
-            }
+            setTarget(currentLiftPose);
+           liftMode = Lift_Modes.DRIVER_MODE;
+            liftPower = -0.4;
+
         } else if(rightBumper.isDown()){
-            if(currentLiftPose > groundPose){
-                liftMode = Lift_Modes.DRIVER_MODE;
+            if(currentLiftPose < maxPose) {
                 setTarget(currentLiftPose);
-                liftPower = -0.3;
-            } else liftMode = Lift_Modes.HOLD_MODE;
+                liftMode = Lift_Modes.DRIVER_MODE;
+                liftPower = 0.6;
+            }
         } else {
-            liftMode = Lift_Modes.HOLD_MODE;
+            liftPower = 0.04;
         }
 
         //preset
@@ -204,31 +196,19 @@ public class Lift {
             liftMode = Lift_Modes.HOLD_MODE;
             feedback.alert_side(false, driverOp);
         }
-
-        //modes
+//
+//        //modes
         if(liftMode == Lift_Modes.HOLD_MODE){
-            MotionState state = motionProfile.get(time.time());
+            update();
 
-            double instantTarget = state.getX();
-            double instantVelocity = state.getV();
+        } else {
+            liftMotor.set(liftPower);
 
-            double measuredVelocity = liftMotor.getVelocity();
-
-            Vector measuredState = new Vector(new double[] {currentLiftPose,measuredVelocity});
-            Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
-
-            try {
-                liftPower = Math.min(liftController.calculate(targetState,measuredState),maxPower);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
 
-        liftMotor.set(liftPower);
 
        //haptic feedback
-
-       updateToggles();
+        updateToggles();
     }
 
     //--------AUTO COMMANDS------------
