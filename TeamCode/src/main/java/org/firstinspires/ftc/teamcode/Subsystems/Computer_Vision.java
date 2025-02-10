@@ -98,7 +98,7 @@ public class Computer_Vision {
      * Used to setup cameras & vision pipelines
      * @param hardwareMap used to find camera objects
      */
-    public void init(HardwareMap hardwareMap, boolean redAlliance){
+    public void init(HardwareMap hardwareMap){
         //limelight camera initialization
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
@@ -106,11 +106,11 @@ public class Computer_Vision {
         limelight.start(); //starts the selected pipeline
 
         //alliance selection
-        if(redAlliance){
-            allianceColor = 0;
-        } else {
-            allianceColor = 1;
-        }
+//        if(redAlliance){
+//            allianceColor = 0;
+//        } else {
+//            allianceColor = 1;
+//        }
     }
 
     /**
@@ -118,7 +118,7 @@ public class Computer_Vision {
      */
     public void update(){
         limelight.updatePythonInputs(new double[] {allianceColor});
-        getData();
+        //getData();
         result = limelight.getLatestResult();
         if(result != null){
             if(result.isValid()){

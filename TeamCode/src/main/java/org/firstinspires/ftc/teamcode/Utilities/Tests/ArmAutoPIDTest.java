@@ -40,8 +40,7 @@ public class ArmAutoPIDTest extends AutoBase {
 
     public void updateAuto(){
         subsystemsUpdate();
-        arm.getTelemetry(mainTelemetry);
-        intake.getTelemetryFULL(mainTelemetry);
+        getSubsystemTelemetry(mainTelemetry);
         mainTelemetry.addData("State: ", currentState);
         mainTelemetry.update();
     }
