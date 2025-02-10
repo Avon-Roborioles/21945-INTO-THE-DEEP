@@ -27,7 +27,7 @@ public class Lift {
     private final int fencePose = 0;
     private final int highRungPose = 1700;
     private final int lowRungPose = 0;
-    private int maxPose = 2910;
+    private int maxPose = 2200;
     private int groundPose = 0;
 
     private int currentLiftPose;
@@ -43,10 +43,11 @@ public class Lift {
     public double intakeTarget = 0;
 
     //Motion Profile + Full State Feedback PID Controller
-    private final double kp = 0.01;
+    private final double kp = 0.009;
     private final double ka = 0.0001;
-    private final double MAX_VELOCITY = 1000;
-    private final double MAX_ACCELERATION = 1000;
+    private final double MAX_VELOCITY = 400;
+    private final double MAX_ACCELERATION = 500;
+    private final double maxPower = 0.8;
     MotionProfile motionProfile;
     Vector liftCoefficients;
     FullStateFeedback liftController;
@@ -172,15 +173,15 @@ public class Lift {
         if(leftBumper.isDown()){
             if(currentLiftPose < maxPose){
                 liftMode = Lift_Modes.DRIVER_MODE;
-                setTarget(currentLiftPose - 1);
-                liftPower = 0.9;
+                setTarget(currentLiftPose);
+                liftPower = 0.6;
             } else {
                 liftMode = Lift_Modes.HOLD_MODE;
             }
         } else if(rightBumper.isDown()){
             if(currentLiftPose > groundPose){
                 liftMode = Lift_Modes.DRIVER_MODE;
-                setTarget(currentLiftPose + 1);
+                setTarget(currentLiftPose);
                 liftPower = -0.3;
             } else liftMode = Lift_Modes.HOLD_MODE;
         } else {
@@ -211,13 +212,13 @@ public class Lift {
             double instantTarget = state.getX();
             double instantVelocity = state.getV();
 
-            double measuredVelocity = liftMotor.getVelocity() * -1;
+            double measuredVelocity = liftMotor.getVelocity();
 
             Vector measuredState = new Vector(new double[] {currentLiftPose,measuredVelocity});
             Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
 
             try {
-                liftPower = liftController.calculate(targetState,measuredState);
+                liftPower = Math.min(liftController.calculate(targetState,measuredState),maxPower);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

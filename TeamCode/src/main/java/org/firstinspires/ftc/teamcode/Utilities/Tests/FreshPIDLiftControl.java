@@ -25,11 +25,12 @@ public class FreshPIDLiftControl extends LinearOpMode {
     public double previousTarget = 0;
     public static double liftTarget = 0;
     public double liftPower = 0;
-    public static double kp = 0.0001;
+    public static double kp = 0.009;
     public static double ka = 0.0001;
-    public static double maxVelocity = 1000;
-    public static double maxAcceleration = 1000;
+    public static double maxVelocity = 400;
+    public static double maxAcceleration = 500;
     public static double maxJerk = 0;
+    public static double maxPower = 0.8;
     public boolean motionComplete = true;
     public boolean overshoot = false;
     public MotionProfile profile;
@@ -72,7 +73,7 @@ public class FreshPIDLiftControl extends LinearOpMode {
 
             //---------------------------------
             Vector liftCoefficients = new Vector(new double[] {kp, ka});
-            FullStateFeedback armController = new FullStateFeedback(liftCoefficients);
+            FullStateFeedback liftController = new FullStateFeedback(liftCoefficients);
 
             MotionState state = profile.get(time.time());
 
@@ -81,19 +82,19 @@ public class FreshPIDLiftControl extends LinearOpMode {
             double instantAcceleration = state.getA();
 
             double measuredPosition = liftMotor.getCurrentPosition();
-            double measuredVelocity = liftMotor.getVelocity() * -1;
+            double measuredVelocity = liftMotor.getVelocity();// * -1;
             double measuredAcceleration = liftMotor.getAcceleration() * -1;
 
             Vector measuredState = new Vector(new double[] {measuredPosition,measuredVelocity});
             Vector targetState = new Vector(new double[] {instantTarget,instantVelocity});
 
             try {
-                liftPower = armController.calculate(targetState,measuredState);
+                liftPower = Math.min(liftController.calculate(targetState,measuredState),maxPower);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
 
-            liftMotor.setVelocity(-instantVelocity);//(-instantVelocity);
+            //liftMotor.setVelocity(-instantVelocity);//(-instantVelocity);
             liftMotor.set(liftPower);
 
 
