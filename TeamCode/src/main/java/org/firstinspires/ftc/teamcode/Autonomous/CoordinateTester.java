@@ -271,7 +271,13 @@ public class CoordinateTester extends AutoBase{
             arm.getTelemetry(telemetry);
 
             telemetry.update();
-            a_button.readValue(); //updates a_button reader
+            a_button.readValue();
+            d_up.readValue();
+            d_down.readValue();
+            d_left.readValue();
+            d_right.readValue();
+            leftTrigger.readValue();
+            rightTrigger.readValue();
         }
     }
 }

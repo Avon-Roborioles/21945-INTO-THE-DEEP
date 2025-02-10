@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name="4 Cycle Auto", group = "Autos")
 public class Four_Cycle_Auto extends AutoBase {
     //important variables
-    Path scorePassive, Score, Park, SampleDropoff, PickupSpecimen;
-    PathChain scorePassiveChain, Sample1, Sample2, Sample3, Sample3Back, Sample2Back, specimenPickup, specimenAlignment;
+    Path scorePassive, SampleDropoff, PickupSpecimen;
+    PathChain scorePassiveChain, Sample1, Sample2, Sample3, Sample3Back, Sample2Back, specimenPickup, specimenAlignment, Score, Park;
     Pose startPose;
     Pose parkPose;
     Follower bot;
@@ -100,12 +100,15 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
 
-            Score = new Path(new BezierLine(PoseStorage.LeftSample1.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-            Score.setLinearHeadingInterpolation(PoseStorage.LeftSample1.getHeading(), PoseStorage.LeftBucketScore.getHeading());
+            Score = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.LeftSample1.getPoint(), PoseStorage.LeftBucketScore.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.LeftSample1.getHeading(), PoseStorage.LeftBucketScore.getHeading())
+                    .build();
 
-            Park = new Path(new BezierLine(PoseStorage.LeftBucketScore.getPoint(), PoseStorage.LeftPark.getPoint()));
-            Park.setLinearHeadingInterpolation(PoseStorage.LeftBucketScore.getHeading(), PoseStorage.LeftPark.getHeading());
-
+            Park = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.LeftBucketScore.getPoint(), PoseStorage.LeftPark.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.LeftBucketScore.getHeading(), PoseStorage.LeftPark.getHeading())
+                    .build();
 
 
         } else if (AutoPose == AutoPoses.RIGHT) {
@@ -116,8 +119,14 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             Sample1 = bot.pathBuilder()
-                    .addPath(new BezierLine(startPose.getPoint(), PoseStorage.RightSample1Start.getPoint()))
-                    .setLinearHeadingInterpolation(startPose.getHeading(),PoseStorage.RightSample1Start.getHeading())
+                    //move back to release specimen
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.SpecimenScoreBackup.getPoint()))
+                    .setConstantHeadingInterpolation(PoseStorage.SpecimenScore.getHeading())
+
+                    //go to sample1Start pose
+                    .addPath(new BezierLine(PoseStorage.SpecimenScoreBackup.getPoint(), PoseStorage.RightSample1Start.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenScoreBackup.getHeading(),PoseStorage.RightSample1Start.getHeading())
+
                     .addPath(new BezierCurve(PoseStorage.RightSample1Start.getPoint(),PoseStorage.RightSample1Control1,PoseStorage.RightSample1Control2, PoseStorage.RightSample1.getPoint()))
                     .setTangentHeadingInterpolation()
                     .setReversed(true)
@@ -141,11 +150,18 @@ public class Four_Cycle_Auto extends AutoBase {
 
             specimenPickup = bot.pathBuilder()
                     .addPath(new BezierLine(PoseStorage.RightSample3Push.getPoint(),PoseStorage.SpecimenPickup.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.RightSample3Push.getHeading(), PoseStorage.SpecimenPickup.getHeading())
                     .build();
 
-            Score = new Path(new BezierLine(PoseStorage.SpecimenPickup.getPoint(),PoseStorage.SpecimenScore.getPoint()));
+            Score = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.SpecimenPickup.getPoint(),PoseStorage.SpecimenScore.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenPickup.getHeading(), PoseStorage.SpecimenScore.getHeading())
+                    .build();
 
-            Park = new Path(new BezierLine(PoseStorage.SpecimenScore.getPoint(),PoseStorage.RightPark.getPoint()));
+            Park = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(),PoseStorage.RightPark.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenScore.getHeading(), PoseStorage.RightPark.getHeading())
+                    .build();
 
              }
     }
@@ -265,14 +281,14 @@ public class Four_Cycle_Auto extends AutoBase {
         if(AutoPose == AutoPoses.LEFT){
             switch(sampleNumber){
                 case 2:
-                    Score = new Path(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-                    Score.setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading());
-                    break;
 
                 case 3:
-                    Score = new Path(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-                    Score.setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading());
+                    Score = bot.pathBuilder()
+                            .addPath(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()))
+                            .setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading())
+                            .build();
                     break;
+
             }
         } else if(AutoPose == AutoPoses.RIGHT){
             specimenPickup = bot.pathBuilder()
@@ -286,7 +302,7 @@ public class Four_Cycle_Auto extends AutoBase {
         public void runOpMode () throws InterruptedException {
             bot = new Follower(hardwareMap);
 
-            PoseStorage.ranAuto = false; //TODO ??? false before
+            PoseStorage.ranAuto = false;
 
             startPose = PoseStorage.LeftStartPose;
             parkPose = PoseStorage.LeftPark;
@@ -435,8 +451,9 @@ public class Four_Cycle_Auto extends AutoBase {
                         case SCORE_PASSIVE:
                             if(!bot.isBusy()) {
                                 waitMilliSeconds(300);
-                                lift.setTarget(1400);
-                                waitMilliSeconds(300);
+                                lift.setTarget(1300);
+                                waitMilliSeconds(700);
+                                lift.setTarget(0);
                                 currentState = State.MOVE_SAMPLES;
                                 bot.followPath(Sample1);
                                 break;
