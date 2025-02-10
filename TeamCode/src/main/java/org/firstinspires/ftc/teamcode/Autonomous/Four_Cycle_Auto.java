@@ -434,10 +434,9 @@ public class Four_Cycle_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if(!bot.isBusy()) {
-                                waitMilliSeconds(500);
+                                waitMilliSeconds(300);
                                 lift.setTarget(1400);
-                                waitMilliSeconds(500);
-                                //TODO score lift command (slide down, claw open)
+                                waitMilliSeconds(300);
                                 currentState = State.MOVE_SAMPLES;
                                 bot.followPath(Sample1);
                                 break;
@@ -461,30 +460,37 @@ public class Four_Cycle_Auto extends AutoBase {
 
                         case PICKUP_SPECIMEN:
                             if(!bot.isBusy()) {
-                                if(!alignPathDone){
-                                    alignPathDone = true;
-                                    //TODO - vision.switchToAlignment Pipeline
-                                    waitMilliSeconds(500);
-                                    //TODO buildStrafePath(vision.getAlignment());
-                                    buildStrafePath(0);
-                                    bot.followPath(specimenAlignment);
-                                } else {
+//                                if(!alignPathDone){
+//                                    alignPathDone = true;
+//                                    //TODO - vision.switchToAlignment Pipeline
+//                                    waitMilliSeconds(500);
+//                                    //TODO buildStrafePath(vision.getAlignment());
+//                                    buildStrafePath(0);
+//                                    bot.followPath(specimenAlignment);
+//                                } else {
+                                    waitMilliSeconds(300);
+                                    lift.setTarget(1700);
+                                    waitMilliSeconds(300);
                                     currentState = State.SCORE;
                                     bot.followPath(Score);
                                     break;
-                                }
+                               // }
                             }
 
                         case SCORE:
                             if(!bot.isBusy()) {
                                 specimenScored++;
-                                //logic
+                                waitMilliSeconds(300);
+                                lift.setTarget(1400);
+                                waitMilliSeconds(300);
                                 if(specimenScored < cycleCount){
                                     currentState = State.PICKUP_SPECIMEN;
                                     alignPathDone = false;
+                                    lift.setTarget(0);
                                     bot.followPath(specimenPickup);
                                 } else {
                                     currentState = State.PARK;
+                                    lift.setTarget(0);
                                     bot.followPath(Park);
                                 }
                                 break;

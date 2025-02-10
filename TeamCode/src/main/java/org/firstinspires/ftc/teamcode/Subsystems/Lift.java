@@ -47,7 +47,7 @@ public class Lift {
     private final double ka = 0.0001;
     private final double MAX_VELOCITY = 2000;
     private final double MAX_ACCELERATION = 2000;
-    private final double maxPower = 0.8;
+    private final double maxPower = 0.6;
     MotionProfile motionProfile;
     Vector liftCoefficients;
     FullStateFeedback liftController;
@@ -269,7 +269,6 @@ public class Lift {
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        //liftMotor.setVelocity(-instantVelocity);
         liftMotor.set(liftPower);
 
 //        //intake auto sequence
@@ -299,7 +298,5 @@ public class Lift {
         telemetry.addData("Lift Velocity: ", liftMotor.getVelocity());
         telemetry.addData("Lift Power: ", liftPower);
         telemetry.addData("Lift Busy?: ", IsBusy());
-//        telemetry.addData("Specimen Intake Pose: ", intakeServo.getPosition());
-//        telemetry.addData("Specimen Intake Busy?: ", intakeIsBusy());
     }
 }
