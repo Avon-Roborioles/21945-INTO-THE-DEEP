@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
+import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
@@ -19,14 +20,15 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path
 public class CoordinateTester extends AutoBase{
 
     //important variables
-    PathChain startToTarget, targetToStart;
+    PathChain startToTarget, targetToStart, adjustPath;
     Pose startPose, targetPose;
     String targetPoseName;
     Follower bot;
     AutoPoses AutoPose;
     boolean returnHome;
     GamepadEx driverOp;
-    ToggleButtonReader a_button;
+    ToggleButtonReader a_button, d_up, d_down, d_left, d_right;
+    TriggerReader leftTrigger, rightTrigger;
     public int prevArmTarget = 0;
     public static int armTarget = 0;
     public int prevExtendTarget = 0;
@@ -34,9 +36,18 @@ public class CoordinateTester extends AutoBase{
 
     //Finite State Machine (FSM) variables
     public enum State {
-        START, //go to target
+        START, //go to target//move with d_pad
         RETURN, //return to startPose
         END //end of program
+    }
+
+    public enum ADJUST_TYPE {
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN,
+        ROTATE_LEFT,
+        ROTATE_RIGHT
     }
 
     public State currentState;
@@ -60,6 +71,84 @@ public class CoordinateTester extends AutoBase{
                 .build();
     }
 
+    public void buildAdjustPath(ADJUST_TYPE type){
+        switch(type){
+            case LEFT:
+                //create adjustPath
+                adjustPath = bot.pathBuilder()
+                        .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX()-3, bot.getPose().getY(), bot.getPose().getHeading()).getPoint()))
+                        .setConstantHeadingInterpolation(bot.getPose().getHeading())
+                        .build();
+                //update returnPath
+                targetToStart  = bot.pathBuilder()
+                        .addPath(new BezierLine(new Pose(bot.getPose().getX()-3, bot.getPose().getY(), bot.getPose().getHeading()).getPoint(), startPose.getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), startPose.getHeading())
+                        .build();
+                break;
+            case RIGHT:
+                //create adjustPath
+                adjustPath = bot.pathBuilder()
+                        .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX()+3, bot.getPose().getY(), bot.getPose().getHeading()).getPoint()))
+                        .setConstantHeadingInterpolation(bot.getPose().getHeading())
+                        .build();
+                //update returnPath
+                targetToStart  = bot.pathBuilder()
+                        .addPath(new BezierLine(new Pose(bot.getPose().getX()+3, bot.getPose().getY(), bot.getPose().getHeading()).getPoint(), startPose.getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), startPose.getHeading())
+                        .build();
+                break;
+            case UP:
+                //create adjustPath
+                adjustPath = bot.pathBuilder()
+                        .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX(), bot.getPose().getY()+3, bot.getPose().getHeading()).getPoint()))
+                        .setConstantHeadingInterpolation(bot.getPose().getHeading())
+                        .build();
+                //update returnPath
+                targetToStart  = bot.pathBuilder()
+                        .addPath(new BezierLine(new Pose(bot.getPose().getX(), bot.getPose().getY()+3, bot.getPose().getHeading()).getPoint(), startPose.getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), startPose.getHeading())
+                        .build();
+                break;
+            case DOWN:
+                //create adjustPath
+                adjustPath = bot.pathBuilder()
+                        .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX(), bot.getPose().getY()-3, bot.getPose().getHeading()).getPoint()))
+                        .setConstantHeadingInterpolation(bot.getPose().getHeading())
+                        .build();
+                //update returnPath
+                targetToStart  = bot.pathBuilder()
+                        .addPath(new BezierLine(new Pose(bot.getPose().getX(), bot.getPose().getY()-3, bot.getPose().getHeading()).getPoint(), startPose.getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), startPose.getHeading())
+                        .build();
+                break;
+            case ROTATE_LEFT:
+                //create adjustPath
+                adjustPath = bot.pathBuilder()
+                        .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX(), bot.getPose().getY(), bot.getPose().getHeading()-Math.toRadians(10)).getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), bot.getPose().getHeading()-Math.toRadians(10))
+                        .build();
+                //update returnPath
+                targetToStart  = bot.pathBuilder()
+                        .addPath(new BezierLine(new Pose(bot.getPose().getX(), bot.getPose().getY()-3, bot.getPose().getHeading()-Math.toRadians(10)).getPoint(), startPose.getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), bot.getPose().getHeading()-Math.toRadians(10))
+                        .build();
+                break;
+            case ROTATE_RIGHT:
+                //create adjustPath
+                adjustPath = bot.pathBuilder()
+                        .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX(), bot.getPose().getY(), bot.getPose().getHeading()+Math.toRadians(10)).getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), bot.getPose().getHeading()-Math.toRadians(10))
+                        .build();
+                //update returnPath
+                targetToStart  = bot.pathBuilder()
+                        .addPath(new BezierLine(new Pose(bot.getPose().getX(), bot.getPose().getY(), bot.getPose().getHeading()+Math.toRadians(10)).getPoint(), startPose.getPoint()))
+                        .setLinearHeadingInterpolation(bot.getPose().getHeading(), bot.getPose().getHeading()-Math.toRadians(10))
+                        .build();
+                break;
+        }
+
+    }
+
     public void runOpMode() throws InterruptedException{
         bot = new Follower(hardwareMap);
 
@@ -72,10 +161,28 @@ public class CoordinateTester extends AutoBase{
         //initialize subsystems
         init_classes(driverOp);
 
-        //TODO - create toggleReader for returning back to start
         a_button = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.A
         );
+        d_down = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_DOWN
+        );
+        d_up = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_UP
+        );
+        d_left = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_LEFT
+        );
+        d_right = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_RIGHT
+        );
+        leftTrigger = new TriggerReader(
+                driverOp, GamepadKeys.Trigger.LEFT_TRIGGER
+        );
+        rightTrigger = new TriggerReader(
+                driverOp, GamepadKeys.Trigger.RIGHT_TRIGGER
+        );
+
 
         //run Auto Menu
         while(opModeInInit()){
@@ -108,6 +215,30 @@ public class CoordinateTester extends AutoBase{
                             currentState = State.RETURN;
                             bot.followPath(targetToStart);
                             arm.setTarget(0,0);
+
+                        } else if(d_left.wasJustPressed()){ //inch to the left
+                            buildAdjustPath(ADJUST_TYPE.LEFT);
+                            bot.followPath(adjustPath);
+
+                        } else if(d_right.wasJustPressed()){ //inch to the right
+                            buildAdjustPath(ADJUST_TYPE.RIGHT);
+                            bot.followPath(adjustPath);
+
+                        } else if(d_down.wasJustPressed()){ //inch down
+                            buildAdjustPath(ADJUST_TYPE.DOWN);
+                            bot.followPath(adjustPath);
+
+                        } else if(d_up.wasJustPressed()){ //inch up
+                            buildAdjustPath(ADJUST_TYPE.UP);
+                            bot.followPath(adjustPath);
+
+                        } else if(leftTrigger.wasJustPressed()){
+                            buildAdjustPath(ADJUST_TYPE.ROTATE_LEFT); // rotate 10° counterclockwise (left)
+                            bot.followPath(adjustPath);
+
+                        } else if(rightTrigger.wasJustPressed()){
+                            buildAdjustPath(ADJUST_TYPE.ROTATE_RIGHT); // rotate 10° clockwise (right)
+                            bot.followPath(adjustPath);
                         }
                         break;
                     }
