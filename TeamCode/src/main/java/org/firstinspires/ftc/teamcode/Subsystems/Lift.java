@@ -213,7 +213,7 @@ public class Lift {
 
     //--------AUTO COMMANDS------------
     public boolean IsBusy(){
-        return instantTarget != liftTarget;
+        return Math.abs(liftTarget - instantTarget) > 50;
     }
 
     public boolean intakeIsBusy(){
@@ -294,6 +294,7 @@ public class Lift {
         telemetry.addLine("----LIFT DATA----");
         telemetry.addData("Lift Mode: ", liftMode);
         telemetry.addData("Lift Pose: ", liftMotor.getCurrentPosition());
+        telemetry.addData("Lift Instant Target: ", instantTarget);
         telemetry.addData("Lif Target: ", liftTarget);
         telemetry.addData("Lift Velocity: ", liftMotor.getVelocity());
         telemetry.addData("Lift Power: ", liftPower);
