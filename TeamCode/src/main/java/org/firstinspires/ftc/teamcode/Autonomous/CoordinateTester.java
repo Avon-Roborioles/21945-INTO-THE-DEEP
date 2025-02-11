@@ -215,6 +215,7 @@ public class CoordinateTester extends AutoBase{
                             currentState = State.RETURN;
                             bot.followPath(targetToStart);
                             arm.setTarget(0,0);
+                            break;
 
                         } else if(d_left.wasJustPressed()){ //inch to the left
                             buildAdjustPath(ADJUST_TYPE.LEFT);
@@ -240,7 +241,7 @@ public class CoordinateTester extends AutoBase{
                             buildAdjustPath(ADJUST_TYPE.ROTATE_RIGHT); // rotate 10° clockwise (right)
                             bot.followPath(adjustPath);
                         }
-                        break;
+
                     }
                 case RETURN:
                     if(!bot.isBusy()) {

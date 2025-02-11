@@ -45,8 +45,8 @@ public class Lift {
     //Motion Profile + Full State Feedback PID Controller
     private final double kp = 0.009;
     private final double ka = 0.0001;
-    private final double MAX_VELOCITY = 2000;
-    private final double MAX_ACCELERATION = 2000;
+    private final double MAX_VELOCITY = 3000;
+    private final double MAX_ACCELERATION = 3000;
     private final double maxPower = 0.6;
     MotionProfile motionProfile;
     Vector liftCoefficients;
