@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import java.util.concurrent.TimeUnit;
 
 @Autonomous
-public class ArmAutoPIDTest extends AutoBase {
+public class LiftAutoPIDTest extends AutoBase {
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public enum State{
         RETRIEVE,
@@ -40,7 +40,8 @@ public class ArmAutoPIDTest extends AutoBase {
 
     public void updateAuto(){
         subsystemsUpdate();
-        getSubsystemTelemetry(mainTelemetry);
+        mainTelemetry.addData("Count: ", count);
+       getSubsystemTelemetry(mainTelemetry);
         mainTelemetry.addData("State: ", currentState);
         mainTelemetry.update();
     }
@@ -59,32 +60,29 @@ public class ArmAutoPIDTest extends AutoBase {
         waitForStart();
 
         currentState = State.RETRIEVE;
-        arm.setTarget(3000,0); //enough room for extend later
-        intake.pickup();
+        lift.setTarget(2200);
 
         while(opModeIsActive()){
             switch(currentState){
                 case RETRIEVE:
-                    if((!arm.ArmIsBusy())){
-                            waitSeconds(1.5);
-                            arm.setTarget(5600, 2000);
-                            currentState = State.SCORE;
-                            break;
+                    if((!lift.IsBusy())){
+                        waitSeconds(1.5);
+                        lift.setTarget(1700);
+                        currentState = State.SCORE;
+                        break;
                     }
                 case SCORE:
-                    if(!arm.ArmIsBusy()){
+                    if(!lift.IsBusy()){
                         count++;
-                        intake.drop();
                         waitSeconds(1.5);
 
                         if(count == 5){
-                            arm.setTarget(0, 0);
+                            lift.setTarget(0);
                             currentState = State.FINISH;
                             break;
                         } else {
-                            arm.setTarget(900,2700);
+                            lift.setTarget(0);
                             currentState = State.RETRIEVE;
-                            intake.pickup();
                         }
                     }
                 case FINISH:

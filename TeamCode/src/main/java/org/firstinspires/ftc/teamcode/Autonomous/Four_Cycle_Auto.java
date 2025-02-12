@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name="4 Cycle Auto", group = "Autos")
 public class Four_Cycle_Auto extends AutoBase {
     //important variables
-    Path scorePassive, Score, Park, SampleDropoff, PickupSpecimen;
-    PathChain scorePassiveChain, Sample1, Sample2, Sample3, Sample3Back, Sample2Back, specimenPickup;
+    Path scorePassive, SampleDropoff, PickupSpecimen;
+    PathChain scorePassiveChain, Sample1, Sample2, Sample3, Sample3Back, Sample2Back, specimenPickup, specimenAlignment, Score, Park;
     Pose startPose;
     Pose parkPose;
     Follower bot;
@@ -35,6 +35,7 @@ public class Four_Cycle_Auto extends AutoBase {
     double endTime = 0;
     boolean back2PathDone = false;
     boolean back3PathDone = false;
+    boolean alignPathDone = false;
 
 
     //Finite State Machine (FSM) variables
@@ -92,19 +93,22 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             Sample3Back = bot.pathBuilder()
-                    .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), new Pose(PoseStorage.LeftSample3.getX()-5.3,PoseStorage.LeftSample3.getY(),PoseStorage.LeftSample3.getHeading()).getPoint()))
+                    .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), new Pose(PoseStorage.LeftSample3.getX()-4,PoseStorage.LeftSample3.getY(),PoseStorage.LeftSample3.getHeading()).getPoint()))
                     .setConstantHeadingInterpolation(PoseStorage.LeftSample3.getHeading())
                     .addPath(new BezierLine(PoseStorage.LeftSample3.getPoint(), PoseStorage.LeftSample3Back.getPoint()))
                     .setConstantHeadingInterpolation(PoseStorage.LeftSample3.getHeading())
                     .build();
 
 
-            Score = new Path(new BezierLine(PoseStorage.LeftSample1.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-            Score.setLinearHeadingInterpolation(PoseStorage.LeftSample1.getHeading(), PoseStorage.LeftBucketScore.getHeading());
+            Score = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.LeftSample1.getPoint(), PoseStorage.LeftBucketScore.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.LeftSample1.getHeading(), PoseStorage.LeftBucketScore.getHeading())
+                    .build();
 
-            Park = new Path(new BezierLine(PoseStorage.LeftBucketScore.getPoint(), PoseStorage.LeftPark.getPoint()));
-            Park.setLinearHeadingInterpolation(PoseStorage.LeftBucketScore.getHeading(), PoseStorage.LeftPark.getHeading());
-
+            Park = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.LeftBucketScore.getPoint(), PoseStorage.LeftPark.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.LeftBucketScore.getHeading(), PoseStorage.LeftPark.getHeading())
+                    .build();
 
 
         } else if (AutoPose == AutoPoses.RIGHT) {
@@ -115,8 +119,14 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             Sample1 = bot.pathBuilder()
-                    .addPath(new BezierLine(startPose.getPoint(), PoseStorage.RightSample1Start.getPoint()))
-                    .setLinearHeadingInterpolation(startPose.getHeading(),PoseStorage.RightSample1Start.getHeading())
+                    //move back to release specimen
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.SpecimenScoreBackup.getPoint()))
+                    .setConstantHeadingInterpolation(PoseStorage.SpecimenScore.getHeading())
+
+                    //go to sample1Start pose
+                    .addPath(new BezierLine(PoseStorage.SpecimenScoreBackup.getPoint(), PoseStorage.RightSample1Start.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenScoreBackup.getHeading(),PoseStorage.RightSample1Start.getHeading())
+
                     .addPath(new BezierCurve(PoseStorage.RightSample1Start.getPoint(),PoseStorage.RightSample1Control1,PoseStorage.RightSample1Control2, PoseStorage.RightSample1.getPoint()))
                     .setTangentHeadingInterpolation()
                     .setReversed(true)
@@ -139,12 +149,20 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             specimenPickup = bot.pathBuilder()
-                    .addPath(new BezierLine(PoseStorage.RightSample3Push.getPoint(),PoseStorage.SpecimenPickup.getPoint()))
+                    .addPath(new BezierLine(PoseStorage.RightSample1Push.getPoint(),PoseStorage.SpecimenPickup.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.RightSample2Push.getHeading(), PoseStorage.SpecimenPickup.getHeading())
+                    .setPathEndTimeoutConstraint(1)
                     .build();
 
-            Score = new Path(new BezierLine(PoseStorage.SpecimenPickup.getPoint(),PoseStorage.SpecimenScore.getPoint()));
+            Score = bot.pathBuilder()
+                    .addPath(new BezierLine(new Pose(PoseStorage.SpecimenPickup.getX(),PoseStorage.SpecimenPickup.getY()-3,PoseStorage.SpecimenPickup.getHeading()).getPoint(),PoseStorage.SpecimenScore2.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenPickup.getHeading(), PoseStorage.SpecimenScore2.getHeading())
+                    .build();
 
-            Park = new Path(new BezierLine(PoseStorage.SpecimenScore.getPoint(),PoseStorage.RightPark.getPoint()));
+            Park = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(),PoseStorage.RightPark.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenScore.getHeading(), PoseStorage.RightPark.getHeading())
+                    .build();
 
              }
     }
@@ -223,27 +241,65 @@ public class Four_Cycle_Auto extends AutoBase {
         mainTelemetry.update();
     }
 
+    public void buildStrafePath(double length){
+        Pose specimenPickup = PoseStorage.SpecimenPickup;
+                if(length != 0){
+                    specimenAlignment = bot.pathBuilder()
+                            //strafe slowly
+                            .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .addParametricCallback(0,()->{
+                                bot.setMaxPower(0.5); //slow speed
+                            })
+
+                            //drive into specimen
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 5,specimenPickup.getHeading()).getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .addParametricCallback(0,()->{
+                                bot.setMaxPower(1);
+                            })
+
+                            //drive back to pickup pose
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 3,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .build();
+                } else {
+                    specimenAlignment = bot.pathBuilder()
+                            //drive into specimen
+                            .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX(),specimenPickup.getY()-3,specimenPickup.getHeading()).getPoint()))
+                            .setConstantHeadingInterpolation(Math.toRadians(0))
+//                            .addParametricCallback(1, ()->{
+//                                lift.setTarget(1700);
+//                                waitMilliSeconds(1000);
+//                            })
+
+//                            //drive back to pickup pose
+//                            .addPath(new BezierLine(new Pose(specimenPickup.getX(),specimenPickup.getY()-2,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+//                            .setConstantHeadingInterpolation(Math.toRadians(0))
+
+                            .build();
+                }
+    }
+
     //vital method to update score paths based on number of samples scored
     public void updateScoreStart(int sampleNumber){
         if(AutoPose == AutoPoses.LEFT){
             switch(sampleNumber){
                 case 2:
-                    Score = new Path(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-                    Score.setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading());
-                    break;
 
                 case 3:
-                    Score = new Path(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-                    Score.setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading());
+                    Score = bot.pathBuilder()
+                            .addPath(new BezierLine(PoseStorage.LeftSample3Back.getPoint(), PoseStorage.LeftBucketScore.getPoint()))
+                            .setLinearHeadingInterpolation(PoseStorage.LeftSample3Back.getHeading(), PoseStorage.LeftBucketScore.getHeading())
+                            .build();
                     break;
+
             }
         } else if(AutoPose == AutoPoses.RIGHT){
-            switch(sampleNumber){
-                default:
-                    specimenPickup = bot.pathBuilder()
-                            .addPath(new BezierLine(PoseStorage.SpecimenScore.getPoint(), PoseStorage.SpecimenPickup.getPoint()))
-                            .build();
-            }
+            specimenPickup = bot.pathBuilder()
+                    .addPath(new BezierLine(PoseStorage.SpecimenScore2.getPoint(), PoseStorage.SpecimenPickup.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.SpecimenScore2.getHeading(),PoseStorage.SpecimenPickup.getHeading())
+                    .build();
         }
     }
 
@@ -252,7 +308,7 @@ public class Four_Cycle_Auto extends AutoBase {
         public void runOpMode () throws InterruptedException {
             bot = new Follower(hardwareMap);
 
-            PoseStorage.ranAuto = false; //TODO ??? false before
+            PoseStorage.ranAuto = false;
 
             startPose = PoseStorage.LeftStartPose;
             parkPose = PoseStorage.LeftPark;
@@ -277,6 +333,7 @@ public class Four_Cycle_Auto extends AutoBase {
 
             buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
 
+
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
                 // starting path & FSM
@@ -291,10 +348,9 @@ public class Four_Cycle_Auto extends AutoBase {
                 bot.setPose(PoseStorage.RightStartPose); //different from bot.setPose()
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;
-                bot.setMaxPower(1); //.9
+                bot.setMaxPower(0.8); //.9
+                lift.setTarget(1700);
                 bot.followPath(scorePassiveChain, true);
-                //TODO raise lift to high rung
-                //TODO close specimen claw
                 pathTimer.reset();
             }
 
@@ -400,46 +456,69 @@ public class Four_Cycle_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if(!bot.isBusy()) {
-                                waitMilliSeconds(500);
-                                //TODO score lift command (slide down, claw open)
+                                waitMilliSeconds(300);
+                                lift.setTarget(900);
+                                waitMilliSeconds(1000);
+                                lift.setTarget(0);
                                 currentState = State.MOVE_SAMPLES;
+                                bot.setMaxPower(0.8);
                                 bot.followPath(Sample1);
                                 break;
                             }
+
                         case MOVE_SAMPLES:
-                            if(!bot.isBusy()) {
+                            if(!bot.isBusy()){
                                 groundSamplesRetrieved++;
-                                if(groundSamplesRetrieved == 1){
-                                    bot.followPath(Sample2);
-                                } else if(groundSamplesRetrieved == 2){
-                                    bot.followPath(Sample3);
-                                } else {
+//                                if(groundSamplesRetrieved == 1){
+//                                    bot.followPath(Sample2);
+//                                }  else {
                                     currentState = State.PICKUP_SPECIMEN;
                                     bot.followPath(specimenPickup);
                                     updateScoreStart(1); //update for later
-                                }
+                                //}
                                 //logic
                                 break;
                             }
+
                         case PICKUP_SPECIMEN:
                             if(!bot.isBusy()) {
-                                currentState = State.SCORE;
-                                bot.followPath(Score);
-                                break;
+                                if(!alignPathDone){
+                                    alignPathDone = true;
+                                    //TODO - vision.switchToAlignment Pipeline
+                                    waitMilliSeconds(500);
+                                    //TODO buildStrafePath(vision.getAlignment());
+                                    bot.setMaxPower(0.6);
+                                    buildStrafePath(0);
+                                    bot.followPath(specimenAlignment);
+                                } else {
+                                    waitMilliSeconds(300);
+                                    lift.setTarget(1700);
+                                    waitMilliSeconds(300);
+                                    currentState = State.SCORE;
+                                    bot.followPath(Score);
+                                    break;
+                               }
                             }
+
                         case SCORE:
                             if(!bot.isBusy()) {
                                 specimenScored++;
-                                //logic
+                                waitMilliSeconds(300);
+                                lift.setTarget(900);
+                                waitMilliSeconds(1000);
                                 if(specimenScored < cycleCount){
                                     currentState = State.PICKUP_SPECIMEN;
+                                    alignPathDone = false;
+                                    lift.setTarget(0);
                                     bot.followPath(specimenPickup);
                                 } else {
                                     currentState = State.PARK;
+                                    lift.setTarget(0);
                                     bot.followPath(Park);
                                 }
                                 break;
                             }
+
                         case PARK:
                             if(!bot.isBusy()) {
                                 //logic
@@ -448,8 +527,6 @@ public class Four_Cycle_Auto extends AutoBase {
                                 break;
                             }
                     }
-
-
                 }
                 updateAuto();
             }

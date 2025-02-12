@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.util.Timing.Timer;
 
@@ -13,9 +14,9 @@ import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import java.util.concurrent.TimeUnit;
 
 //@Photon
-@TeleOp(name="TeleOp w/ No Lift")
+//@TeleOp(name="TeleOp w/ No Lift")
+@Disabled
 public class V1_TeleOp extends AutoBase {
-
     //create subsystem objects
     private final org.firstinspires.ftc.teamcode.Subsystems.Driver_Feedback feedback = new Driver_Feedback();
     private final org.firstinspires.ftc.teamcode.Subsystems.Drivetrain drivetrain = new Drivetrain();

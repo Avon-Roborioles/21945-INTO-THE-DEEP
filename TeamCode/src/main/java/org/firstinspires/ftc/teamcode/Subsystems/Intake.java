@@ -91,9 +91,7 @@ public class Intake {
         b_button = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.B
         );
-        left_bumper = new ToggleButtonReader(
-                driverOp, GamepadKeys.Button.LEFT_BUMPER
-        );
+
         right_bumper = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.RIGHT_BUMPER
         );
@@ -110,7 +108,6 @@ public class Intake {
         a_button.readValue();
         x_button.readValue();
         b_button.readValue();
-        left_bumper.readValue();
         right_bumper.readValue();
     }
 
@@ -128,10 +125,10 @@ public class Intake {
             }
 
 
-          if(right_bumper.wasJustPressed()){
-                intakePower = -1;
-                autoMode = true;
-            }
+//          if(right_bumper.wasJustPressed()){ TODO - taken out for lift control
+//                intakePower = -1;
+//                autoMode = true;
+//            }
 
         } else {
             //logic to auto pickup/drop + get out of auto mode
@@ -220,14 +217,18 @@ public class Intake {
         // Get the normalized colors from the sensor
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
         double redValue = colors.red;
+        double greenValue = colors.green;
+        double blueValue = colors.blue;
 
         if(isFull()){
-            if(redValue > 0.1){
+            if(redValue > greenValue && redValue > blueValue){
                 currentSampleColor = Sample_Colors.RED;
-            } else if(redValue > 0.02){
+            } else if(blueValue > redValue){
+                currentSampleColor = Sample_Colors.BLUE;
+            } else if(greenValue > redValue){
                 currentSampleColor = Sample_Colors.YELLOW;
             } else {
-                currentSampleColor = Sample_Colors.BLUE;
+                currentSampleColor = Sample_Colors.NONE;
             }
         } else {
             currentSampleColor = Sample_Colors.NONE;
