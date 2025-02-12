@@ -85,6 +85,4 @@ public class PoseStorage {
 
     public static Pose RightPark = new Pose(50+72,-54+72, Math.toRadians(180-1e-6)); //112, 22, 90
 
-
-
 }
