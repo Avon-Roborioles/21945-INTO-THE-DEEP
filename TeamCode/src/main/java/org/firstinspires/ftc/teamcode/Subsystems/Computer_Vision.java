@@ -78,20 +78,19 @@ public class Computer_Vision {
 
     /**
      * Sends any Data to Custom LimeLight Camera Python Pipelines
-     * @param values sent to limelight python pipelines as input
      */
-    private void sendData(double[] values){
-        limelight.updatePythonInputs(values);
+    private void sendData(){
+        limelight.updatePythonInputs(new double[allianceColor]);
         //
     }
 
     /**
      * Pulls any Data from Custom Limelight Camera Python Pipelines
      */
-    private void getData(){
+    private double[] getData(){
         pythonResults = result.getPythonOutput();
         resultAge = result.getStaleness();
-        return pythonResults;
+        return pythonResults; // Corrected: Now returns a double[]
     }
 
     //----------Common Auto Methods-----------------------
@@ -103,15 +102,14 @@ public class Computer_Vision {
         //limelight camera initialization
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
-        limelight.pipelineSwitch(0); //selects the 1st pipeline saved on the camera (10 saved max)
         limelight.start(); //starts the selected pipeline
+        limelight.pipelineSwitch(0); //selects the 1st pipeline saved on the camera (10 saved max)
+        result = limelight.getLatestResult();
 
-        //alliance selection
-//        if(redAlliance){
-//            allianceColor = 0;
-//        } else {
-//            allianceColor = 1;
-//        }
+    }
+
+    public void setAllianceColor(int colorNum){
+        allianceColor = colorNum;
     }
 
     /**
@@ -119,7 +117,8 @@ public class Computer_Vision {
      */
     public void update(){
         limelight.updatePythonInputs(new double[] {allianceColor});
-        getData();
+        //getData();
+        sendData(); //TODO used to push alliance color
         result = limelight.getLatestResult();
         if(result != null){
             if(result.isValid()){
@@ -132,13 +131,13 @@ public class Computer_Vision {
     }
 
 
-    //TODO
     /**
-     * @return An array of alignment values for Pedro-Pathing (x, y, heading)
+     * Backend Version of Vision Alignment
+     * @return
      */
     public double getAlignment(){
         //get values from limelight (ideally, all calculations are offloaded to camera)
-        limelight.pipelineSwitch(0);
+        //limelight.pipelineSwitch(0);
 
         // Alternate Method to get Specimen Alignment on Java Side
 
@@ -158,6 +157,13 @@ public class Computer_Vision {
         // Output the result
         //System.out.println("Strafe Distance: " + strafeDistance);
         return strafeDistance;
+    }
+
+    /**
+     * Frontend Version of Vision Alignment
+     */
+    public double getMainAlignment(){
+        return getData()[0];
     }
 
     //TODO
@@ -188,7 +194,8 @@ public class Computer_Vision {
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----Computer Vision Data----");
-        telemetry.addData("Strafe Distance: ", strafeDistance);
+        telemetry.addData("Strafe Distance (Frontend): ", getMainAlignment());
+        telemetry.addData("Strafe Distance (Backend): ", getAlignment());
         telemetry.addData("FPS: ", status.getFps());
         telemetry.addData("Temperature: ", status.getTemp());
         telemetry.addData("CPU Usage: ", status.getCpu());
