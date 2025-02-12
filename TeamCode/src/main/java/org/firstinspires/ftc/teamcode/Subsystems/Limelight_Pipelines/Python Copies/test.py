@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from math import cos, sin
 
 #useful variables
 color = "Red"  # This should come from llrobot instead of being hardcoded
@@ -126,8 +127,9 @@ def runPipeline(image, llrobot):
                         1, (0, 255, 0), 2, cv2.LINE_AA)
 
             #calculate Strafe Distance
-            frameDistance = x - 320
-            strafeDistance = (frameDistance * INCHtoPIXEL)
+            angle_in_radians = table.getEntry("tx").getDouble(0.0)
+            cotangent = cos(angle_in_radians) / sin(angle_in_radians)
+            strafeDistance = d * cotangent
 
             llpython = [strafeDistance]
 
