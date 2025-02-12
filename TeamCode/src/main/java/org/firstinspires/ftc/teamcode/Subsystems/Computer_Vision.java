@@ -89,9 +89,9 @@ public class Computer_Vision {
      * Pulls any Data from Custom Limelight Camera Python Pipelines
      */
     private void getData(){
-        //pythonResults = result.getPythonOutput();
-        //resultAge = result.getStaleness();
-        //return pythonResults;
+        pythonResults = result.getPythonOutput();
+        resultAge = result.getStaleness();
+        return pythonResults;
     }
 
     //----------Common Auto Methods-----------------------
@@ -136,7 +136,7 @@ public class Computer_Vision {
     /**
      * @return An array of alignment values for Pedro-Pathing (x, y, heading)
      */
-    public double getSpecimenAlignment(){
+    public double getAlignment(){
         //get values from limelight (ideally, all calculations are offloaded to camera)
         limelight.pipelineSwitch(0);
 
@@ -150,7 +150,7 @@ public class Computer_Vision {
         double cotangent = Math.cos(targetX) / Math.sin(targetX);
 
         // Define the distance 'd' (replace with the actual value or method to get d)
-        double d = 10.0; // Example value
+        double d = 4; // Example value
 
         // Calculate the strafe distance
         strafeDistance = d * cotangent;

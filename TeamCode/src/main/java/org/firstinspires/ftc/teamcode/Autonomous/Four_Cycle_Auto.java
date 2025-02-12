@@ -477,7 +477,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                     alignPathDone = true;
                                     //TODO - vision.switchToAlignment Pipeline
                                     waitMilliSeconds(500);
-                                    //TODO buildStrafePath(vision.getAlignment());
+                                    buildStrafePath(vision.getAlignment());
                                     bot.setMaxPower(0.8);
                                     buildStrafePath(0);
                                     bot.followPath(specimenAlignment);
