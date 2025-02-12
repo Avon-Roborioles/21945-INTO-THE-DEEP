@@ -138,6 +138,7 @@ public class AutoBase extends LinearOpMode {
         if(d_up.getState()){
             //startPose selection
             AutoPose = AutoPoses.RIGHT;
+            cycleCount = 1;
         } else {
             AutoPose = AutoPoses.LEFT;
         }

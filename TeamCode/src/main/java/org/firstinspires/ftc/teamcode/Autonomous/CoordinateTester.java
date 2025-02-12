@@ -214,34 +214,33 @@ public class CoordinateTester extends AutoBase{
                         if(a_button.wasJustPressed() && returnHome) {
                             currentState = State.RETURN;
                             bot.followPath(targetToStart);
-                            arm.setTarget(0,0);
-                            break;
-
-                        } else if(d_left.wasJustPressed()){ //inch to the left
-                            buildAdjustPath(ADJUST_TYPE.LEFT);
-                            bot.followPath(adjustPath);
-
-                        } else if(d_right.wasJustPressed()){ //inch to the right
-                            buildAdjustPath(ADJUST_TYPE.RIGHT);
-                            bot.followPath(adjustPath);
-
-                        } else if(d_down.wasJustPressed()){ //inch down
-                            buildAdjustPath(ADJUST_TYPE.DOWN);
-                            bot.followPath(adjustPath);
-
-                        } else if(d_up.wasJustPressed()){ //inch up
-                            buildAdjustPath(ADJUST_TYPE.UP);
-                            bot.followPath(adjustPath);
-
-                        } else if(leftTrigger.wasJustPressed()){
-                            buildAdjustPath(ADJUST_TYPE.ROTATE_LEFT); // rotate 10° counterclockwise (left)
-                            bot.followPath(adjustPath);
-
-                        } else if(rightTrigger.wasJustPressed()){
-                            buildAdjustPath(ADJUST_TYPE.ROTATE_RIGHT); // rotate 10° clockwise (right)
-                            bot.followPath(adjustPath);
+                            arm.setTarget(0, 0);
                         }
-
+//                        } else if(d_left.wasJustPressed()){ //inch to the left
+//                            buildAdjustPath(ADJUST_TYPE.LEFT);
+//                            bot.followPath(adjustPath);
+//
+//                        } else if(d_right.wasJustPressed()){ //inch to the right
+//                            buildAdjustPath(ADJUST_TYPE.RIGHT);
+//                            bot.followPath(adjustPath);
+//
+//                        } else if(d_down.wasJustPressed()){ //inch down
+//                            buildAdjustPath(ADJUST_TYPE.DOWN);
+//                            bot.followPath(adjustPath);
+//
+//                        } else if(d_up.wasJustPressed()){ //inch up
+//                            buildAdjustPath(ADJUST_TYPE.UP);
+//                            bot.followPath(adjustPath);
+//
+//                        } else if(leftTrigger.wasJustPressed()){
+//                            buildAdjustPath(ADJUST_TYPE.ROTATE_LEFT); // rotate 10° counterclockwise (left)
+//                            bot.followPath(adjustPath);
+//
+//                        } else if(rightTrigger.wasJustPressed()){
+//                            buildAdjustPath(ADJUST_TYPE.ROTATE_RIGHT); // rotate 10° clockwise (right)
+//                            bot.followPath(adjustPath);
+//                        }
+                        break;
                     }
                 case RETURN:
                     if(!bot.isBusy()) {

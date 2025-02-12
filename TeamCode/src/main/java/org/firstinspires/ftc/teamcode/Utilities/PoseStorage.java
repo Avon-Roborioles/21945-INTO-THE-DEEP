@@ -75,11 +75,17 @@ public class PoseStorage {
 
     public static Pose SampleDropoff = new Pose(52+72,-50+72,Math.toRadians(-55)); //done - 40,-49,180
 
-    public static Pose SpecimenPickup = new Pose(110,19,Math.toRadians(0)); //done - 50, -56
+    public static Pose SpecimenPickup = new Pose(111,19,Math.toRadians(0)); //done - 50, -56
 
     public static Pose SpecimenScore = new Pose(75,42.5,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore2 = new Pose(75,39.5,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore2 = new Pose(73,41,Math.toRadians(180-1e-6)); //done
+
+    public static Pose SpecimenScore3 = new Pose(70,41,Math.toRadians(180-1e-6)); //done
+
+    public static Pose SpecimenScore4 = new Pose(67,41,Math.toRadians(180-1e-6)); //done
+
+    public static Pose SpecimenScore5 = new Pose(64,41,Math.toRadians(180-1e-6)); //done
 
     public static Pose SpecimenScoreBackup = new Pose(72,37-5,Math.toRadians(180-1e-6)); //done
 
@@ -87,5 +93,5 @@ public class PoseStorage {
 
     public static Pose RightCheckPoint = new Pose(19+72,-39+72, Math.toRadians(180)); //TODO
 
-    public static Pose RightPark = new Pose(50+72,-54+72, Math.toRadians(180-1e-6)); //112, 22, 90
+    public static Pose RightPark = new Pose(115,18, Math.toRadians(180-1e-6)); //112, 22, 90
 }

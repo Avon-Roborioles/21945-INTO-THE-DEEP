@@ -83,7 +83,7 @@ public class FollowerConstants {
 
 
     // Mass of robot in kilograms
-    public static double mass = 9.9; //this is the weight of the first chassis only - Stephen O.
+    public static double mass = 12.05; //comp #2 mass
 
     // Centripetal force to power scaling
     public static double centripetalScaling = 0.0000008;

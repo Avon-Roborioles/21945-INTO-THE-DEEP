@@ -4,6 +4,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import java.lang.Math;
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
@@ -60,6 +62,7 @@ public class Computer_Vision {
     double specimenAlignment; //array of calculated x, y, & heading values from limelight to adjust to hanged specimen
     double closestSample; //used when looking in the pit for a sample that matches our alliance color
     int allianceColor = 0; //0 is red, 1 is blue
+    double strafeDistance = 0;
 
     public enum SampleColors{
         RED,
@@ -86,8 +89,8 @@ public class Computer_Vision {
      * Pulls any Data from Custom Limelight Camera Python Pipelines
      */
     private void getData(){
-        pythonResults = result.getPythonOutput();
-        resultAge = result.getStaleness();
+        //pythonResults = result.getPythonOutput();
+        //resultAge = result.getStaleness();
         //return pythonResults;
     }
 
@@ -96,7 +99,7 @@ public class Computer_Vision {
      * Used to setup cameras & vision pipelines
      * @param hardwareMap used to find camera objects
      */
-    public void init(HardwareMap hardwareMap, boolean redAlliance){
+    public void init(HardwareMap hardwareMap){
         //limelight camera initialization
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
@@ -104,11 +107,11 @@ public class Computer_Vision {
         limelight.start(); //starts the selected pipeline
 
         //alliance selection
-        if(redAlliance){
-            allianceColor = 0;
-        } else {
-            allianceColor = 1;
-        }
+//        if(redAlliance){
+//            allianceColor = 0;
+//        } else {
+//            allianceColor = 1;
+//        }
     }
 
     /**
@@ -136,14 +139,12 @@ public class Computer_Vision {
     public double getSpecimenAlignment(){
         //get values from limelight (ideally, all calculations are offloaded to camera)
         limelight.pipelineSwitch(0);
-        return pythonResults[0];
 
         // Alternate Method to get Specimen Alignment on Java Side
 
-        import java.lang.Math;
 
         // Assuming targetX is already defined and represents the angle in radians
-        double targetX = 0.5; // Example value, replace with the actual value
+        //double targetX = 0.5; // Example value, replace with the actual value
 
         // Calculate the cotangent of the angle
         double cotangent = Math.cos(targetX) / Math.sin(targetX);
@@ -152,11 +153,11 @@ public class Computer_Vision {
         double d = 10.0; // Example value
 
         // Calculate the strafe distance
-        double strafeDistance = d * cotangent;
+        strafeDistance = d * cotangent;
 
         // Output the result
-        System.out.println("Strafe Distance: " + strafeDistance);
-
+        //System.out.println("Strafe Distance: " + strafeDistance);
+        return strafeDistance;
     }
 
     //TODO
@@ -187,6 +188,7 @@ public class Computer_Vision {
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----Computer Vision Data----");
+        telemetry.addData("Strafe Distance: ", strafeDistance);
         telemetry.addData("FPS: ", status.getFps());
         telemetry.addData("Temperature: ", status.getTemp());
         telemetry.addData("CPU Usage: ", status.getCpu());
