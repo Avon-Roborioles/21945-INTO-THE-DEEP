@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
+import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -45,6 +46,7 @@ public class Intake {
     ToggleButtonReader y_button, a_button, x_button, b_button; //modes
     ToggleButtonReader d_up, d_down, d_left, d_right; //height toggles
     ToggleButtonReader left_bumper, right_bumper; //intake control w/ sample detection
+    TriggerReader leftTrigger, rightTrigger;
 
     //enum commands for sample colors
     public enum Sample_Colors{
@@ -95,6 +97,12 @@ public class Intake {
         right_bumper = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.RIGHT_BUMPER
         );
+        leftTrigger = new TriggerReader(
+                driverOp, GamepadKeys.Trigger.LEFT_TRIGGER
+        );
+        rightTrigger = new TriggerReader(
+                driverOp, GamepadKeys.Trigger.RIGHT_TRIGGER
+        );
 
     }
 
@@ -109,6 +117,8 @@ public class Intake {
         x_button.readValue();
         b_button.readValue();
         right_bumper.readValue();
+        leftTrigger.readValue();
+        rightTrigger.readValue();
     }
 
     //main command for teleOp code
@@ -116,9 +126,9 @@ public class Intake {
         updateToggles();
 
         if(!autoMode){
-            if(driverOp.gamepad.left_trigger > 0){
+            if(leftTrigger.isDown()){
                 intakePower = 1;
-            } else if(driverOp.gamepad.right_trigger > 0){
+            } else if(rightTrigger.isDown()){
                 intakePower = -1;
             } else {
                 intakePower = 0;
@@ -130,6 +140,11 @@ public class Intake {
 //                autoMode = true;
 //            }
 
+            if(rightTrigger.wasJustPressed()){
+                intakePower = -1;
+                autoMode = true;
+            }
+
         } else {
             //logic to auto pickup/drop + get out of auto mode
 
@@ -139,10 +154,10 @@ public class Intake {
                 autoMode = false;
             }
             //left trigger
-            if(driverOp.gamepad.left_trigger > 0){
+            if(leftTrigger.isDown()){
                 intakePower = 1;
                 autoMode = false;
-            } else if(driverOp.gamepad.right_trigger > 0){
+            } else if(rightTrigger.isDown()){
                 //right trigger
                 intakePower = -1;
                 autoMode = false;

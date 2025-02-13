@@ -297,18 +297,13 @@ public class Four_Cycle_Auto extends AutoBase {
         }
     }
 
-
     //auto loop
         public void runOpMode () throws InterruptedException {
             bot = new Follower(hardwareMap);
-
             PoseStorage.ranAuto = false;
-
             startPose = PoseStorage.LeftStartPose;
             parkPose = PoseStorage.LeftPark;
-
             driverOp = new GamepadEx(gamepad1);
-
             pathTimer = new ElapsedTime();
             opModeTimer = new ElapsedTime();
 
@@ -326,7 +321,6 @@ public class Four_Cycle_Auto extends AutoBase {
             waitForStart();
 
             buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
-
 
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
@@ -347,6 +341,7 @@ public class Four_Cycle_Auto extends AutoBase {
                 bot.followPath(scorePassiveChain, true);
                 pathTimer.reset();
             }
+
 
             //Draw initial bot pose on field (FTC Dashboard)
             Drawing.drawRobot(bot.getPose(), "#4CAF50");
@@ -466,8 +461,6 @@ public class Four_Cycle_Auto extends AutoBase {
                                 currentState = State.PICKUP_SPECIMEN;
                                 bot.followPath(specimenPickup);
                                 updateScoreStart(1); //update for later
-                                //}
-                                //logic
                                 break;
                             }
 
@@ -475,8 +468,7 @@ public class Four_Cycle_Auto extends AutoBase {
                             if(!bot.isBusy()) {
                                 if(!alignPathDone){
                                     alignPathDone = true;
-                                    //TODO - vision.switchToAlignment Pipeline
-                                    waitMilliSeconds(500);
+                                    waitMilliSeconds(500); //time to stabilize vision reading
                                     buildStrafePath(vision.getAlignment());
                                     bot.setMaxPower(0.8);
                                     buildStrafePath(0);

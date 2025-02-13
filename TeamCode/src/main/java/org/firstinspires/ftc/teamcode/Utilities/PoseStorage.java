@@ -14,7 +14,6 @@ public class PoseStorage {
     /**
      * positive is forward, negative is backward
      * @param inches forward
-     * @return
      */
     private static double OneInchMovement(double inches){
         return -0.707 * inches;
@@ -54,7 +53,6 @@ public class PoseStorage {
 
     //Right Side Poses - Specimen
     public static Pose RightStartPose = new Pose(83,12, Math.toRadians(90)); //Done
-
 
     public static Pose RightSample1Start = new Pose(107,37,Math.toRadians(180));
     public static Point RightSample1Control1 = new Point(113.5,48.6,1);

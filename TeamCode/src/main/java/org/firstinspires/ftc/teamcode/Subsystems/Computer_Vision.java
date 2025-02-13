@@ -70,12 +70,10 @@ public class Computer_Vision {
         YELLOW
     }
 
-
     //llrobot array data - {int color}
     //llpython array data - {int strafeDistance}
 
     //-----------Private Vision Methods-------------------
-
     /**
      * Sends any Data to Custom LimeLight Camera Python Pipelines
      */
@@ -130,10 +128,8 @@ public class Computer_Vision {
         status = limelight.getStatus();
     }
 
-
     /**
      * Backend Version of Vision Alignment
-     * @return
      */
     public double getAlignment(){
         //get values from limelight (ideally, all calculations are offloaded to camera)
@@ -179,7 +175,6 @@ public class Computer_Vision {
         Pose result = new Pose(0,0,0);
         return result;
     }
-
 
     //-------------Match Recording & Misc-----------------
 
