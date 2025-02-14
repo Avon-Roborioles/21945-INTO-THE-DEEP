@@ -39,13 +39,17 @@ public class BoundedArea {
         this.type = type;
     }
 
+    /**
+     * Add a task to run when bot is in bounded Region
+     * @param runnable add the task in a runnable like ()->{}
+     */
     public void addTask(Runnable runnable){
         actions.add(runnable);
     }
 
     /**
      * Returns true or false if pose is within Bounded Area
-     * @param pose
+     * @param pose The Pose Coordinate to Compare to
      * @return
      */
     public boolean comparePose(Pose pose){

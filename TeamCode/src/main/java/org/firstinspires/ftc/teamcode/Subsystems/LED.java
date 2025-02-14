@@ -64,11 +64,6 @@ public class LED {
 
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
         blinkinLedDriver.setPattern(pattern);
-//        display = telemetry.addData("Display Kind: ", displayKind.toString());
-//        patternName = telemetry.addData("Pattern: ", pattern.toString());
-//
-//        ledCycleDeadline = new Deadline(LED_PERIOD, TimeUnit.SECONDS);
-//        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
     }
 
     /**set all lighting to constant purple

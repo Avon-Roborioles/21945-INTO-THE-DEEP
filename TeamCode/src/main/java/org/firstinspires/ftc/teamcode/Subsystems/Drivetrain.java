@@ -159,7 +159,7 @@ public class Drivetrain {
         pedroDrivetrain.startTeleopDrive();
 
 
-        specimenScoreRegion = new BoundedArea(-15+72,-30+72,14+72,-20+72, BoundedArea.AreaType.REGION);
+        specimenScoreRegion = new BoundedArea(57,-30+72,14+72,-20+72, BoundedArea.AreaType.REGION);
     }
 
 
