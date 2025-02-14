@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
+import org.firstinspires.ftc.teamcode.Utilities.BoundedArea;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
@@ -26,6 +27,7 @@ public class Drivetrain {
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private NormalizedColorSensor colorSensor;
+    BoundedArea specimenScoreRegion;
 
     //FTC Lib & Pedro-Pathing objects
     Follower pedroDrivetrain;
@@ -54,7 +56,6 @@ public class Drivetrain {
         pedroDrivetrain = new Follower(hardwareMap);
         //pedroDrivetrain.setPose(PoseStorage.CurrentPose); //takes last recorded pose from auto
         //colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
-
 
         //imu = hardwareMap.get(IMU.class, "imu");
         driverOp = gamepad;
@@ -103,6 +104,9 @@ public class Drivetrain {
 //        if(PoseStorage.CurrentPose != null){ //uses last known pose from Auto as start in TeleOp
 //            pedroDrivetrain.setPose(PoseStorage.CurrentPose);
 //        }
+
+        //TODO
+        specimenScoreRegion = new BoundedArea(0,0,0,0);
     }
 
     private void updateToggles(){
@@ -277,6 +281,15 @@ public class Drivetrain {
         pedroDrivetrain.update();
 
         //TODO specimen scoring distance control for Edgar
+        //Method #1 - Distance Sensor - slows speed down when distance sensor is less than certain range
+
+
+
+        //Method #2 - Odometry Perception - slow speed down when coordinate is within bounded area
+//        if(pedroDrivetrain.isWithinArea(specimenScoreRegion)){
+//            speedLimit = 0.1;
+//        }
+
 
         updateToggles();
     }
