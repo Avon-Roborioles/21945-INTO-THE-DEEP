@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Driver_Feedback;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.LED;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 
@@ -26,7 +27,7 @@ public class V2_TeleOp extends AutoBase {
     private final org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
     private final org.firstinspires.ftc.teamcode.Subsystems.Lift lift = new Lift();
     private final org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
-    //private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
+    private final org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
 
     MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -48,7 +49,7 @@ public class V2_TeleOp extends AutoBase {
         lift.init(hardwareMap,Driver2Op,true);
         intake.init(hardwareMap, Driver2Op);
         //vision.init(hardwareMap); - TODO useful for Edgar's specimen alignment feature
-        //lighting.init(hardwareMap);
+        lighting.init(hardwareMap);
 
         initTeleOpMenu(Driver1Op);
 
@@ -69,6 +70,9 @@ public class V2_TeleOp extends AutoBase {
             intake.run_teleOp();
             lift.run_teleOp(feedback);
 
+            //lights
+            lighting.setConstantColor(LED.COLORS.PURPLE);
+
             //endgame alert to drivers
             if(opModeTimer.remainingTime() == 30){
                 feedback.alert_drivers(Driver1Op,Driver2Op);
@@ -80,7 +84,7 @@ public class V2_TeleOp extends AutoBase {
             arm.getTelemetry(mainTelemetry);
             intake.getTelemetryFULL(mainTelemetry);
             lift.getTelemetry(telemetry);
-            //lighting.getTelemetryBRIEF(telemetry);
+            lighting.getTelemetry(telemetry);
             mainTelemetry.addData("OpMode Timer: ", opModeTimer.remainingTime());
             mainTelemetry.update();
         }

@@ -56,7 +56,7 @@ public class LED {
 
     //--------- ALL COMMANDS------------------
     public void init(HardwareMap hardwareMap){
-        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
     }
 
     public void setRainbow(){

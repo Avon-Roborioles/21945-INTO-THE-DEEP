@@ -9,6 +9,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
@@ -24,6 +25,7 @@ public class Drivetrain {
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
+    private NormalizedColorSensor colorSensor;
 
     //FTC Lib & Pedro-Pathing objects
     Follower pedroDrivetrain;
@@ -51,6 +53,8 @@ public class Drivetrain {
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
         pedroDrivetrain = new Follower(hardwareMap);
         //pedroDrivetrain.setPose(PoseStorage.CurrentPose); //takes last recorded pose from auto
+        //colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+
 
         //imu = hardwareMap.get(IMU.class, "imu");
         driverOp = gamepad;
@@ -200,6 +204,84 @@ public class Drivetrain {
 //        }
     }
 
+    public void run_teleOp2(Driver_Feedback feedback){
+        // if(teleOpDrive) {
+        strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
+        forwardSpeed = driverOp.getLeftY() * speedLimit;
+        turnSpeed = -driverOp.getRightX() * speedLimit;
+
+        double strafeAbsolute = Math.abs(strafeSpeed);
+        double forwardAbsolute = Math.abs(forwardSpeed);
+        double turnAbsolute = Math.abs(turnSpeed);
+
+
+        //Robot Centric and Field Centric Modes
+        if (y_button.wasJustPressed()) { //robot
+            robotCentricMode = true;
+        } else if (a_button.wasJustPressed()) { //field
+            robotCentricMode = false;
+        }
+
+        //Constant Path Creation + Controls
+        if(PoseStorage.allianceSide == AutoBase.AutoPoses.LEFT){
+            //create left side paths
+            scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftBucketScore.getPoint()));
+            scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftBucketScore.getHeading());
+            pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftPitSamples.getPoint()));
+            pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftPitSamples.getHeading());
+        } else {
+            //create right side paths
+            scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.SpecimenScore.getPoint()));
+            scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.SpecimenScore.getHeading());
+            pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.RightPitSamples.getPoint()));
+            pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.RightPitSamples.getHeading());
+        }
+
+        //TODO - need to test before implementation
+//            if(left_bumper.wasJustPressed()){
+//                pedroDrivetrain.stopTeleOpDrive();
+//                teleOpDrive = false;
+//                pedroDrivetrain.setMaxPower(speedLimit);
+//                pedroDrivetrain.followPath(scorePath,true);
+//            } else if(right_bumper.wasJustPressed()){
+//                pedroDrivetrain.stopTeleOpDrive();
+//                teleOpDrive = false;
+//                pedroDrivetrain.setMaxPower(speedLimit);
+//                pedroDrivetrain.followPath(pickupPath,true);
+//            }
+
+        //Speed Controls - set top speed percentage
+        if (d_up.wasJustPressed()) {
+            speedLimit = 1;
+        } else if (d_right.wasJustPressed()) {
+            speedLimit = 0.7;
+        } else if (d_left.wasJustPressed()) {
+            speedLimit = 0.5;
+        } else if (d_down.wasJustPressed()) {
+            speedLimit = 0.3;
+        }
+
+
+        //Pedro-Pathing TeleOp Control
+        pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed, strafeSpeed, turnSpeed, robotCentricMode);
+//        } else {
+//            //logic to get out of autoDrive
+//            if(Math.abs(driverOp.getLeftX()) > 0 ||Math.abs(driverOp.getRightX()) > 0 || Math.abs(driverOp.getLeftY()) > 0){
+//                pedroDrivetrain.breakFollowing();
+//                teleOpDrive = true;
+//                pedroDrivetrain.setMaxPower(1);
+//                pedroDrivetrain.startTeleopDrive();
+//            }
+//        }
+
+        pedroDrivetrain.update();
+
+        //TODO specimen scoring distance control for Edgar
+
+        updateToggles();
+    }
+
+
     //most important info of drivetrain to reduce clutter
     public void getTelemetryBRIEF(Telemetry telemetry){
         telemetry.addLine("---Drivetrain Control Data---");
@@ -207,23 +289,5 @@ public class Drivetrain {
         telemetry.addData("Forward Speed: ", turnSpeed);
         telemetry.addData("Turn Speed: ", turnSpeed);
         //telemetry.addData("Gyro Angle (IMU): ", gyroAngle);
-    }
-
-    //all data metrics from drivetrain for testing purposes
-    public void getTelemetryFULL(Telemetry telemetry){
-        telemetry.addLine("---Drivetrain Motor Powers---");
-//        telemetry.addData("FL Power: ", leftFront.get());
-//        telemetry.addData("FR Power: ", rightFront.get());
-//        telemetry.addData("RL Power: ", leftRear.get());
-//        telemetry.addData("RR Power: ", rightRear.get());
-
-        telemetry.addLine("---Drivetrain Control Data---");
-        telemetry.addData("Strafe Speed: ", strafeSpeed);
-        telemetry.addData("Forward Speed: ", turnSpeed);
-        telemetry.addData("Turn Speed: ", turnSpeed);
-        //telemetry.addData("Gyro Angle (IMU): ", gyroAngle);
-
-        telemetry.addLine("---Drivetrain Feedback Data---");
-        telemetry.addData("Feedback Strength: ", strength);
     }
 }

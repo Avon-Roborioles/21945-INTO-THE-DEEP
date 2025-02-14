@@ -123,12 +123,11 @@ public class Intake {
 
     //main command for teleOp code
     public void run_teleOp(){
-        updateToggles();
 
         if(!autoMode){
-            if(leftTrigger.isDown()){
+            if(driverOp.gamepad.left_trigger > 0){
                 intakePower = 1;
-            } else if(rightTrigger.isDown()){
+            } else if(driverOp.gamepad.right_trigger > 0){
                 intakePower = -1;
             } else {
                 intakePower = 0;
@@ -140,10 +139,10 @@ public class Intake {
 //                autoMode = true;
 //            }
 
-            if(rightTrigger.wasJustPressed()){
-                intakePower = -1;
-                autoMode = true;
-            }
+//            if(rightTrigger.wasJustPressed()){
+//                intakePower = -1;
+//                autoMode = true;
+//            }
 
         } else {
             //logic to auto pickup/drop + get out of auto mode
@@ -154,10 +153,10 @@ public class Intake {
                 autoMode = false;
             }
             //left trigger
-            if(leftTrigger.isDown()){
+            if(driverOp.gamepad.left_trigger > 0){
                 intakePower = 1;
                 autoMode = false;
-            } else if(rightTrigger.isDown()){
+            } else if(driverOp.gamepad.right_trigger > 0){
                 //right trigger
                 intakePower = -1;
                 autoMode = false;
@@ -167,6 +166,7 @@ public class Intake {
         }
 
         intakeServo.set(intakePower);
+        updateToggles();
 
     }
 
