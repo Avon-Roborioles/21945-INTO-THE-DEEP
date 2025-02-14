@@ -9,13 +9,13 @@ import java.util.ArrayList;
 public class BoundedArea {
 
     private double xMin, yMin, xMax, yMax;
+    private AreaType type;
     private ArrayList<Runnable> actions = new ArrayList<>();
 
-    public enum Type {
+    public enum AreaType {
         REGION,
         OBSTACLE
     }
-
 
     /**
      * Creates a specified region on the field
@@ -29,6 +29,14 @@ public class BoundedArea {
         this.yMin = yMin;
         this.xMax = xMax;
         this.yMax = yMax;
+    }
+
+    public BoundedArea(double xMin, double yMin, double xMax, double yMax, AreaType type){
+        this.xMin = xMin;
+        this.yMin = yMin;
+        this.xMax = xMax;
+        this.yMax = yMax;
+        this.type = type;
     }
 
     public void addTask(Runnable runnable){
@@ -49,6 +57,7 @@ public class BoundedArea {
 
     /**
      * A passive method to perform assigned actions when within Bounded Area
+     * @param pose The Current Pose of the bot to watch for
      */
     public void watch(Pose pose){
         if(comparePose(pose)) {

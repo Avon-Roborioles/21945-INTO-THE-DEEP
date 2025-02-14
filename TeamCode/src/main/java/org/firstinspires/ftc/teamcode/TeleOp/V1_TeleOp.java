@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.util.Timing.Timer;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
@@ -70,7 +69,7 @@ public class V1_TeleOp extends AutoBase {
 
             //Telemetry
             mainTelemetry.addData("Auto Ran: ", PoseStorage.ranAuto);
-            drivetrain.getTelemetryBRIEF(mainTelemetry);
+            drivetrain.getTelemetry(mainTelemetry);
             arm.getTelemetry(mainTelemetry);
             intake.getTelemetryFULL(mainTelemetry);
             //lighting.getTelemetryBRIEF(telemetry);

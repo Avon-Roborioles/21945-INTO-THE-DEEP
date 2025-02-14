@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.AutoBase;
 import org.firstinspires.ftc.teamcode.Utilities.BoundedArea;
 import org.firstinspires.ftc.teamcode.Utilities.PoseStorage;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerConstants;
@@ -26,7 +27,7 @@ public class Drivetrain {
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
-    private NormalizedColorSensor colorSensor;
+    private NormalizedColorSensor sideSensor;
     BoundedArea specimenScoreRegion;
 
     //FTC Lib & Pedro-Pathing objects
@@ -54,8 +55,8 @@ public class Drivetrain {
     //initializes the drivetrain
     public void init(HardwareMap hardwareMap, GamepadEx gamepad){
         pedroDrivetrain = new Follower(hardwareMap);
-        //pedroDrivetrain.setPose(PoseStorage.CurrentPose); //takes last recorded pose from auto
-        //colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+
+        //sideSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
 
         //imu = hardwareMap.get(IMU.class, "imu");
         driverOp = gamepad;
@@ -106,8 +107,61 @@ public class Drivetrain {
 //        }
 
         //TODO
-        specimenScoreRegion = new BoundedArea(0,0,0,0);
+        specimenScoreRegion = new BoundedArea(0,0,0,0, BoundedArea.AreaType.REGION);
     }
+
+    public void init(HardwareMap hardwareMap, GamepadEx gamepad, Pose startPose){
+        pedroDrivetrain = new Follower(hardwareMap);
+        pedroDrivetrain.setPose(startPose);
+        //sideSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
+
+        driverOp = gamepad;
+
+        y_button = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.Y
+        );
+        a_button = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.A
+        );
+        d_up = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_UP
+        );
+        d_down = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_DOWN
+        );
+        d_left = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_LEFT
+        );
+        d_right = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_RIGHT
+        );
+
+        left_bumper = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.LEFT_BUMPER
+        );
+
+        right_bumper = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.RIGHT_BUMPER
+        );
+
+
+        //adding snappy breaking to drive motors
+        leftFront = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftFrontMotorName);
+        leftRear = hardwareMap.get(DcMotorEx.class, FollowerConstants.leftRearMotorName);
+        rightRear = hardwareMap.get(DcMotorEx.class, FollowerConstants.rightRearMotorName);
+        rightFront = hardwareMap.get(DcMotorEx.class, FollowerConstants.rightFrontMotorName);
+
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        pedroDrivetrain.startTeleopDrive();
+
+
+        specimenScoreRegion = new BoundedArea(-15+72,-30+72,14+72,-20+72, BoundedArea.AreaType.REGION);
+    }
+
 
     private void updateToggles(){
         y_button.readValue();
@@ -208,7 +262,7 @@ public class Drivetrain {
 //        }
     }
 
-    public void run_teleOp2(Driver_Feedback feedback){
+    public void run_teleOp2(){
         // if(teleOpDrive) {
         strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
         forwardSpeed = driverOp.getLeftY() * speedLimit;
@@ -286,9 +340,9 @@ public class Drivetrain {
 
 
         //Method #2 - Odometry Perception - slow speed down when coordinate is within bounded area
-//        if(pedroDrivetrain.isWithinArea(specimenScoreRegion)){
-//            speedLimit = 0.1;
-//        }
+        if(pedroDrivetrain.isWithinArea(specimenScoreRegion)){
+            speedLimit = 0.1;
+        }
 
 
         updateToggles();
@@ -296,11 +350,18 @@ public class Drivetrain {
 
 
     //most important info of drivetrain to reduce clutter
-    public void getTelemetryBRIEF(Telemetry telemetry){
+    public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("---Drivetrain Control Data---");
         telemetry.addData("Strafe Speed: ", strafeSpeed);
         telemetry.addData("Forward Speed: ", turnSpeed);
         telemetry.addData("Turn Speed: ", turnSpeed);
-        //telemetry.addData("Gyro Angle (IMU): ", gyroAngle);
+    }
+
+    public void getTelemetry2(Telemetry telemetry){
+        telemetry.addLine("---Drivetrain Control Data---");
+        telemetry.addData("Within Specimen Scoring Area?: ", pedroDrivetrain.isWithinArea(specimenScoreRegion));
+        telemetry.addData("Strafe Speed: ", strafeSpeed);
+        telemetry.addData("Forward Speed: ", turnSpeed);
+        telemetry.addData("Turn Speed: ", turnSpeed);
     }
 }
