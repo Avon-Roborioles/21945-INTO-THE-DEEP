@@ -77,7 +77,7 @@ public class PoseStorage {
 
     public static Pose SpecimenScore = new Pose(75,42.5,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore2 = new Pose(73,41,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore2 = new Pose(70,40,Math.toRadians(180-1e-6)); //done
 
     public static Pose SpecimenScore3 = new Pose(70,41,Math.toRadians(180-1e-6)); //done
 

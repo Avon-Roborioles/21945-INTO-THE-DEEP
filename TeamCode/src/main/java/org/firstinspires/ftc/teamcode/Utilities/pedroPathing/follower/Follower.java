@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Utilities.BoundedArea;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierPoint;
@@ -873,6 +874,15 @@ public class Follower {
      */
     public Pose getClosestPose() {
         return closestPose;
+    }
+
+    /**
+     * CODE WRITTEN BY STEPHEN O. - 21945 PURPLE ROBORIOLES (2/14/24)
+     * check is robot is within a region
+     * @param region Bounded Area object to compare with
+     */
+    public boolean isWithinArea(BoundedArea region){
+        return region.comparePose(getPose());
     }
 
     /**

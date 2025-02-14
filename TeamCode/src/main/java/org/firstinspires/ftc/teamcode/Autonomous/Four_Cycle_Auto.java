@@ -36,7 +36,7 @@ public class Four_Cycle_Auto extends AutoBase {
     boolean back2PathDone = false;
     boolean back3PathDone = false;
     boolean alignPathDone = false;
-    double backAmount = 3.25;
+    double backAmount = 4.75;
 
 
     //Finite State Machine (FSM) variables
@@ -252,6 +252,8 @@ public class Four_Cycle_Auto extends AutoBase {
                             .addParametricCallback(0,()->{
                                 bot.setMaxPower(0.5); //slow speed
                             })
+                            .setPathEndTimeoutConstraint(1.5)
+
 
                             //drive into specimen
                             .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 5,specimenPickup.getHeading()).getPoint()))
@@ -259,10 +261,14 @@ public class Four_Cycle_Auto extends AutoBase {
                             .addParametricCallback(0,()->{
                                 bot.setMaxPower(1);
                             })
+                            .setPathEndTimeoutConstraint(1.5)
+
 
                             //drive back to pickup pose
                             .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 3,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
                             .setConstantHeadingInterpolation(Math.toRadians(0))
+                            .setPathEndTimeoutConstraint(1.5)
+
                             .build();
                 } else {
                     specimenAlignment = bot.pathBuilder()
@@ -445,9 +451,9 @@ public class Four_Cycle_Auto extends AutoBase {
                     switch(currentState) {
                         case SCORE_PASSIVE:
                             if(!bot.isBusy()) {
-                                waitMilliSeconds(300);
+                                waitMilliSeconds(50);
                                 lift.setTarget(900);
-                                waitMilliSeconds(1000);
+                                waitMilliSeconds(800);
                                 lift.setTarget(150);
                                 currentState = State.MOVE_SAMPLES;
                                 bot.setMaxPower(0.8);
@@ -468,17 +474,16 @@ public class Four_Cycle_Auto extends AutoBase {
                             if(!bot.isBusy()) {
                                 if(!alignPathDone){
                                     alignPathDone = true;
-                                    waitMilliSeconds(500); //time to stabilize vision reading
-                                    buildStrafePath(vision.getAlignment());
-                                    bot.setMaxPower(0.8);
-                                    buildStrafePath(0);
+                                    waitMilliSeconds(250); //time to stabilize vision reading
+                                    buildStrafePath(0);//buildStrafePath(vision.getAlignment());
+                                    bot.setMaxPower(0.9);
                                     bot.followPath(specimenAlignment);
                                 } else {
-                                    waitMilliSeconds(300);
+                                    waitMilliSeconds(100);
                                     lift.setTarget(1700);
-                                    waitMilliSeconds(300);
+                                    waitMilliSeconds(250);
                                     //TODO update score pose
-                                    bot.setMaxPower(0.6);
+                                    bot.setMaxPower(0.75);
                                     currentState = State.SCORE;
                                     bot.followPath(Score);
                                     break;
@@ -488,9 +493,9 @@ public class Four_Cycle_Auto extends AutoBase {
                         case SCORE:
                             if(!bot.isBusy()) {
                                 specimenScored++;
-                                waitMilliSeconds(300);
+                                waitMilliSeconds(50);
                                 lift.setTarget(900);
-                                waitMilliSeconds(1000);
+                                waitMilliSeconds(800);
                                 if(specimenScored < cycleCount){
                                     currentState = State.PICKUP_SPECIMEN;
                                     alignPathDone = false;
