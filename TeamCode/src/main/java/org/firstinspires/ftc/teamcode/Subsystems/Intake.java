@@ -139,10 +139,10 @@ public class Intake {
 //                autoMode = true;
 //            }
 
-//            if(rightTrigger.wasJustPressed()){
-//                intakePower = -1;
-//                autoMode = true;
-//            }
+            if(x_button.wasJustPressed()){ //auto intake
+                intakePower = -1;
+                autoMode = true;
+            }
 
         } else {
             //logic to auto pickup/drop + get out of auto mode

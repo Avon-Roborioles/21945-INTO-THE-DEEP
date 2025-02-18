@@ -181,11 +181,11 @@ public class Lift {
         }
 
         //preset heights
-        if(x_button.wasJustPressed()){ //high rung score
-            setTarget(lowRungPose);
-            liftMode = Lift_Modes.HOLD_MODE;
-            feedback.alert_side(false, driverOp);
-        }
+//        if(x_button.wasJustPressed()){ //high rung score
+//            setTarget(lowRungPose);
+//            liftMode = Lift_Modes.HOLD_MODE;
+//            feedback.alert_side(false, driverOp);
+//        }
         if(b_button.wasJustPressed()){ //high rung
             setTarget(highRungPose);
             liftMode = Lift_Modes.HOLD_MODE;

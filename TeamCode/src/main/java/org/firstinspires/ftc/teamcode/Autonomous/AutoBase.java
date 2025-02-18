@@ -19,7 +19,7 @@ public class AutoBase extends LinearOpMode {
     protected org.firstinspires.ftc.teamcode.Subsystems.Intake intake = new Intake();
     protected  org.firstinspires.ftc.teamcode.Subsystems.Lift lift = new Lift();
     protected org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
-    protected org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
+    //protected org.firstinspires.ftc.teamcode.Subsystems.Computer_Vision vision = new Computer_Vision();
 
     //auto pathing variables and arrays to loop through
     ToggleButtonReader d_up,d_down,d_left,d_right;
@@ -96,7 +96,7 @@ public class AutoBase extends LinearOpMode {
         intake.init(hardwareMap, driverOp);
         arm.init(hardwareMap, driverOp, false);
         lift.init(hardwareMap,driverOp,false);
-        vision.init(hardwareMap);
+        //vision.init(hardwareMap);
 //        lighting.init(hardwareMap);
 //        vision.init(hardwareMap);
     }
@@ -171,7 +171,7 @@ public class AutoBase extends LinearOpMode {
         intake.update();
         arm.update();
         lift.update();
-        vision.update();
+        //vision.update();
 //        lighting.update();
 //        vision.update();
     }
@@ -180,7 +180,7 @@ public class AutoBase extends LinearOpMode {
         arm.getTelemetry(telemetry);
         intake.getTelemetryFULL(telemetry);
         lift.getTelemetry(telemetry);
-        vision.getTelemetry(telemetry);
+        //vision.getTelemetry(telemetry);
     }
 
     /**

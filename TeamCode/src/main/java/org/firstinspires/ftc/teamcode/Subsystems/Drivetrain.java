@@ -46,6 +46,7 @@ public class Drivetrain {
     int strength = 0;
     boolean robotCentricMode = true;
     double speedLimit = 1;
+    double prevLimit = 1;
 
 
     ToggleButtonReader y_button, a_button; //drive modes
@@ -311,12 +312,16 @@ public class Drivetrain {
         //Speed Controls - set top speed percentage
         if (d_up.wasJustPressed()) {
             speedLimit = 1;
+            prevLimit = 1;
         } else if (d_right.wasJustPressed()) {
             speedLimit = 0.7;
+            prevLimit = 0.7;
         } else if (d_left.wasJustPressed()) {
             speedLimit = 0.5;
+            prevLimit = 0.5;
         } else if (d_down.wasJustPressed()) {
             speedLimit = 0.3;
+            prevLimit = 0.3;
         }
 
 
@@ -341,7 +346,19 @@ public class Drivetrain {
 
         //Method #2 - Odometry Perception - slow speed down when coordinate is within bounded area
         if(pedroDrivetrain.isWithinArea(specimenScoreRegion)){
-            speedLimit = 0.1;
+            if(robotCentricMode){
+                //strafe right
+                if(driverOp.getLeftX() > 0){
+                    speedLimit = 0.3; //30%
+                }
+            } else {
+                //move up
+                if(driverOp.getLeftY() > 0){
+                    speedLimit = 0.3; //30%
+                }
+            }
+        } else {
+            speedLimit = prevLimit;
         }
 
 

@@ -70,7 +70,8 @@ public class V2_TeleOp extends AutoBase {
             lift.run_teleOp(feedback);
 
             //lights
-            lighting.setConstantColor(LED.COLORS.PURPLE);
+            //lighting.setConstantColor(LED.COLORS.PURPLE);
+            lighting.run_teleOp(intake.get_sample_color());
 
             //endgame alert to drivers
             if(opModeTimer.remainingTime() == 30){

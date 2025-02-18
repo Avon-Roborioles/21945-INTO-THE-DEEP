@@ -384,10 +384,12 @@ public class Four_Cycle_Auto extends AutoBase {
                                     //waitSeconds(.01); //.1
                                     intake.pickup(); //TODO
                                     back3PathDone = true;
+                                    bot.setMaxPower(0.6);
                                     bot.followPath(Sample3Back);
                                 } else {
                                     //waitSeconds(.05); //.1
                                     //intake.stop();
+                                    bot.setMaxPower(1);
                                     if (groundSamplesScored == 1) {
                                         updateScoreStart(2);
                                     } else if (groundSamplesScored == 2) {
@@ -465,7 +467,7 @@ public class Four_Cycle_Auto extends AutoBase {
                             if(!bot.isBusy()){
                                 groundSamplesRetrieved++;
                                 currentState = State.PICKUP_SPECIMEN;
-                                bot.followPath(specimenPickup);
+                                bot.followPath(specimenPickup);;
                                 updateScoreStart(1); //update for later
                                 break;
                             }
