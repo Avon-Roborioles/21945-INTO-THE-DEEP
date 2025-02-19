@@ -25,7 +25,7 @@ public class Lift {
 
     //TODO - absolute positions
     private final int fencePose = 0;
-    private final int highRungPose = 1700;
+    private final int highRungPose = 1395;
     private final int lowRungPose = 1400;
     private int maxPose = 2200;
     private int groundPose = 0;
