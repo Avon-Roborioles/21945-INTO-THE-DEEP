@@ -8,37 +8,26 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Arm;
+
 @TeleOp
 public class LiftTeleOpTest extends LinearOpMode {
+    org.firstinspires.ftc.teamcode.Subsystems.Arm arm = new Arm();
+
     @Override
     public void runOpMode() throws InterruptedException {
         GamepadEx driverOp = new GamepadEx(gamepad2);
-        MotorEx liftMotor = new MotorEx(hardwareMap,"liftMotor");
-        double rightY = driverOp.getRightY();
+        arm.init(hardwareMap,driverOp,true);
 
         MultipleTelemetry mainTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-
-        liftMotor.setRunMode(Motor.RunMode.RawPower);
-        liftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setInverted(true);
-        liftMotor.encoder.setDirection(Motor.Direction.REVERSE);
 
 
         waitForStart();
 
         while(opModeIsActive()){
-            rightY = driverOp.getRightY();
-            if(rightY > 0){
-                liftMotor.set(0.8 * rightY);
-            } else if(rightY < 0){
-                liftMotor.set(-0.5 * Math.abs(rightY));
-            } else {
-                liftMotor.set(0);
-            }
+            arm.run_teleOp();
 
-            mainTelemetry.addData("Lift Pose: ", liftMotor.getCurrentPosition());
-            mainTelemetry.addData("Lift Velocity: ", liftMotor.getVelocity());
+            arm.getTelemetry(mainTelemetry);
             mainTelemetry.update();
         }
     }

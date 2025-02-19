@@ -25,8 +25,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
  * @version 1.0, 3/12/2024
  */
 @Config
-//@Autonomous (name = "Circle", group = "Autonomous Pathing Tuning")
-@Disabled
+@Autonomous (name = "Circle", group = "Autonomous Pathing Tuning")
 public class Circle extends OpMode {
     private Telemetry telemetryA;
 

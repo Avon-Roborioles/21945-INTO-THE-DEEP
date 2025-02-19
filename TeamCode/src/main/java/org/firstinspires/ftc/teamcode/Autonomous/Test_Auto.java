@@ -23,6 +23,8 @@ public class Test_Auto extends AutoBase{
     GamepadEx driverOp;
     String message = "";
 
+    public int pathState = 0;
+
     public void buildPaths(){
         //testPath = new
     }
@@ -80,6 +82,20 @@ public class Test_Auto extends AutoBase{
         bot.setPose(startPose);
 
         //follow paths here
+        switch (pathState){
+            case 0:
+                if (!bot.isBusy()) {
+                    //followPath
+                    //set State
+                    break;
+                }
+            case 1:
+                if (!bot.isBusy()) {
+                    //followPath
+                    //set State
+                    break;
+                }
+        }
 
         updateAuto();
     }

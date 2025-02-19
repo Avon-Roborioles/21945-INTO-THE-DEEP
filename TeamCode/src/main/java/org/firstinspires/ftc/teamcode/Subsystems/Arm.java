@@ -55,7 +55,7 @@
 
         //Motion Profile + Full State Feedback PID Controller (Arm) & Basic PID Controller (Extend)
         private final double kpArm = 0.002;
-        private final double kpExtend = 0.01; //0.05
+        private final double kpExtend = 0.01; //0.01
         private final double ka = 0.0004;
         private final double MAX_VELOCITY = 35000;
         private final double MAX_ACCELERATION = 25000;
@@ -91,7 +91,7 @@
             armCoefficients = new Vector(new double[] {kpArm,ka});
             armController = new FullStateFeedback(armCoefficients);
 
-            extendCoefficients = new PIDCoefficients(kpExtend,0,0);
+            extendCoefficients = new PIDCoefficients(kpExtend,0,0.01);
             extendController = new BasicPID(extendCoefficients);
 
             //---initialize toggles & buttons---
@@ -165,7 +165,7 @@
         }
 
         public void runPassiveExtend(){
-            extendMotor.set(-0.3);
+            extendMotor.set(-0.1);
         }
 
         private void updateToggles(){
@@ -261,9 +261,9 @@
                 armMode = Arm_Modes.HANG_MODE;
             }
 
-            if(a_button.wasJustPressed()){ //switch on and off parallel intake
-                parallelIntakeMode = !parallelIntakeMode;
-            }
+//            if(a_button.wasJustPressed()){ //switch on and off parallel intake
+//                parallelIntakeMode = !parallelIntakeMode;
+//            }
 
 
             //control arm power for hang and hold modes
