@@ -67,9 +67,9 @@ public class FollowerConstants {
 
     // Drive PIDF coefficients
     public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = new CustomFilteredPIDFCoefficients(
-            0.003,
-            0,
-            0.0006, //.0002
+            0.003, //try 0.01
+            0, //try 0.001
+            0.0006, //try .06
             0,
             0);
 
@@ -86,16 +86,18 @@ public class FollowerConstants {
     public static double mass = 12.05; //comp #2 mass
 
     // Centripetal force to power scaling
-    public static double centripetalScaling = 0.0000008;
+    public static double centripetalScaling = 0.0000008; //try 0.0005
 
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double forwardZeroPowerAcceleration = -52.4395211; //-65.29973928710824, -60.58455773648211,-68.67917420650193  | -34.62719 - 10/12/24
+    public static double forwardZeroPowerAcceleration = -52.4395211; //try -31.0466
+
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double lateralZeroPowerAcceleration = -76.6931786; //-73.4850059295849,-77.70044607555911, -85.12316862138681 | -78.15554 - 10/12/24
+    public static double lateralZeroPowerAcceleration = -76.6931786; //try -66.0001
+
 
     // A multiplier for the zero power acceleration to change the speed the robot decelerates at
     // the end of paths.
