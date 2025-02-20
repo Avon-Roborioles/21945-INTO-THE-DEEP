@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Drawing;
 
 import java.util.concurrent.TimeUnit;
 
-
+@Autonomous(name="Specimen Alignment Test", group="Tests")
 public class SpecimenAlignment extends LinearOpMode {
     PathChain alignPath;
     boolean blueColor = true;
@@ -52,6 +53,7 @@ public class SpecimenAlignment extends LinearOpMode {
         mainTelemetry.addData("Y Position: ", bot.getPose().getY());
         mainTelemetry.addData("Heading Position: ", bot.getPose().getHeading());
         mainTelemetry.addData("Total Heading: ", bot.getTotalHeading());
+        vision.getTelemetry(mainTelemetry);
 
         //Draw Bot on Dashboard
         Drawing.drawPoseHistory(bot.getDashboardPoseTracker(), "#be87e8"); //Light Purple
@@ -78,7 +80,7 @@ public class SpecimenAlignment extends LinearOpMode {
     }
 
     public void buildStrafePath(double distance){
-        if(distance < 5) {
+        if(Math.abs(distance) < 10) {
             alignPath = bot.pathBuilder()
                     //align by moving forward and backward
                     .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX() + distance, bot.getPose().getY(), bot.getPose().getHeading()).getPoint()))
@@ -122,7 +124,7 @@ public class SpecimenAlignment extends LinearOpMode {
                             blueColor = true;
                             waitMilliSeconds(500);
                             buildStrafePath(vision.getMainAlignment());
-                            bot.followPath(alignPath);
+                            bot.followPath(alignPath,true);
                             currentState = States.ALIGN;
 
                         } else if(b_button.wasJustPressed()){ //red alignment
@@ -130,11 +132,9 @@ public class SpecimenAlignment extends LinearOpMode {
                             blueColor = false;
                             waitMilliSeconds(500);
                             buildStrafePath(vision.getMainAlignment());
-                            bot.followPath(alignPath);
+                            bot.followPath(alignPath,true);
                             currentState = States.ALIGN;
 
-                        } else {
-                            bot.holdPoint(new BezierPoint(bot.getPose().getPoint()),bot.getPose().getHeading());
                         }
                         break;
                     }

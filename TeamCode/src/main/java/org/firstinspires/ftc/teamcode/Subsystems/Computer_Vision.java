@@ -131,11 +131,9 @@ public class Computer_Vision {
         sendData(); //TODO used to push alliance color & target distance
         result = limelight.getLatestResult();
         if(result != null){
-            if(result.isValid()){
-                targetX = result.getTx();
-                targetY = result.getTy();
-                targetArea = result.getTa();
-            }
+            targetX = result.getTx();
+            targetY = result.getTy();
+            targetArea = result.getTa();
         }
         status = limelight.getStatus();
     }
@@ -162,26 +160,28 @@ public class Computer_Vision {
      * Backend Version of Vision Alignment
      */
     public double getAlignment(){
-        //get values from limelight (ideally, all calculations are offloaded to camera)
-        //limelight.pipelineSwitch(0);
+//        //get values from limelight (ideally, all calculations are offloaded to camera)
+//        //limelight.pipelineSwitch(0);
+//
+//        // Alternate Method to get Specimen Alignment on Java Side
+//
+//
+//        // Assuming targetX is already defined and represents the angle in radians
+//        //double targetX = 0.5; // Example value, replace with the actual value
+//
+//        // Calculate the cotangent of the angle
+//        double cotangent = Math.cos(targetX) / Math.sin(targetX);
+//
+//        // Define the distance 'd' (replace with the actual value or method to get d)
+//        double d = 4; // Example value
+//
+//        // Calculate the strafe distance
+//        strafeDistance = d * cotangent;
+//
+//        // Output the result
+//        //System.out.println("Strafe Distance: " + strafeDistance);
+        strafeDistance = (targetDistance * Math.sin(targetX))/(Math.sin(90-targetX));
 
-        // Alternate Method to get Specimen Alignment on Java Side
-
-
-        // Assuming targetX is already defined and represents the angle in radians
-        //double targetX = 0.5; // Example value, replace with the actual value
-
-        // Calculate the cotangent of the angle
-        double cotangent = Math.cos(targetX) / Math.sin(targetX);
-
-        // Define the distance 'd' (replace with the actual value or method to get d)
-        double d = 4; // Example value
-
-        // Calculate the strafe distance
-        strafeDistance = d * cotangent;
-
-        // Output the result
-        //System.out.println("Strafe Distance: " + strafeDistance);
         return strafeDistance;
     }
 
