@@ -3,19 +3,13 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 //import needed libraries
 
 //this may cause errors in future look here first if something bad happens
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Sample_Colors;
-
-import java.util.concurrent.TimeUnit;
 
 
 public class LED {
@@ -43,15 +37,7 @@ public class LED {
         AUTO
     }
 
-    public enum COLORS{
-        RED,
-        BLUE,
-        YELLOW,
-        GREEN,
-        PURPLE,
-        GRAY,
-        OFF
-    }
+
 
     //All LED objects
 
@@ -63,59 +49,25 @@ public class LED {
     public void run_teleOp(Sample_Colors color){
         switch (color){
             case YELLOW:
-                setConstantColor(COLORS.YELLOW);
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
                 break;
-            case RED:
-                setConstantColor(COLORS.RED);
-                break;
-            case BLUE:
-                setConstantColor(COLORS.BLUE);
-                break;
-            case NONE:
-                setConstantColor(COLORS.PURPLE); //can also change to OFF if needed
-                break;
-        }
-    }
-
-    public void setRainbow(){
-        displayKind = DisplayKind.AUTO;
-
-        pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
-        blinkinLedDriver.setPattern(pattern);
-    }
-
-    /**set all lighting to constant purple
-     * - PURPLE, RED, YELLOW, BLUE, GREEN, GRAY
-     */
-    public void setConstantColor(COLORS color){
-        switch(color){
-            case PURPLE:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
             case RED:
                 blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-            case YELLOW:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                break;
             case BLUE:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.AQUA);
-            case GREEN:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-            case GRAY:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GRAY);
-            
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                break;
+            case NONE:
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+                break;
         }
+    }
+
+    public void set(RevBlinkinLedDriver.BlinkinPattern pattern){
+        blinkinLedDriver.setPattern(pattern);
 
     }
 
-    //sets all lighting to breathing effect
-    public void setBreathingMode(COLORS color){
-        switch(color){
-            case RED:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-            case BLUE:
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
-        }
-
-    }
 
     //updates lighting in auto
     public void update(){}

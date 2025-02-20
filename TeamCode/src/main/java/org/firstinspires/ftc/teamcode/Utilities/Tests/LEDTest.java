@@ -4,11 +4,12 @@ package org.firstinspires.ftc.teamcode.Utilities.Tests;
 import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Subsystems.LED;
 
-@TeleOp
+@TeleOp(name="LED Test", group="Tests")
 public class LEDTest extends LinearOpMode {
     //creates lighting subsystem
     org.firstinspires.ftc.teamcode.Subsystems.LED lighting = new LED();
@@ -39,25 +40,28 @@ public class LEDTest extends LinearOpMode {
         while(opModeIsActive()){
             //control lighting based on gamepad input
             if(d_up.wasJustPressed()){
-                lighting.setConstantColor(LED.COLORS.PURPLE);
+                lighting.set(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
             }
             if(d_left.wasJustPressed()){
-                lighting.setConstantColor(LED.COLORS.RED);
+                lighting.set(RevBlinkinLedDriver.BlinkinPattern.RED);
+
             }
             if(d_right.wasJustPressed()){
-                lighting.setConstantColor(LED.COLORS.BLUE);
+                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+
             }
             if(d_down.wasJustPressed()){
                 lighting.OFF();
             }
             if(b_button.wasJustPressed()){
-                lighting.setBreathingMode(LED.COLORS.RED);
+                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
             }
             if(x_button.wasJustPressed()){
-                lighting.setBreathingMode(LED.COLORS.BLUE);
+                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
             }
             if(y_button.wasJustPressed()){
-                lighting.setConstantColor(LED.COLORS.YELLOW);
+                lighting.set(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+
             }
 
             //telemetry
