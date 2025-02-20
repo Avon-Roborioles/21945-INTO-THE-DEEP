@@ -61,8 +61,10 @@ public class Computer_Vision {
     double targetX, targetY, targetArea; //easy to use values of target from pipeline
     double specimenAlignment; //array of calculated x, y, & heading values from limelight to adjust to hanged specimen
     double closestSample; //used when looking in the pit for a sample that matches our alliance color
-    int allianceColor = 0; //0 is red, 1 is blue
+    double allianceColor = 0; //0 is red, 1 is blue
+    double targetDistance = 4;
     double strafeDistance = 0;
+    double[] inputs = new double[2];
 
     public enum SampleColors{
         RED,
@@ -78,7 +80,9 @@ public class Computer_Vision {
      * Sends any Data to Custom LimeLight Camera Python Pipelines
      */
     private void sendData(){
-        limelight.updatePythonInputs(new double[allianceColor]);
+        inputs[0] = allianceColor;
+        inputs[1] = targetDistance;
+        limelight.updatePythonInputs(inputs);
         //
     }
 
@@ -101,22 +105,48 @@ public class Computer_Vision {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
         limelight.start(); //starts the selected pipeline
-        limelight.pipelineSwitch(0); //selects the 1st pipeline saved on the camera (10 saved max)
+        limelight.pipelineSwitch(2); //2nd index (pipeline 3) is updated vision script
         result = limelight.getLatestResult();
 
     }
 
-    public void setAllianceColor(int colorNum){
-        allianceColor = colorNum;
+    /**
+     * Blue is 0, 1 is Red
+     * @param blue search of blue color or red if false
+     */
+    public void setAllianceColor(boolean blue){
+        if(blue){
+            allianceColor = 0;
+        } else {
+            allianceColor = 1;
+        }
     }
 
     /**
      * updates all current vision processes and pipelines
      */
     public void update(){
-        limelight.updatePythonInputs(new double[] {allianceColor});
+        //limelight.updatePythonInputs(new double[] {allianceColor});
         //getData();
-        sendData(); //TODO used to push alliance color
+        sendData(); //TODO used to push alliance color & target distance
+        result = limelight.getLatestResult();
+        if(result != null){
+            if(result.isValid()){
+                targetX = result.getTx();
+                targetY = result.getTy();
+                targetArea = result.getTa();
+            }
+        }
+        status = limelight.getStatus();
+    }
+
+
+    /**
+     * updates all current vision processes and pipelines + updates target Distance
+     */
+    public void update(double distance){
+        targetDistance = distance;
+        sendData(); //TODO used to push alliance color & target distance
         result = limelight.getLatestResult();
         if(result != null){
             if(result.isValid()){
