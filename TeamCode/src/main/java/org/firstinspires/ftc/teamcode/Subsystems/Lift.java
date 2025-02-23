@@ -165,12 +165,12 @@ public class Lift {
         currentLiftPose = liftMotor.getCurrentPosition();
         double velocityAddon = liftMotor.getVelocity() * 0.05;
 
-        if(leftBumper.isDown()){ //down
+        if(a_button.isDown()){ // - switched from down / left bumper
             setTarget(currentLiftPose);
            liftMode = Lift_Modes.DRIVER_MODE;
             liftPower = -0.4;
 
-        } else if(rightBumper.isDown()){ //up
+        } else if(b_button.isDown()){ // - switched from up / right bumper
             if(currentLiftPose < maxPose) {
                 setTarget(currentLiftPose);
                 liftMode = Lift_Modes.DRIVER_MODE;
@@ -186,16 +186,18 @@ public class Lift {
 //            liftMode = Lift_Modes.HOLD_MODE;
 //            feedback.alert_side(false, driverOp);
 //        }
-        if(b_button.wasJustPressed()){ //high rung
-            setTarget(highRungPose);
-            liftMode = Lift_Modes.HOLD_MODE;
-            feedback.alert_side(false, driverOp);
-        }
-        if(a_button.wasJustPressed()){ //ground
+        if(leftBumper.wasJustPressed()){ // - switched from ground / a_button
             setTarget(fencePose);
             liftMode = Lift_Modes.HOLD_MODE;
             feedback.alert_side(false, driverOp);
         }
+
+        if(rightBumper.wasJustPressed()){ // - switched from high rung / b_button
+            setTarget(highRungPose);
+            liftMode = Lift_Modes.HOLD_MODE;
+            feedback.alert_side(false, driverOp);
+        }
+
 //
 //        //modes
         if(liftMode == Lift_Modes.HOLD_MODE){

@@ -35,7 +35,7 @@ public class PoseStorage {
 
     public static Pose LeftSample2 = new Pose(24,48, Math.toRadians(180-1e-6)); //Done
 
-    public static Pose LeftSample3 = new Pose(21,47,Math.toRadians(180-1e-6)); //Done
+    public static Pose LeftSample3 = new Pose(21,47.75,Math.toRadians(180-1e-6)); //Done
 
     public static Pose LeftSample3Back = new Pose(33,47,Math.toRadians(180-1e-6)); //Done
 

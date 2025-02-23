@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -96,6 +97,8 @@ public class AutoBase extends LinearOpMode {
         intake.init(hardwareMap, driverOp);
         arm.init(hardwareMap, driverOp, false);
         lift.init(hardwareMap,driverOp,false);
+        lighting.init(hardwareMap);
+
         //vision.init(hardwareMap);
 //        lighting.init(hardwareMap);
 //        vision.init(hardwareMap);
@@ -171,6 +174,7 @@ public class AutoBase extends LinearOpMode {
         intake.update();
         arm.update();
         lift.update();
+        lighting.set(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         //vision.update();
 //        lighting.update();
 //        vision.update();

@@ -372,6 +372,7 @@ public class Four_Cycle_Auto extends AutoBase {
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
                 // starting path & FSM
+                //TODO bot.setSamplePID(true);
                 currentState = State.SCORE_PASSIVE;
                 intake.pickup(); //should secure passive/loaded sample
                 arm.setTarget(5700,4000); //5600,3250
