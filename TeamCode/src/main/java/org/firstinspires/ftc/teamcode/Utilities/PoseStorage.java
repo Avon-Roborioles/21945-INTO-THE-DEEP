@@ -45,6 +45,7 @@ public class PoseStorage {
 
     public static Pose LeftBucketTeleScore = new Pose(21,22,Math.toRadians(45)); //Done - 225
 
+    public static Pose LeftPitEntry = new Pose(25,72,Math.toRadians(0)); //done
 
     public static Pose LeftPitSamples = new Pose(33,72,Math.toRadians(0)); //done
 

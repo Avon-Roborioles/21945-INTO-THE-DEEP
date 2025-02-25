@@ -185,8 +185,12 @@ public class Drivetrain {
 
     private void BuildPickupPath(Pose pose){
         pickupPath = pedroDrivetrain.pathBuilder()
-                .addPath(new BezierLine(pose.getPoint(),PoseStorage.LeftPitSamples.getPoint()))
-                .setLinearHeadingInterpolation(pose.getHeading(),PoseStorage.LeftPitSamples.getHeading())
+                //drive to pit entry
+                .addPath(new BezierLine(pose.getPoint(),PoseStorage.LeftPitEntry.getPoint()))
+                .setLinearHeadingInterpolation(pose.getHeading(),PoseStorage.LeftPitEntry.getHeading())
+                //drive forward more
+                .addPath(new BezierLine(PoseStorage.LeftPitEntry.getPoint(),PoseStorage.LeftPitSamples.getPoint()))
+                .setConstantHeadingInterpolation(PoseStorage.LeftPitEntry.getHeading())
                 .build();
     }
 
@@ -249,6 +253,16 @@ public class Drivetrain {
                 teleOpDrive = true;
                 pedroDrivetrain.setMaxPower(1);
                 pedroDrivetrain.startTeleopDrive();
+            }
+
+            if(left_bumper.wasJustPressed()){
+                pedroDrivetrain.breakFollowing();
+                BuildScorePath(pedroDrivetrain.getPose());
+                pedroDrivetrain.followPath(scorePath,true);
+            } else if(right_bumper.wasJustPressed()){
+                pedroDrivetrain.breakFollowing();
+                BuildPickupPath(pedroDrivetrain.getPose());
+                pedroDrivetrain.followPath(pickupPath,true);
             }
         }
 
