@@ -43,7 +43,10 @@ public class PoseStorage {
 
     public static Pose LeftBucketScore = new Pose(21-(OneInchMovement(-8.7)),-50-(OneInchMovement(-6.9))+72,Math.toRadians(45)); //Done - 225
 
-    public static Pose LeftPitSamples = new Pose(-18+72,72,Math.toRadians(0)); //done
+    public static Pose LeftBucketTeleScore = new Pose(21,22,Math.toRadians(45)); //Done - 225
+
+
+    public static Pose LeftPitSamples = new Pose(33,72,Math.toRadians(0)); //done
 
     public static Pose LeftCheckPoint = new Pose(-55+72,-48+72, Math.toRadians(225)); //DONE
 

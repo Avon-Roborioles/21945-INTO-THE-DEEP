@@ -68,6 +68,7 @@ public class AutoBase extends LinearOpMode {
     public int cycleCount = 3; //number of times to go to pit
     public int coordinateCount = 1;
     public boolean returnHome = false; //yes or no for returning to startPose during test autos
+    private String selectedStartPose = "";
 
     //blank runOpMode() method included only to keep LinearOpMode
     @Override
@@ -125,11 +126,27 @@ public class AutoBase extends LinearOpMode {
             PoseStorage.ranAuto = false;
         }
 
-        //menu
         telemetry.addLine("Select if Auto Ran or Not");
         telemetry.addData("Current StartPose Selected: ", PoseStorage.ranAuto);
+        telemetry.addLine();
+
+        //selects TeleOp Start Pose if auto was not ran
+        if(PoseStorage.CurrentPose != null) {
+            if(d_down.getState()){
+                //select start pose
+                selectedStartPose = "Left Side";
+                PoseStorage.CurrentPose = PoseStorage.LeftStartPose;
+            } else {
+                selectedStartPose = "Right Side";
+                PoseStorage.CurrentPose = PoseStorage.RightStartPose;
+            }
+
+            telemetry.addLine("Select TeleOp Start Pose with d-Pad DOWN");
+            telemetry.addLine(selectedStartPose);
+        }
         telemetry.update();
 
+        d_down.wasJustPressed();
         d_up.readValue();
     }
 

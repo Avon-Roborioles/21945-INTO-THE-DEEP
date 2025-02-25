@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.tuning.FollowerConstants;
 
 public class Drivetrain {
@@ -33,8 +34,8 @@ public class Drivetrain {
     //FTC Lib & Pedro-Pathing objects
     Follower pedroDrivetrain;
     boolean teleOpDrive = true;
-    Path scorePath;
-    Path pickupPath;
+    PathChain scorePath;
+    PathChain pickupPath;
 
     GamepadEx driverOp;
     RevHubOrientationOnRobot.LogoFacingDirection logoDirection;
@@ -175,8 +176,22 @@ public class Drivetrain {
         right_bumper.readValue();
     }
 
+    private void BuildScorePath(Pose pose){
+        scorePath = pedroDrivetrain.pathBuilder()
+                .addPath(new BezierLine(pose.getPoint(),PoseStorage.LeftBucketTeleScore.getPoint()))
+                .setLinearHeadingInterpolation(pose.getHeading(),PoseStorage.LeftBucketTeleScore.getHeading())
+                .build();
+    }
+
+    private void BuildPickupPath(Pose pose){
+        pickupPath = pedroDrivetrain.pathBuilder()
+                .addPath(new BezierLine(pose.getPoint(),PoseStorage.LeftPitSamples.getPoint()))
+                .setLinearHeadingInterpolation(pose.getHeading(),PoseStorage.LeftPitSamples.getHeading())
+                .build();
+    }
+
     public void run_teleOp(Driver_Feedback feedback){
-       // if(teleOpDrive) {
+       if(teleOpDrive) {
             strafeSpeed = -driverOp.getLeftX() * speedLimit; //changed to negative to fix inverted controls
             forwardSpeed = driverOp.getLeftY() * speedLimit;
             turnSpeed = -driverOp.getRightX() * speedLimit;
@@ -186,6 +201,7 @@ public class Drivetrain {
             double turnAbsolute = Math.abs(turnSpeed);
 
 
+
             //Robot Centric and Field Centric Modes
             if (y_button.wasJustPressed()) { //robot
                 robotCentricMode = true;
@@ -193,33 +209,24 @@ public class Drivetrain {
                 robotCentricMode = false;
             }
 
-            //Constant Path Creation + Controls
-            if(PoseStorage.allianceSide == AutoBase.AutoPoses.LEFT){
-                //create left side paths
-                scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-                scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftBucketScore.getHeading());
-                pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftPitSamples.getPoint()));
-                pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftPitSamples.getHeading());
-            } else {
-                //create right side paths
-                scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.SpecimenScore.getPoint()));
-                scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.SpecimenScore.getHeading());
-                pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.RightPitSamples.getPoint()));
-                pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.RightPitSamples.getHeading());
-            }
+
+
 
             //TODO - need to test before implementation
-//            if(left_bumper.wasJustPressed()){
-//                pedroDrivetrain.stopTeleOpDrive();
-//                teleOpDrive = false;
-//                pedroDrivetrain.setMaxPower(speedLimit);
-//                pedroDrivetrain.followPath(scorePath,true);
-//            } else if(right_bumper.wasJustPressed()){
-//                pedroDrivetrain.stopTeleOpDrive();
-//                teleOpDrive = false;
-//                pedroDrivetrain.setMaxPower(speedLimit);
-//                pedroDrivetrain.followPath(pickupPath,true);
-//            }
+            if(left_bumper.wasJustPressed()){
+                pedroDrivetrain.stopTeleOpDrive();
+                teleOpDrive = false;
+                pedroDrivetrain.setMaxPower(speedLimit);
+                BuildScorePath(pedroDrivetrain.getPose());
+                pedroDrivetrain.followPath(scorePath,true);
+            }
+            else if(right_bumper.wasJustPressed()){
+                pedroDrivetrain.stopTeleOpDrive();
+                teleOpDrive = false;
+                pedroDrivetrain.setMaxPower(speedLimit);
+                BuildPickupPath(pedroDrivetrain.getPose());
+                pedroDrivetrain.followPath(pickupPath,true);
+            }
 
             //Speed Controls - set top speed percentage
             if (d_up.wasJustPressed()) {
@@ -235,15 +242,16 @@ public class Drivetrain {
 
             //Pedro-Pathing TeleOp Control
             pedroDrivetrain.setTeleOpMovementVectors(forwardSpeed, strafeSpeed, turnSpeed, robotCentricMode);
-//        } else {
-//            //logic to get out of autoDrive
-//            if(Math.abs(driverOp.getLeftX()) > 0 ||Math.abs(driverOp.getRightX()) > 0 || Math.abs(driverOp.getLeftY()) > 0){
-//                pedroDrivetrain.breakFollowing();
-//                teleOpDrive = true;
-//                pedroDrivetrain.setMaxPower(1);
-//                pedroDrivetrain.startTeleopDrive();
-//            }
-//        }
+        } else {
+            //logic to get out of autoDrive
+            if(Math.abs(driverOp.getLeftX()) > 0 ||Math.abs(driverOp.getRightX()) > 0 || Math.abs(driverOp.getLeftY()) > 0){
+                pedroDrivetrain.breakFollowing();
+                teleOpDrive = true;
+                pedroDrivetrain.setMaxPower(1);
+                pedroDrivetrain.startTeleopDrive();
+            }
+        }
+
 
         pedroDrivetrain.update();
         updateToggles();
@@ -282,19 +290,19 @@ public class Drivetrain {
         }
 
         //Constant Path Creation + Controls
-        if(PoseStorage.allianceSide == AutoBase.AutoPoses.LEFT){
-            //create left side paths
-            scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftBucketScore.getPoint()));
-            scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftBucketScore.getHeading());
-            pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftPitSamples.getPoint()));
-            pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftPitSamples.getHeading());
-        } else {
-            //create right side paths
-            scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.SpecimenScore.getPoint()));
-            scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.SpecimenScore.getHeading());
-            pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.RightPitSamples.getPoint()));
-            pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.RightPitSamples.getHeading());
-        }
+//        if(PoseStorage.allianceSide == AutoBase.AutoPoses.LEFT){
+//            //create left side paths
+//            scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftBucketScore.getPoint()));
+//            scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftBucketScore.getHeading());
+//            pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.LeftPitSamples.getPoint()));
+//            pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.LeftPitSamples.getHeading());
+//        } else {
+//            //create right side paths
+//            scorePath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.SpecimenScore.getPoint()));
+//            scorePath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.SpecimenScore.getHeading());
+//            pickupPath = new Path(new BezierLine(pedroDrivetrain.getPose().getPoint(), PoseStorage.RightPitSamples.getPoint()));
+//            pickupPath.setLinearHeadingInterpolation(pedroDrivetrain.getPose().getHeading(), PoseStorage.RightPitSamples.getHeading());
+//        }
 
         //TODO - need to test before implementation
 //            if(left_bumper.wasJustPressed()){

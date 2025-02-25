@@ -43,7 +43,8 @@ public class V2_TeleOp extends AutoBase {
 
         //initialize subsystems
         feedback.init();
-        drivetrain.init(hardwareMap, Driver1Op);
+        drivetrain.init(hardwareMap, Driver1Op, PoseStorage.LeftStartPose);
+
         arm.init(hardwareMap,Driver2Op, true);
         lift.init(hardwareMap,Driver2Op,true);
         intake.init(hardwareMap, Driver2Op);
@@ -54,6 +55,8 @@ public class V2_TeleOp extends AutoBase {
 
         while(opModeInInit()){
             runTeleOpMenu(mainTelemetry);
+            drivetrain.init(hardwareMap, Driver1Op, PoseStorage.CurrentPose); //updates drivetrain with startPose
+
         }
 
         waitForStart();
@@ -79,6 +82,7 @@ public class V2_TeleOp extends AutoBase {
             }
 
             //Telemetry
+
             mainTelemetry.addData("Auto Ran: ", PoseStorage.ranAuto);
             drivetrain.getTelemetry(mainTelemetry);
             arm.getTelemetry(mainTelemetry);
