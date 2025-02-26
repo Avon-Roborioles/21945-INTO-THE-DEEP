@@ -180,7 +180,8 @@ public class Computer_Vision {
 //
 //        // Output the result
 //        //System.out.println("Strafe Distance: " + strafeDistance);
-        strafeDistance = (targetDistance * Math.sin(targetX))/(Math.sin(90-targetX));
+        targetX = Math.toRadians(targetX);
+        strafeDistance = (targetDistance * Math.sin(90 - (targetX))/(Math.sin(targetX));
 
         return strafeDistance;
     }
@@ -195,7 +196,7 @@ public class Computer_Vision {
     //TODO
     public double getClosestSample(SampleColors color){
         //get values from limelight
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(2);
 
         return closestSample;
     }
