@@ -55,7 +55,7 @@ public class V2_TeleOp extends AutoBase {
 
         while(opModeInInit()){
             runTeleOpMenu(mainTelemetry);
-            drivetrain.init(hardwareMap, Driver1Op, PoseStorage.CurrentPose); //updates drivetrain with startPose
+            //drivetrain.init(hardwareMap, Driver1Op, PoseStorage.CurrentPose); //updates drivetrain with startPose
 
         }
 

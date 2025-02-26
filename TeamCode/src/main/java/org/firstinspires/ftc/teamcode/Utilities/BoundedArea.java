@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
 import java.util.ArrayList;
 
-//an innovative feature that creates specified regions on the field for object detection, speed ups, etc
+//an innovative feature that creates specified regions on the field for obstacle detection, speed ups, etc
 public class BoundedArea {
 
     private double xMin, yMin, xMax, yMax;

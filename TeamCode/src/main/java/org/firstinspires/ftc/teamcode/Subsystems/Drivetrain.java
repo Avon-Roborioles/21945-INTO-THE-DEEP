@@ -215,7 +215,6 @@ public class Drivetrain {
 
 
 
-
             //TODO - need to test before implementation
             if(left_bumper.wasJustPressed()){
                 pedroDrivetrain.stopTeleOpDrive();

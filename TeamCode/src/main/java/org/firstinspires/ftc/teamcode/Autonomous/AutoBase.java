@@ -112,6 +112,10 @@ public class AutoBase extends LinearOpMode {
         d_up = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.DPAD_UP
         );
+
+        d_down = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_DOWN
+        );
     }
 
     /**
@@ -146,7 +150,7 @@ public class AutoBase extends LinearOpMode {
         }
         telemetry.update();
 
-        d_down.wasJustPressed();
+        d_down.readValue();
         d_up.readValue();
     }
 
