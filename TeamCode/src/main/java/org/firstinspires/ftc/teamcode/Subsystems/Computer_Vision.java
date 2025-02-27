@@ -104,10 +104,9 @@ public class Computer_Vision {
         //limelight camera initialization
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
-        limelight.start(); //starts the selected pipeline
         limelight.pipelineSwitch(2); //2nd index (pipeline 3) is updated vision script
+        limelight.start(); //starts the selected pipeline
         result = limelight.getLatestResult();
-
     }
 
     /**
@@ -162,28 +161,11 @@ public class Computer_Vision {
      * Backend Version of Vision Alignment
      */
     public double getAlignment(){
-//        //get values from limelight (ideally, all calculations are offloaded to camera)
-//        //limelight.pipelineSwitch(0);
-//
-//        // Alternate Method to get Specimen Alignment on Java Side
-//
-//
-//        // Assuming targetX is already defined and represents the angle in radians
-//        //double targetX = 0.5; // Example value, replace with the actual value
-//
-//        // Calculate the cotangent of the angle
-//        double cotangent = Math.cos(targetX) / Math.sin(targetX);
-//
-//        // Define the distance 'd' (replace with the actual value or method to get d)
-//        double d = 4; // Example value
-//
-//        // Calculate the strafe distance
-//        strafeDistance = d * cotangent;
-//
-//        // Output the result
-//        //System.out.println("Strafe Distance: " + strafeDistance);
-        targetX = Math.toRadians(targetX);
-        strafeDistance = (targetDistance * Math.sin(90 - (targetX))/(Math.sin(targetX));
+        // Create a local copy of targetX to convert to radians
+        double targetXRadians = Math.toRadians(targetX);
+
+        // Fix the parentheses and use the local variable
+        strafeDistance = (targetDistance * Math.sin(Math.toRadians(90) - targetXRadians))/(Math.sin(targetXRadians));
 
         return strafeDistance;
     }
@@ -199,8 +181,11 @@ public class Computer_Vision {
     public double getClosestSample(SampleColors color){
         //get values from limelight
         limelight.stop();
-        limelight.start();
         limelight.pipelineSwitch(2);
+        limelight.start();
+
+        // If this method is called, it could leave the pipeline in a state
+        // where targetX isn't being updated correctly
 
         return closestSample;
     }
@@ -224,14 +209,32 @@ public class Computer_Vision {
 
     public void getTelemetry(Telemetry telemetry){
         telemetry.addLine("----Computer Vision Data----");
-        telemetry.addData("Strafe Distance (Frontend): ", getMainAlignment());
-        telemetry.addData("Strafe Distance (Backend): ", getAlignment());
+
+        // Basic connection info
+        telemetry.addData("Limelight Connected:", status != null);
+
+        // Result validation
+        telemetry.addData("Result Object:", result != null ? "Present" : "Null");
+        telemetry.addData("Result Valid:", result != null && result.isValid());
+        telemetry.addData("Result Age (ms):", result != null ? result.getStaleness() : "N/A");
+
+        // Target values
+        telemetry.addData("Target X Degrees: ", targetX);
+        telemetry.addData("Target Y Degrees: ", targetY);
+        telemetry.addData("Target Area: ", targetArea);
+
+        // Limelight status
         telemetry.addData("FPS: ", status.getFps());
         telemetry.addData("Temperature: ", status.getTemp());
         telemetry.addData("CPU Usage: ", status.getCpu());
         telemetry.addData("RAM Usage: ", status.getRam());
-        telemetry.addData("Target X Degrees: ", targetX);
-        telemetry.addData("Target Y Degrees: ", targetY);
-        telemetry.addData("Target Area: ", targetArea);
+
+        // Calculate values without modifying originals
+        telemetry.addData("Strafe Distance (Frontend): ", getMainAlignment());
+
+        // Don't call getAlignment() directly as it might modify targetX
+        double txRad = Math.toRadians(targetX);
+        double calculatedStrafe = (targetDistance * Math.sin(Math.toRadians(90) - txRad))/(Math.sin(txRad));
+        telemetry.addData("Strafe Distance (Backend): ", calculatedStrafe);
     }
 }
