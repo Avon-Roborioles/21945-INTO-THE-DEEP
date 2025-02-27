@@ -48,4 +48,4 @@ def runPipeline(image, llrobot):
     # an image to stream,
     # and optionally an array of up to 8 values for the "llpython"
     # networktables array
-    return largestContour, image, llpython
+    return largestContour, image, llpython, strafeDistance
