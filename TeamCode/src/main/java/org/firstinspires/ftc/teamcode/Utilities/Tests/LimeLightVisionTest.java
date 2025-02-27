@@ -109,7 +109,7 @@ public class LimeLightVisionTest extends LinearOpMode {
                 telemetry.addData("Parse Latency", parseLatency);
                 telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
 
-                if (result.isValid()) {
+                if (true) {
                     telemetry.addData("tx", result.getTx());
                     telemetry.addData("txnc", result.getTxNC());
                     telemetry.addData("ty", result.getTy());

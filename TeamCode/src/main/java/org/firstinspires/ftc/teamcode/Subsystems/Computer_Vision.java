@@ -58,16 +58,16 @@ public class Computer_Vision {
 
     //useful variables
     Limelight3A limelight; //limelight camera object
-    LLResult result; //limelight data from selected pipeline
-    double[] pythonResults; //additional results from python pipelines
-    LLStatus status;
-    long resultAge; //tells us the age (in milliseconds of our results data)
-    double targetX, targetY, targetArea; //easy to use values of target from pipeline
+    private volatile LLResult result; // limelight data from selected pipeline
+    private volatile double[] pythonResults; // additional results from python pipelines
+    private volatile LLStatus status;
+    private volatile long resultAge; // tells us the age (in milliseconds of our results data)
+    private volatile double targetX, targetY, targetArea; // easy to use values of target from pipeline
     double specimenAlignment; //array of calculated x, y, & heading values from limelight to adjust to hanged specimen
     double closestSample; //used when looking in the pit for a sample that matches our alliance color
     double allianceColor = 0; //0 is red, 1 is blue
     double targetDistance = 4;
-    double strafeDistance = 0;
+    private volatile double strafeDistance;
     double[] inputs = new double[2];
 
     public enum SampleColors{
