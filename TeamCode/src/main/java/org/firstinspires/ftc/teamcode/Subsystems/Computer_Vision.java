@@ -136,6 +136,8 @@ public class Computer_Vision {
             targetArea = result.getTa();
         }
         status = limelight.getStatus();
+
+
     }
 
 
@@ -196,6 +198,8 @@ public class Computer_Vision {
     //TODO
     public double getClosestSample(SampleColors color){
         //get values from limelight
+        limelight.stop();
+        limelight.start();
         limelight.pipelineSwitch(2);
 
         return closestSample;
