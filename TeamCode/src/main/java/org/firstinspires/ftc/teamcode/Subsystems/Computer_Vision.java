@@ -183,7 +183,7 @@ public class Computer_Vision {
 //        // Output the result
 //        //System.out.println("Strafe Distance: " + strafeDistance);
         targetX = Math.toRadians(targetX);
-        strafeDistance = (targetDistance * Math.sin(90 - (targetX))/(Math.sin(targetX));
+        strafeDistance = (targetDistance * Math.sin(90 - (targetX))/(Math.sin(targetX)));
 
         return strafeDistance;
     }
