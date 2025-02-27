@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.lang.Math;
+import java.util.List;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -124,18 +128,21 @@ public class Computer_Vision {
     /**
      * updates all current vision processes and pipelines
      */
-    public void update(){
-        //limelight.updatePythonInputs(new double[] {allianceColor});
-        //getData();
-        sendData(); //TODO used to push alliance color & target distance
-        result = limelight.getLatestResult();
-        if(result != null){
-            targetX = result.getTx();
-            targetY = result.getTy();
-            targetArea = result.getTa();
-        }
-        status = limelight.getStatus();
+    public void update() {
+        // print some data for each detected target
+        if (result.isValid()) {
+            // Access fiducial results
+            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(),fr.getTargetXDegrees(), fr.getTargetYDegrees());
+            }
 
+            // Access color results
+            List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
+            for (LLResultTypes.ColorResult cr : colorResults) {
+                telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+            }
+        }
 
     }
 
