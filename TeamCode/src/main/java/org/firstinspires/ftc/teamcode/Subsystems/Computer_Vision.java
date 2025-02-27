@@ -111,6 +111,8 @@ public class Computer_Vision {
         limelight.pipelineSwitch(2); //2nd index (pipeline 3) is updated vision script
         limelight.start(); //starts the selected pipeline
         result = limelight.getLatestResult();
+        status = limelight.getStatus();
+
     }
 
     /**
@@ -129,6 +131,9 @@ public class Computer_Vision {
      * updates all current vision processes and pipelines
      */
     public void update() {
+        result = limelight.getLatestResult();
+        status = limelight.getStatus();
+
         // print some data for each detected target
         if (result.isValid()) {
             // Access fiducial results
