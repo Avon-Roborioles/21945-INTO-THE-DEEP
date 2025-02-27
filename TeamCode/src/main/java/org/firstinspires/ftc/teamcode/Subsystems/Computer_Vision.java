@@ -155,7 +155,7 @@ public class Computer_Vision {
         sendData(); //TODO used to push alliance color & target distance
         result = limelight.getLatestResult();
         if(result != null){
-            if(result.isValid()){
+            if(true){
                 targetX = result.getTx();
                 targetY = result.getTy();
                 targetArea = result.getTa();
