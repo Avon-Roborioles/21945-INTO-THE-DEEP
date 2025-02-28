@@ -530,7 +530,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 if(!alignPathDone){
                                     alignPathDone = true;
                                     //waitMilliSeconds(250); //time to stabilize vision reading
-                                    buildStrafePath(0);//buildStrafePath(vision.getAlignment());
+                                    buildStrafePath(vision.getAlignment());
                                     waitMilliSeconds(100);
                                     bot.setMaxPower(0.9);
                                     bot.followPath(specimenAlignment);
