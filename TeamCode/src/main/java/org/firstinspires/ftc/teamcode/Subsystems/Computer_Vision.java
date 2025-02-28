@@ -111,8 +111,6 @@ public class Computer_Vision {
         limelight.pipelineSwitch(2); //2nd index (pipeline 3) is updated vision script
         limelight.start(); //starts the selected pipeline
         result = limelight.getLatestResult();
-        status = limelight.getStatus();
-
     }
 
     /**
@@ -131,27 +129,21 @@ public class Computer_Vision {
      * updates all current vision processes and pipelines
      */
     public void update() {
-        sendData(); // Send alliance color & target distance
-        result = limelight.getLatestResult(); // Add this line to refresh result
-
-        if (result != null && result.isValid()) {
-            targetX = result.getTx();
-            targetY = result.getTy();
-            targetArea = result.getTa();
-
-            // Optional: your fiducial and color result processing
+        // print some data for each detected target
+        if (result.isValid()) {
+            // Access fiducial results
             List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
             for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                // Process fiducial results
+                telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(),fr.getTargetXDegrees(), fr.getTargetYDegrees());
             }
 
+            // Access color results
             List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
             for (LLResultTypes.ColorResult cr : colorResults) {
-                // Process color results
+                telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
             }
         }
 
-        status = limelight.getStatus();
     }
 
 
