@@ -1,169 +1,94 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.limelightvision.LLStatus;
+import com.qualcomm.hardware.limelightvision.*;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import java.lang.Math;
-import java.util.List;
-
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.localization.Pose;
 
+import java.util.List;
+
 /**
- * The Complete Class for our team's Computer Vision Efforts
- * Features include Specimen Alignment Calculations, Pit Sample Detection, & More
- * TODO - get offset of camera from ground and camera from bot center
+ * Handles the team's Computer Vision operations using Limelight.
+ * Features include:
+ * - Specimen Alignment Calculations
+ * - Pit Sample Detection
+ * - Field AprilTag-based pose estimation
+ *
+ * Notes:
+ * - Ensure proper calibration and backup of Limelight pipelines.
+ * - Use network tables for communication between Python scripts and robot.
  */
 public class Computer_Vision {
-    //LimeLight Pipeline Creation: (General) http://limelight.local:5801/ , (Windows) http://172.28.0.1:5801/ , (Mac) http://172.29.0.1:5801/
-    //https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary
 
-    /** Documentation Notes + Best Practices:
+    // Limelight Camera Object
+    private Limelight3A limelight;
+    private LLResult result;
+    private LLStatus status;
+    private double[] pythonResults;
+    private long resultAge;
 
-     Helpful Guides:
+    // Vision Data
+    private double targetX, targetY, targetArea;
+    private double specimenAlignment;
+    private double closestSample;
+    private double allianceColor = 0; // 0 = Red, 1 = Blue
+    private double targetDistance = 4;
+    private double strafeDistance = 0;
+    private final double[] inputs = new double[2];
 
-     Estimating Distance from Camera -> <a href="https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-estimating-distance">...</a>
-
-
-
-     Documentation Notes
-     One of the most important features limelight offers is the one-click crosshair. The crosshair, dual crosshair,
-     tx, ty, ta, ts, tvert, and all other standard limelight NetworkTables readings will automatically latch to the
-     contour you return from the python runPipeline() function.
-
-     Limelight’s python scripting has access to the full OpenCV and numpy libraries.
-
-     Beyond access to the image, the runPipeline() function also has access to data from the robot.
-     FTC teams can use updatePythonInputs() and FRC teams can update the “llrobot” NetworkTables number array.
-     Send any data from your robots to your python scripts for visualization or advanced applications
-     (One might send IMU data, pose data, robot velocity, etc. for use in python scripts)
-
-     The runPipeline function also outputs a number array that accessible with getPythonOutputs() and from
-     the “llpython” networktables number array. This means you can bypass Limelight’s crosshair and other functionality
-     entirely and send your own custom data back to your robots.
-     * FTC Limelight Best Practices:
-     * Download and backup all pipelines to your programming laptop.
-     * Download a copy of the latest Limelight image to your programming laptop.
-     * Record a list of your pipelines and their indices.
-     * 1 - Dual Target Low
-     * 2 - Dual Target High Cargo
-     * Add strain reliefs to your Limelight's USB cable.
-     * Consider hot-gluing all connections.
-     */
-
-    //useful variables
-    Limelight3A limelight; //limelight camera object
-    private volatile LLResult result; // limelight data from selected pipeline
-    private volatile double[] pythonResults; // additional results from python pipelines
-    private volatile LLStatus status;
-    private volatile long resultAge; // tells us the age (in milliseconds of our results data)
-    private volatile double targetX, targetY, targetArea; // easy to use values of target from pipeline
-    double specimenAlignment; //array of calculated x, y, & heading values from limelight to adjust to hanged specimen
-    double closestSample; //used when looking in the pit for a sample that matches our alliance color
-    double allianceColor = 0; //0 is red, 1 is blue
-    double targetDistance = 4;
-    private volatile double strafeDistance;
-    double[] inputs = new double[2];
-
-    public enum SampleColors{
-        RED,
-        BLUE,
-        YELLOW
+    public enum SampleColors {
+        RED, BLUE, YELLOW
     }
 
-    //llrobot array data - {int color}
-    //llpython array data - {int strafeDistance}
-
-    //-----------Private Vision Methods-------------------
-    /**
-     * Sends any Data to Custom LimeLight Camera Python Pipelines
-     */
-    private void sendData(){
-        inputs[0] = allianceColor;
-        inputs[1] = targetDistance;
-        limelight.updatePythonInputs(inputs);
-        //
-    }
+    // ---------- Initialization & Setup ----------
 
     /**
-     * Pulls any Data from Custom Limelight Camera Python Pipelines
+     * Initializes the Limelight camera and sets up the vision pipeline.
+     * @param hardwareMap HardwareMap to locate the Limelight camera.
      */
-    private double[] getData(){
-        pythonResults = result.getPythonOutput();
-        resultAge = result.getStaleness();
-        return pythonResults; // Corrected: Now returns a double[]
-    }
-
-    //----------Common Auto Methods-----------------------
-    /**
-     * Used to setup cameras & vision pipelines
-     * @param hardwareMap used to find camera objects
-     */
-    public void init(HardwareMap hardwareMap){
-        //limelight camera initialization
+    public void init(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.setPollRateHz(100); //set limelight data usage to 100 times per second
-        limelight.pipelineSwitch(2); //2nd index (pipeline 3) is updated vision script
-        limelight.start(); //starts the selected pipeline
-        result = limelight.getLatestResult();
-        status = limelight.getStatus();
-
+        limelight.setPollRateHz(100); // Process vision data at 100 Hz
+        limelight.pipelineSwitch(2); // Load pipeline index 2
+        limelight.start(); // Start the pipeline
+        updateVisionData();
     }
 
     /**
-     * Blue is 0, 1 is Red
-     * @param blue search of blue color or red if false
+     * Sets the alliance color for vision processing.
+     * @param blue True if searching for blue, false for red.
      */
-    public void setAllianceColor(boolean blue){
-        if(blue){
-            allianceColor = 0;
-        } else {
-            allianceColor = 1;
-        }
+    public void setAllianceColor(boolean blue) {
+        allianceColor = blue ? 0 : 1;
     }
 
+    // ---------- Vision Data Processing ----------
+
     /**
-     * updates all current vision processes and pipelines
+     * Updates vision data and retrieves results from Limelight.
      */
     public void update() {
-        sendData(); // Send alliance color & target distance
-        result = limelight.getLatestResult(); // Add this line to refresh result
-
-        if (result != null && result.isValid()) {
-            targetX = result.getTx();
-            targetY = result.getTy();
-            targetArea = result.getTa();
-
-            // Optional: your fiducial and color result processing
-            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-            for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                // Process fiducial results
-            }
-
-            List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-            for (LLResultTypes.ColorResult cr : colorResults) {
-                // Process color results
-            }
-        }
-
-        status = limelight.getStatus();
+        sendData();
+        updateVisionData();
     }
 
+    /**
+     * Updates vision data and sets a new target distance.
+     * @param distance The updated target distance.
+     */
+    public void update(double distance) {
+        targetDistance = distance;
+        sendData();
+        updateVisionData();
+    }
 
     /**
-     * updates all current vision processes and pipelines + updates target Distance
+     * Updates Limelight vision results.
      */
-    public void update(double distance){
-        targetDistance = distance;
-        sendData(); //TODO used to push alliance color & target distance
+    private void updateVisionData() {
         result = limelight.getLatestResult();
-        if(result != null){
-            if(true){
+        if (result != null && result.isValid()) {
+            if(true) {
                 targetX = result.getTx();
                 targetY = result.getTy();
                 targetArea = result.getTa();
@@ -173,83 +98,99 @@ public class Computer_Vision {
     }
 
     /**
-     * Backend Version of Vision Alignment
+     * Sends relevant data to the Limelight Python pipeline.
      */
-    public double getAlignment(){
-        // Create a local copy of targetX to convert to radians
-        double targetXRadians = Math.toRadians(targetX);
-
-        // Fix the parentheses and use the local variable
-        strafeDistance = (targetDistance * Math.sin(Math.toRadians(90) - targetXRadians))/(Math.sin(targetXRadians));
-
-        return strafeDistance;
+    private void sendData() {
+        inputs[0] = allianceColor;
+        inputs[1] = targetDistance;
+        limelight.updatePythonInputs(inputs);
     }
 
     /**
-     * Frontend Version of Vision Alignment
+     * Retrieves processed data from the Limelight Python pipeline.
+     * @return Python-generated result array.
      */
-    public double getMainAlignment(){
-        return getData()[0];
+    private double[] getData() {
+        return result != null ? result.getPythonOutput() : new double[]{0};
     }
 
-    //TODO
-    public double getClosestSample(SampleColors color){
-        //get values from limelight
+    // ---------- Vision-Based Alignments ----------
+
+    /**
+     * Calculates the required strafe distance to align with a target.
+     * @return The computed strafe distance.
+     */
+    public double getAlignment() {
+        double targetXRadians = Math.toRadians(targetX);
+        return (targetDistance * Math.sin(Math.toRadians(90) - targetXRadians)) / Math.sin(targetXRadians);
+    }
+
+    /**
+     * Retrieves alignment data from the Limelight pipeline.
+     * @return The processed alignment value from Python scripts.
+     */
+    public double getMainAlignment() {
+        return getData()[2]; //0
+    }
+
+    /**
+     * Determines the closest sample of a specified color in the pit.
+     * @param color The desired sample color.
+     * @return Distance to the closest sample.
+     */
+    public double getClosestSample(SampleColors color) {
         limelight.stop();
         limelight.pipelineSwitch(2);
         limelight.start();
-
-        // If this method is called, it could leave the pipeline in a state
-        // where targetX isn't being updated correctly
-
         return closestSample;
     }
 
-    //TODO - uses field april tags to adjust bot pose on field
-    public Pose getRealPose(){
-        Pose result = new Pose(0,0,0);
-        return result;
+    /**
+     * Uses field AprilTags to estimate the robot's real-world pose.
+     * @return The estimated Pose object.
+     */
+    public Pose getRealPose() {
+        return new Pose(0, 0, 0); // Placeholder for future implementation
     }
 
-    //-------------Match Recording & Misc-----------------
+    // ---------- Telemetry & Debugging ----------
 
-    //TODO - will record matches and save to USB in the future
-    public void startVideo(){}
+    /**
+     * Provides telemetry output for debugging.
+     * @param telemetry The telemetry object to log data.
+     */
+    public void getTelemetry(Telemetry telemetry) {
+        telemetry.addLine("---- Computer Vision Data ----");
 
-    //TODO
-    public void pauseVideo(){}
-
-    //TODO
-    public void stopVideo(){}
-
-    public void getTelemetry(Telemetry telemetry){
-        telemetry.addLine("----Computer Vision Data----");
-
-        // Basic connection info
+        // Connection & Result Status
         telemetry.addData("Limelight Connected:", status != null);
-
-        // Result validation
-        telemetry.addData("Result Object:", result != null ? "Present" : "Null");
         telemetry.addData("Result Valid:", result != null && result.isValid());
         telemetry.addData("Result Age (ms):", result != null ? result.getStaleness() : "N/A");
 
-        // Target values
-        telemetry.addData("Target X Degrees: ", targetX);
-        telemetry.addData("Target Y Degrees: ", targetY);
-        telemetry.addData("Target Area: ", targetArea);
+        // Target Data
+        telemetry.addData("Target X (Degrees):", result.getTx());
+        telemetry.addData("Target Y (Degrees):", result.getTy());
+        telemetry.addData("Target Area:", result.getTa());
 
-        // Limelight status
-        telemetry.addData("FPS: ", status.getFps());
-        telemetry.addData("Temperature: ", status.getTemp());
-        telemetry.addData("CPU Usage: ", status.getCpu());
-        telemetry.addData("RAM Usage: ", status.getRam());
+        // Limelight System Stats
+        if (status != null) {
+            telemetry.addData("FPS:", status.getFps());
+            telemetry.addData("Temperature:", status.getTemp());
+            telemetry.addData("CPU Usage:", status.getCpu());
+            telemetry.addData("RAM Usage:", status.getRam());
+        }
 
-        // Calculate values without modifying originals
-        telemetry.addData("Strafe Distance (Frontend): ", getMainAlignment());
+        // Alignment Calculations
+        telemetry.addData("Strafe Distance (Frontend):", getMainAlignment());
 
-        // Don't call getAlignment() directly as it might modify targetX
         double txRad = Math.toRadians(targetX);
-        double calculatedStrafe = (targetDistance * Math.sin(Math.toRadians(90) - txRad))/(Math.sin(txRad));
-        telemetry.addData("Strafe Distance (Backend): ", calculatedStrafe);
+        double calculatedStrafe = (targetDistance * Math.sin(Math.toRadians(90) - txRad)) / Math.sin(txRad);
+        telemetry.addData("Strafe Distance (Backend):", calculatedStrafe);
     }
+
+    // ---------- Match Recording (Future Features) ----------
+
+    public void startVideo() { /* TODO: Implement match recording */ }
+    public void pauseVideo() { /* TODO: Implement match recording */ }
+    public void stopVideo() { /* TODO: Implement match recording */ }
 }

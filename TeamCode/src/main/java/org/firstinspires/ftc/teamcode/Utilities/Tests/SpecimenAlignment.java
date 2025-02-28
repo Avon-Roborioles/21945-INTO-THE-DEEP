@@ -109,9 +109,9 @@ public class SpecimenAlignment extends LinearOpMode {
 
         bot.setStartingPose(new Pose(0,0,0));
 
-        vision.init(hardwareMap);
         lighting.init(hardwareMap);
         waitForStart();
+        vision.init(hardwareMap);
 
 
         while(opModeIsActive()){

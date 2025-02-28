@@ -77,7 +77,10 @@ def runPipeline(image, llrobot):
 
             # Convert tx to radians for strafeDistance calculation
             angle_rad = math.radians(tx)
-            strafeDistance = (targetDistance * math.sin(math.pi/2 - angle_rad)) / math.sin(angle_rad)
+
+            if abs(tx) > 0:
+
+                strafeDistance = (targetDistance * math.sin(angle_rad)) / math.sin(90 - angle_rad)
 
             cv2.putText(image,
                         "Strafe Distance: " + str(strafeDistance),
