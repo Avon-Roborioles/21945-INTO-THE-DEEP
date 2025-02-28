@@ -88,9 +88,11 @@ public class Computer_Vision {
     private void updateVisionData() {
         result = limelight.getLatestResult();
         if (result != null && result.isValid()) {
-            targetX = result.getTx();
-            targetY = result.getTy();
-            targetArea = result.getTa();
+            if(true) {
+                targetX = result.getTx();
+                targetY = result.getTy();
+                targetArea = result.getTa();
+            }
         }
         status = limelight.getStatus();
     }
@@ -128,7 +130,7 @@ public class Computer_Vision {
      * @return The processed alignment value from Python scripts.
      */
     public double getMainAlignment() {
-        return getData()[0];
+        return getData()[2]; //0
     }
 
     /**
@@ -166,9 +168,9 @@ public class Computer_Vision {
         telemetry.addData("Result Age (ms):", result != null ? result.getStaleness() : "N/A");
 
         // Target Data
-        telemetry.addData("Target X (Degrees):", targetX);
-        telemetry.addData("Target Y (Degrees):", targetY);
-        telemetry.addData("Target Area:", targetArea);
+        telemetry.addData("Target X (Degrees):", result.getTx());
+        telemetry.addData("Target Y (Degrees):", result.getTy());
+        telemetry.addData("Target Area:", result.getTa());
 
         // Limelight System Stats
         if (status != null) {
