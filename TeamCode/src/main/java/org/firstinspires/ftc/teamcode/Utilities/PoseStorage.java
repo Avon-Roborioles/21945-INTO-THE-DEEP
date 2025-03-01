@@ -58,36 +58,36 @@ public class PoseStorage {
     //Right Side Poses - Specimen
     public static Pose RightStartPose = new Pose(83,12, Math.toRadians(90)); //Done
 
-    public static Pose RightSample1Start = new Pose(107,37,Math.toRadians(180));
+    public static Pose RightSample1Start = new Pose(107,37,Math.toRadians(90));
     public static Point RightSample1Control1 = new Point(113.5,48.6,1);
     public static Point RightSample1Control2 = new Point(102.9,59.9,1);
-    public static Pose RightSample1 = new Pose(119,60,Math.toRadians(180)); //DONE 35
-    public static Pose RightSample1Push = new Pose(119,22,Math.toRadians(180));
+    public static Pose RightSample1 = new Pose(119,60,Math.toRadians(90)); //DONE 35
+    public static Pose RightSample1Push = new Pose(119,22,Math.toRadians(90));
 
 
-    public static Pose RightSample2 = new Pose(128,60,Math.toRadians(180)); //Done
+    public static Pose RightSample2 = new Pose(128,60,Math.toRadians(90)); //Done
     public static Point RightSample2Control1 = new Point(108.8,82.4,1);
-    public static Pose RightSample2Push = new Pose(128,22,Math.toRadians(180));
+    public static Pose RightSample2Push = new Pose(128,22,Math.toRadians(90));
 
 
-    public static Pose RightSample3 = new Pose(133,60,Math.toRadians(180)); //Done
+    public static Pose RightSample3 = new Pose(130,60,Math.toRadians(90)); //Done
     public static Point RightSample3Control1 = new Point(115.5,82.6,1);
-    public static Pose RightSample3Push = new Pose(133, 22,Math.toRadians(180));
+    public static Pose RightSample3Push = new Pose(130, 22,Math.toRadians(90));
 
 
     public static Pose SampleDropoff = new Pose(52+72,-50+72,Math.toRadians(-55)); //done - 40,-49,180
 
-    public static Pose SpecimenPickup = new Pose(111,19,Math.toRadians(0)); //done - 50, -56
+    public static Pose SpecimenPickup = new Pose(111,19,Math.toRadians(-3)); //done - 50, -56
 
     public static Pose SpecimenScore = new Pose(75,42.5,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore2 = new Pose(70,38,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore2 = new Pose(70,45,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore3 = new Pose(65,38,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore3 = new Pose(65,45,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore4 = new Pose(60,38,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore4 = new Pose(60,45,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore5 = new Pose(55,38,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore5 = new Pose(55,45,Math.toRadians(180-1e-6)); //done
 
     public static Pose SpecimenScoreBackup = new Pose(72,37-5,Math.toRadians(180-1e-6)); //done
 

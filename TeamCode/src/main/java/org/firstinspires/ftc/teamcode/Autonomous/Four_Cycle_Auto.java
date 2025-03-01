@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.Utilities.pedroPathing.util.Drawing;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="4 Cycle Auto", group = "Autos")
@@ -37,6 +38,8 @@ public class Four_Cycle_Auto extends AutoBase {
     boolean back3PathDone = false;
     boolean alignPathDone = false;
     double backAmount = 6; //4.75
+    double length = 0;
+    double targetDistance = 0;
 
 
     //Finite State Machine (FSM) variables
@@ -129,17 +132,18 @@ public class Four_Cycle_Auto extends AutoBase {
                     .setLinearHeadingInterpolation(PoseStorage.SpecimenScoreBackup.getHeading(),PoseStorage.RightSample1Start.getHeading())
 
                     .addPath(new BezierCurve(PoseStorage.RightSample1Start.getPoint(),PoseStorage.RightSample1Control1,PoseStorage.RightSample1Control2, PoseStorage.RightSample1.getPoint()))
-                    .setTangentHeadingInterpolation()
-                    .setReversed(true)
+                    .setConstantHeadingInterpolation(PoseStorage.RightSample1.getHeading())
+                    //.setTangentHeadingInterpolation()
+                    //.setReversed(true)
                     .addPath(new BezierLine(PoseStorage.RightSample1.getPoint(),PoseStorage.RightSample1Push.getPoint()))
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .setConstantHeadingInterpolation(PoseStorage.RightSample1.getHeading())
                     .build();
 
             Sample2 = bot.pathBuilder()
                     .addPath(new BezierCurve(PoseStorage.RightSample1Push.getPoint(),PoseStorage.RightSample2Control1,PoseStorage.RightSample2.getPoint()))
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .setConstantHeadingInterpolation(PoseStorage.RightSample2.getHeading())
                     .addPath(new BezierLine(PoseStorage.RightSample2.getPoint(),PoseStorage.RightSample2Push.getPoint()))
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .setConstantHeadingInterpolation(PoseStorage.RightSample2.getHeading())
                     .build();
 
             Sample3 = bot.pathBuilder()
@@ -150,9 +154,8 @@ public class Four_Cycle_Auto extends AutoBase {
                     .build();
 
             specimenPickup = bot.pathBuilder()
-                    .addPath(new BezierLine(PoseStorage.RightSample3Push.getPoint(),PoseStorage.SpecimenPickup.getPoint()))
-                    .setLinearHeadingInterpolation(PoseStorage.RightSample3Push.getHeading(), PoseStorage.SpecimenPickup.getHeading())
-                    .setPathEndTimeoutConstraint(1)
+                    .addPath(new BezierLine(PoseStorage.RightSample2Push.getPoint(),PoseStorage.SpecimenPickup.getPoint()))
+                    .setLinearHeadingInterpolation(PoseStorage.RightSample2Push.getHeading(), PoseStorage.SpecimenPickup.getHeading())
                     .build();
 
             Score = bot.pathBuilder()
@@ -211,12 +214,14 @@ public class Four_Cycle_Auto extends AutoBase {
     //various PID updating & Telemetry Data bundled into one method
     public void updateAuto(){
         bot.update(); //controls Pedro-Pathing logic
-        subsystemsUpdate();
-        //arm.runPassiveExtend();
+        subsystemsUpdate(); //update subsystems
+        targetDistance = bot.getPose().getY()-(7.25); //distance from wall - specimen length - bot width +
+        vision.setTargetDistance(4);
         PoseStorage.CurrentPose = bot.getPose(); //updates currentPose variable
         mainTelemetry.addLine("---AUTO DATA---");
         mainTelemetry.addData("Auto Ran: ", PoseStorage.ranAuto);
-
+        mainTelemetry.addData("Strafe Distance from Vision: ", length);
+        mainTelemetry.addData("Target Distance: ", targetDistance);
         if(endTime != 0){
             mainTelemetry.addData("OpMode Timer: ", endTime);
         } else {
@@ -253,27 +258,20 @@ public class Four_Cycle_Auto extends AutoBase {
                     specimenAlignment = bot.pathBuilder()
                             //strafe slowly
                             .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint()))
-                            .setConstantHeadingInterpolation(Math.toRadians(0))
-                            .addParametricCallback(0,()->{
-                                bot.setMaxPower(0.5); //slow speed
+                            .setConstantHeadingInterpolation(PoseStorage.SpecimenPickup.getHeading())
+                            .addTemporalCallback(0,()->{
+                                bot.setMaxPower(0.6);
                             })
-                            .setPathEndTimeoutConstraint(1.5)
 
 
                             //drive into specimen
-                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 5,specimenPickup.getHeading()).getPoint()))
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() + length + .1,specimenPickup.getY() - 3.375,specimenPickup.getHeading()).getPoint()))
                             .setConstantHeadingInterpolation(Math.toRadians(0))
-                            .addParametricCallback(0,()->{
-                                bot.setMaxPower(1);
-                            })
-                            .setPathEndTimeoutConstraint(1.5)
 
 
-                            //drive back to pickup pose
-                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY() - 3,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
-                            .setConstantHeadingInterpolation(Math.toRadians(0))
-                            .setPathEndTimeoutConstraint(1.5)
-
+//                            //drive back to pickup pose
+//                            .addPath(new BezierLine(new Pose(specimenPickup.getX() -(length + 3),specimenPickup.getY() - 3.75,specimenPickup.getHeading()).getPoint(), specimenPickup.getPoint()))
+//                            .setConstantHeadingInterpolation(Math.toRadians(0))
                             .build();
                 } else {
                     specimenAlignment = bot.pathBuilder()
@@ -366,6 +364,12 @@ public class Four_Cycle_Auto extends AutoBase {
             }
 
             waitForStart();
+
+            if(allianceColor.equals("Blue")){
+                vision.setAllianceColor(true);
+            } else {
+                vision.setAllianceColor(false);
+            }
 
             buildPaths(AutoPose); //builds paths after we select the autoStart pose from the menu
 
@@ -500,7 +504,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 waitMilliSeconds(800);
                                 lift.setTarget(0);
                                 currentState = State.MOVE_SAMPLES;
-                                bot.setMaxPower(0.9); //.8
+                                bot.setMaxPower(0.8); //.8
                                 bot.followPath(Sample1);
                                 break;
                             }
@@ -512,13 +516,14 @@ public class Four_Cycle_Auto extends AutoBase {
                                 //pickup rest of specimen
                                 if(groundSamplesRetrieved == 1){
                                     //pickup 2
+                                    bot.setMaxPower(1); //.9
                                     bot.followPath(Sample2);
-                                } else if(groundSamplesRetrieved == 2){
-                                    //pickup 3
-                                    bot.followPath(Sample3);
+//                                } else if(groundSamplesRetrieved == 2){
+//                                    //pickup 3
+//                                    bot.followPath(Sample3);
                                 } else {
-
                                     currentState = State.PICKUP_SPECIMEN;
+                                    bot.setMaxPower(0.5);
                                     bot.followPath(specimenPickup);
                                     updateScoreStart(1); //update for later
                                     break;
@@ -529,10 +534,11 @@ public class Four_Cycle_Auto extends AutoBase {
                             if(!bot.isBusy()) {
                                 if(!alignPathDone){
                                     alignPathDone = true;
-                                    //waitMilliSeconds(250); //time to stabilize vision reading
-                                    buildStrafePath(vision.getAlignment());
+                                    waitMilliSeconds(500); //time to stabilize vision reading
+                                    length = -(vision.getMainAlignment() + 3);
+                                    buildStrafePath(vision.getMainAlignment());
                                     waitMilliSeconds(100);
-                                    bot.setMaxPower(0.9);
+                                    bot.setMaxPower(0.5);
                                     bot.followPath(specimenAlignment);
                                 } else {
                                     waitMilliSeconds(250);
@@ -557,7 +563,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                     currentState = State.PICKUP_SPECIMEN;
                                     alignPathDone = false;
                                     lift.setTarget(0);
-                                    bot.setMaxPower(0.8); //.8
+                                    bot.setMaxPower(0.7); //.8
                                     bot.followPath(specimenPickup);
                                 } else {
                                     currentState = State.PARK;

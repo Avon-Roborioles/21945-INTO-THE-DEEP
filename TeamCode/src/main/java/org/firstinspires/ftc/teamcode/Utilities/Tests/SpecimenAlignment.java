@@ -83,7 +83,7 @@ public class SpecimenAlignment extends LinearOpMode {
         if(Math.abs(distance) < 10) {
             alignPath = bot.pathBuilder()
                     //align by moving forward and backward
-                    .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX() + distance, bot.getPose().getY(), bot.getPose().getHeading()).getPoint()))
+                    .addPath(new BezierLine(bot.getPose().getPoint(), new Pose(bot.getPose().getX() -(distance + 3), bot.getPose().getY(), bot.getPose().getHeading()).getPoint()))
                     .setConstantHeadingInterpolation(bot.getPose().getHeading())
                     .build();
         } else {
@@ -123,7 +123,7 @@ public class SpecimenAlignment extends LinearOpMode {
                             vision.setAllianceColor(true);
                             blueColor = true;
                             waitMilliSeconds(500);
-                            buildStrafePath(vision.getMainAlignment());
+                            buildStrafePath(vision.getAlignment());
                             bot.followPath(alignPath,true);
                             currentState = States.ALIGN;
 
@@ -131,7 +131,7 @@ public class SpecimenAlignment extends LinearOpMode {
                             vision.setAllianceColor(false);
                             blueColor = false;
                             waitMilliSeconds(500);
-                            buildStrafePath(vision.getMainAlignment());
+                            buildStrafePath(vision.getAlignment());
                             bot.followPath(alignPath,true);
                             currentState = States.ALIGN;
 

@@ -30,6 +30,8 @@ public class AutoBase extends LinearOpMode {
         RIGHT
     }
 
+    public String allianceColor = "Blue";
+
     public Pose[] Coordinates =
             {PoseStorage.LeftSample1,
                     PoseStorage.LeftSample2,
@@ -176,12 +178,20 @@ public class AutoBase extends LinearOpMode {
             }
         }
 
+        if(d_right.getState()){
+            allianceColor = "Blue";
+
+        } else {
+            allianceColor = "Red";
+        }
+
         //menu
         telemetry.addLine("Select the StartPose by Toggling the D-pad Up Button");
         telemetry.addData("Current StartPose Selected: ", AutoPose);
         telemetry.addLine(" ");
         telemetry.addLine("Select the # of Cycles by pressing the D-pad Down Button");
         telemetry.addData("Number of cycles: ", cycleCount);
+        telemetry.addData("Select Alliance Side with D-pad Right: ", allianceColor);
         //telemetry.update();
 
         //updates gamepad readers

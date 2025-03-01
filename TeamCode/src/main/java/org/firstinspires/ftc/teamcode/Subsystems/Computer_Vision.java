@@ -62,6 +62,10 @@ public class Computer_Vision {
         allianceColor = blue ? 0 : 1;
     }
 
+    public void setTargetDistance(double distance){
+        targetDistance = distance;
+    }
+
     // ---------- Vision Data Processing ----------
 
     /**
@@ -122,7 +126,8 @@ public class Computer_Vision {
      */
     public double getAlignment() {
         double targetXRadians = Math.toRadians(targetX);
-        return (targetDistance * Math.sin(Math.toRadians(90) - targetXRadians)) / Math.sin(targetXRadians);
+        return ((Math.cos(targetXRadians))/(Math.sin(targetXRadians))) * (targetDistance - 1.75);
+        //return (targetDistance * Math.sin(Math.toRadians(90) - targetXRadians)) / Math.sin(targetXRadians);
     }
 
     /**
@@ -184,8 +189,7 @@ public class Computer_Vision {
         telemetry.addData("Strafe Distance (Frontend):", getMainAlignment());
 
         double txRad = Math.toRadians(targetX);
-        double calculatedStrafe = (targetDistance * Math.sin(Math.toRadians(90) - txRad)) / Math.sin(txRad);
-        telemetry.addData("Strafe Distance (Backend):", calculatedStrafe);
+        telemetry.addData("Strafe Distance (Backend):", getAlignment());
     }
 
     // ---------- Match Recording (Future Features) ----------
