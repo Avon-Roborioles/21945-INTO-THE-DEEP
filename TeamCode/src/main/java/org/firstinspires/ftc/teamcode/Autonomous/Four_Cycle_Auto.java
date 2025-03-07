@@ -252,12 +252,12 @@ public class Four_Cycle_Auto extends AutoBase {
         mainTelemetry.update();
     }
 
-    public void buildStrafePath(double length){
+    public void buildStrafePath(double distance){
         Pose specimenPickup = PoseStorage.SpecimenPickup;
-                if(length != 0){
+                if(distance != 0){
                     specimenAlignment = bot.pathBuilder()
                             //strafe slowly
-                            .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint()))
+                            .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX() -(distance + 3),specimenPickup.getY(),specimenPickup.getHeading()).getPoint()))
                             .setConstantHeadingInterpolation(PoseStorage.SpecimenPickup.getHeading())
                             .addTemporalCallback(0,()->{
                                 bot.setMaxPower(0.6);
@@ -265,7 +265,7 @@ public class Four_Cycle_Auto extends AutoBase {
 
 
                             //drive into specimen
-                            .addPath(new BezierLine(new Pose(specimenPickup.getX() + length,specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() + length + .1,specimenPickup.getY() - 3.375,specimenPickup.getHeading()).getPoint()))
+                            .addPath(new BezierLine(new Pose(specimenPickup.getX() -(distance + 3),specimenPickup.getY(),specimenPickup.getHeading()).getPoint(), new Pose(specimenPickup.getX() -(distance + 3),specimenPickup.getY() - 3.375,specimenPickup.getHeading()).getPoint()))
                             .setConstantHeadingInterpolation(Math.toRadians(0))
 
 
@@ -506,7 +506,7 @@ public class Four_Cycle_Auto extends AutoBase {
                                 waitMilliSeconds(800);
                                 lift.setTarget(0);
                                 currentState = State.MOVE_SAMPLES;
-                                bot.setMaxPower(0.8); //.8
+                                bot.setMaxPower(0.85); //.8
                                 bot.followPath(Sample1);
                                 break;
                             }
@@ -525,7 +525,7 @@ public class Four_Cycle_Auto extends AutoBase {
 //                                    bot.followPath(Sample3);
                                 } else {
                                     currentState = State.PICKUP_SPECIMEN;
-                                    bot.setMaxPower(0.5);
+                                    bot.setMaxPower(0.6); //.5
                                     bot.followPath(specimenPickup);
                                     updateScoreStart(1); //update for later
                                     break;

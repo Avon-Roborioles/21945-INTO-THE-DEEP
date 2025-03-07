@@ -182,6 +182,12 @@ public class Follower {
         breakFollowing();
     }
 
+
+    /**
+     * CUSTOM CODE WRITTEN BY STEPHEN 0. - 21945 PURPLE ROBORIOLES = 3/7/25
+     * This allows us to swtich PID constants based on Auto Side
+     * @param left if we're running left side auto (samples) - switch to false if running right side auto (specimen)
+     */
     public void setLeftSidePID(boolean left){
         if(left){
             translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients);
