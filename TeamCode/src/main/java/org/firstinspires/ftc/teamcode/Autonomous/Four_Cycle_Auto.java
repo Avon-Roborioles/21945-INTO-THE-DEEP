@@ -278,7 +278,7 @@ public class Four_Cycle_Auto extends AutoBase {
                             //drive into specimen
                             .addPath(new BezierLine(specimenPickup.getPoint(), new Pose(specimenPickup.getX(),specimenPickup.getY()-backAmount,specimenPickup.getHeading()).getPoint()))
                             .setConstantHeadingInterpolation(Math.toRadians(0))
-                            .setPathEndTimeoutConstraint(1.5)
+                            //.setPathEndTimeoutConstraint(1.5)
                             //.setPathEndTValueConstraint(1.5)
 
                             .build();
