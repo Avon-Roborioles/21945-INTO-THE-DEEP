@@ -216,30 +216,34 @@ public class Drivetrain {
 
 
             //TODO - need to test before implementation
-            if(left_bumper.wasJustPressed()){
-                pedroDrivetrain.stopTeleOpDrive();
-                teleOpDrive = false;
-                pedroDrivetrain.setMaxPower(speedLimit);
-                BuildScorePath(pedroDrivetrain.getPose());
-                pedroDrivetrain.followPath(scorePath,true);
-            }
-            else if(right_bumper.wasJustPressed()){
-                pedroDrivetrain.stopTeleOpDrive();
-                teleOpDrive = false;
-                pedroDrivetrain.setMaxPower(speedLimit);
-                BuildPickupPath(pedroDrivetrain.getPose());
-                pedroDrivetrain.followPath(pickupPath,true);
-            }
+//            if(left_bumper.wasJustPressed()){
+//                pedroDrivetrain.stopTeleOpDrive();
+//                teleOpDrive = false;
+//                pedroDrivetrain.setMaxPower(speedLimit);
+//                BuildScorePath(pedroDrivetrain.getPose());
+//                pedroDrivetrain.followPath(scorePath,true);
+//            }
+//            else if(right_bumper.wasJustPressed()){
+//                pedroDrivetrain.stopTeleOpDrive();
+//                teleOpDrive = false;
+//                pedroDrivetrain.setMaxPower(speedLimit);
+//                BuildPickupPath(pedroDrivetrain.getPose());
+//                pedroDrivetrain.followPath(pickupPath,true);
+//            }
 
             //Speed Controls - set top speed percentage
             if (d_up.wasJustPressed()) {
                 speedLimit = 1;
+                feedback.alert_side(true,driverOp);
             } else if (d_right.wasJustPressed()) {
                 speedLimit = 0.7;
+                feedback.alert_side(true,driverOp);
             } else if (d_left.wasJustPressed()) {
                 speedLimit = 0.5;
+                feedback.alert_side(true,driverOp);
             } else if (d_down.wasJustPressed()) {
                 speedLimit = 0.3;
+                feedback.alert_side(true,driverOp);
             }
 
 

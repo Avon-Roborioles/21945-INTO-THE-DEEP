@@ -205,7 +205,7 @@ public class AutoBase extends LinearOpMode {
         intake.update();
         arm.update();
         lift.update();
-        lighting.set(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
+        lighting.set(LED.purpleValue);
         vision.update();
 //        lighting.update();
 //        vision.update();

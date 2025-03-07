@@ -146,9 +146,11 @@ public class SpecimenAlignment extends LinearOpMode {
                     }
             }
             if(blueColor){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+                //lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+                lighting.set(LED.blueValue);
             } else {
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+                //lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+                lighting.set(LED.redValue);
             }
             a_button.readValue();
             b_button.readValue();
