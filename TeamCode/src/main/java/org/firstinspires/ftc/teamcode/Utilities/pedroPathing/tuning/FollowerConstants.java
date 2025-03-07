@@ -74,42 +74,34 @@ public class FollowerConstants {
             0);
 
 
-//    // Translational PIDF coefficients (don't use integral)
-//    public static CustomPIDFCoefficients translationalPIDFCoefficients = new CustomPIDFCoefficients(
-//            0.26,
-//            0,
-//            0.02,
-//            0);
-//
-//    // Translational Integral
-//    public static CustomPIDFCoefficients translationalIntegral = new CustomPIDFCoefficients(
-//            0,
-//            0,
-//            0,
-//            0);
-//
-//    // Feed forward constant added on to the translational PIDF
-//    public static double translationalPIDFFeedForward = 0.015;
-//
-//
-//    // Heading error PIDF coefficients
-//    public static CustomPIDFCoefficients headingPIDFCoefficients = new CustomPIDFCoefficients(
-//            1,
-//            0,
-//            0,
-//            0);
-//
-//    // Feed forward constant added on to the heading PIDF
-//    public static double headingPIDFFeedForward = 0.01;
-//
-//
-//    // Drive PIDF coefficients
-//    public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = new CustomFilteredPIDFCoefficients(
-//            0.005,
-//            0,
-//            0.001, //.0002
-//            0.65,
-//            0);
+    // Translational PIDF coefficients (don't use integral)
+    public static CustomPIDFCoefficients translationalPIDFCoefficients2 = new CustomPIDFCoefficients(
+            0.26,
+            0,
+            0.02,
+            0);
+
+
+    // Feed forward constant added on to the translational PIDF
+    //public static double translationalPIDFFeedForward2 = 0.015;
+
+
+    // Heading error PIDF coefficients
+    public static CustomPIDFCoefficients headingPIDFCoefficients2 = new CustomPIDFCoefficients(
+            1,
+            0,
+            0,
+            0);
+
+
+
+    // Drive PIDF coefficients
+    public static CustomFilteredPIDFCoefficients drivePIDFCoefficients2 = new CustomFilteredPIDFCoefficients(
+            0.005,
+            0,
+            0.001, //.0002
+            0.65,
+            0);
 
     // Feed forward constant added on to the drive PIDF
     public static double drivePIDFFeedForward = 0.01;

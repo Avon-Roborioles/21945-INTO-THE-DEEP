@@ -375,6 +375,7 @@ public class Four_Cycle_Auto extends AutoBase {
 
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
+                bot.setLeftSidePID(true);
                 // starting path & FSM
                 //TODO bot.setSamplePID(true);
                 currentState = State.SCORE_PASSIVE;
@@ -385,6 +386,7 @@ public class Four_Cycle_Auto extends AutoBase {
                 bot.followPath(scorePassive, true);
                 pathTimer.reset();
             } else if(AutoPose == AutoPoses.RIGHT){
+                bot.setLeftSidePID(false);
                 bot.setPose(PoseStorage.RightStartPose); //different from bot.setPose()
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;

@@ -182,6 +182,18 @@ public class Follower {
         breakFollowing();
     }
 
+    public void setLeftSidePID(boolean left){
+        if(left){
+            translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients);
+            headingPIDF = new PIDFController(FollowerConstants.headingPIDFCoefficients);
+            drivePIDF = new FilteredPIDFController(FollowerConstants.drivePIDFCoefficients);
+        } else {
+            translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients2);
+            headingPIDF = new PIDFController(FollowerConstants.headingPIDFCoefficients2);
+            drivePIDF = new FilteredPIDFController(FollowerConstants.drivePIDFCoefficients2);
+        }
+    }
+
     /**
      * This sets the maximum power the motors are allowed to use.
      *
