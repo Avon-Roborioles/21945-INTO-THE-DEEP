@@ -143,7 +143,7 @@
             armTarget = armMotor.getCurrentPosition();
 
 
-            if(PoseStorage.ranAuto){
+            //if(PoseStorage.ranAuto){
                 //absolute positions
 //               groundPose = -3000;
 //               autoGround = -1560;
@@ -157,7 +157,7 @@
 
                 maxExtendPose -= PoseStorage.extendOffset;
                 minExtendPose -= PoseStorage.extendOffset;
-            }
+            //}
 
             motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
 
@@ -508,6 +508,8 @@
             armMotor.setVelocity(-instantVelocity);
             armMotor.set(armPower);
             extendMotor.set(extendPower);
+            PoseStorage.armOffset = armMotor.getCurrentPosition();
+            PoseStorage.extendOffset = extendMotor.getCurrentPosition();
         }
 
         public void getTelemetry(Telemetry telemetry){

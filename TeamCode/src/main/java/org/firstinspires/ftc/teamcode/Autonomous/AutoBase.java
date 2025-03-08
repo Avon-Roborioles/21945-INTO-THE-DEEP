@@ -102,7 +102,7 @@ public class AutoBase extends LinearOpMode {
         lift.init(hardwareMap,driverOp,false);
         lighting.init(hardwareMap);
 
-        vision.init(hardwareMap);
+        //vision.init(hardwareMap);
 //        lighting.init(hardwareMap);
 //        vision.init(hardwareMap);
     }
@@ -215,7 +215,7 @@ public class AutoBase extends LinearOpMode {
         arm.getTelemetry(telemetry);
         intake.getTelemetryFULL(telemetry);
         lift.getTelemetry(telemetry);
-        vision.getTelemetry(telemetry);
+        //vision.getTelemetry(telemetry);
     }
 
     /**
