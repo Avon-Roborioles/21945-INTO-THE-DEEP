@@ -40,27 +40,27 @@ public class LEDTest extends LinearOpMode {
         while(opModeIsActive()){
             //control lighting based on gamepad input
             if(d_up.wasJustPressed()){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+                lighting.set(LED.purpleValue);
             }
             if(d_left.wasJustPressed()){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.RED);
+                lighting.set(LED.redValue);
 
             }
             if(d_right.wasJustPressed()){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                lighting.set(LED.blueValue);
 
             }
             if(d_down.wasJustPressed()){
                 lighting.OFF();
             }
             if(b_button.wasJustPressed()){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+                lighting.set(LED.redValue);
             }
             if(x_button.wasJustPressed()){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+                lighting.set(LED.blueValue);
             }
             if(y_button.wasJustPressed()){
-                lighting.set(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                lighting.set(LED.yellowValue);
 
             }
 

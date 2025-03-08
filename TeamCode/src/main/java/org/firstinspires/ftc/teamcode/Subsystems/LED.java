@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.LightBlinker;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake.Sample_Colors;
 
 public class LED {
     RevBlinkinLedDriver blinkinLedDriver;
-    ServoEx lightBlock;
+    Servo lightBlock;
     RevBlinkinLedDriver.BlinkinPattern pattern;
     public static double offValue = 0;
     public static double redValue = 0.279;
@@ -31,7 +32,7 @@ public class LED {
     //--------- ALL COMMANDS------------------
     public void init(HardwareMap hardwareMap){
         //blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
-        lightBlock = hardwareMap.get(ServoEx.class,"lights");
+        lightBlock = hardwareMap.get(Servo.class,"lights");
         lightBlock.setPosition(purpleValue);
     }
 

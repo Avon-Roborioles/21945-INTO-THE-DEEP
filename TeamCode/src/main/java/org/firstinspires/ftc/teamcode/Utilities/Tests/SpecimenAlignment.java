@@ -39,7 +39,6 @@ public class SpecimenAlignment extends LinearOpMode {
 
     public void updateAuto(){
         bot.update(); //controls Pedro-Pathing logic
-
         vision.update();
 
 
@@ -122,16 +121,18 @@ public class SpecimenAlignment extends LinearOpMode {
                         if(a_button.wasJustPressed()){ //blue alignment
                             vision.setAllianceColor(true);
                             blueColor = true;
+                            lighting.set(LED.blueValue);
                             waitMilliSeconds(500);
-                            buildStrafePath(vision.getAlignment());
+                            buildStrafePath(vision.getMainAlignment());
                             bot.followPath(alignPath,true);
                             currentState = States.ALIGN;
 
                         } else if(b_button.wasJustPressed()){ //red alignment
                             vision.setAllianceColor(false);
                             blueColor = false;
+                            lighting.set(LED.redValue);
                             waitMilliSeconds(500);
-                            buildStrafePath(vision.getAlignment());
+                            buildStrafePath(vision.getMainAlignment());
                             bot.followPath(alignPath,true);
                             currentState = States.ALIGN;
 
