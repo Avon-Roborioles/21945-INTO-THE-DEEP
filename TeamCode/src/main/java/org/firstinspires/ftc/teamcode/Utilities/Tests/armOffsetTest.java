@@ -31,7 +31,8 @@ public class armOffsetTest extends AutoBase {
 
 
         while(opModeIsActive()){
-            PoseStorage.armOffset =
+            PoseStorage.armOffset = arm.getPosition();
+            PoseStorage.extendOffset = arm.getExtendPosition();
             getSubsystemTelemetry(mainTelemetry);
             mainTelemetry.update();
         }

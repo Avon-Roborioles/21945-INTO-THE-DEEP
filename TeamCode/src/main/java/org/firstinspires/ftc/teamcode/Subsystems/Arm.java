@@ -475,6 +475,14 @@
             time.reset();
         }
 
+        public int getPosition(){
+           return armMotor.getCurrentPosition();
+        }
+
+        public int getExtendPosition(){
+            return extendMotor.getCurrentPosition();
+        }
+
         /**
          * Uses Trapezoidal Motion Profile + Full State Feedback to precisely control arm
          */
