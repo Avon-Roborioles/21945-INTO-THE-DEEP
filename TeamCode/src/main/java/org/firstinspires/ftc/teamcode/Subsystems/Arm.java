@@ -88,11 +88,21 @@
             driverOp = gamepad;
             time = new ElapsedTime();
 
-            armCoefficients = new Vector(new double[] {kpArm,ka});
+
+            if(teleop){
+                extendCoefficients = new PIDCoefficients(0.001, 0, 0.01);
+                armCoefficients = new Vector(new double[] {kpArm,ka});
+
+
+            } else {
+                extendCoefficients = new PIDCoefficients(kpExtend, 0, 0.01);
+                armCoefficients = new Vector(new double[] {kpArm,ka});
+
+            }
+
+            extendController = new BasicPID(extendCoefficients);
             armController = new FullStateFeedback(armCoefficients);
 
-            extendCoefficients = new PIDCoefficients(kpExtend,0,0.01);
-            extendController = new BasicPID(extendCoefficients);
 
             //---initialize toggles & buttons---
             d_up = new ToggleButtonReader(
@@ -135,14 +145,18 @@
 
             if(PoseStorage.ranAuto){
                 //absolute positions
-               groundPose = -3000;
-               autoGround = -1560;
-//               rung1Pose = 2000;
-       //        rung2Pose = 2700;
-               maxArmPose = 3050;
+//               groundPose = -3000;
+//               autoGround = -1560;
+//               maxArmPose = 3050;
+//
+//               maxExtendPose = 2410;
+//               minExtendPose = -1680;
+                groundPose -= PoseStorage.armOffset;
+                autoGround -= PoseStorage.armOffset;
+                maxArmPose -= PoseStorage.armOffset;
 
-               maxExtendPose = 2410;
-               minExtendPose = -1680;
+                maxExtendPose -= PoseStorage.extendOffset;
+                minExtendPose -= PoseStorage.extendOffset;
             }
 
             motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
@@ -331,7 +345,12 @@
 
 
             } else {
-                armMode = Arm_Modes.HOLD_MODE;
+                //armMode = Arm_Modes.HOLD_MODE;
+                if(currentArmPose < 6000){
+                    armPower = 0.04;
+                } else {
+                    armPower  = -0.04;
+                }
             }
 
             //manual extension control with limits

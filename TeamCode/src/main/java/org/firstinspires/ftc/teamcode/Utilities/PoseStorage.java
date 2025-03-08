@@ -22,6 +22,10 @@ public class PoseStorage {
     //dynamic pose variable to save current bot position from auto to teleOp (teleOp will use enhances from Pedro-Pathing)
     public static Pose CurrentPose = null;
 
+    //keeps the last armPose so teleOp Arm Presets work correctly
+    public static int armOffset = 0;
+    public static int extendOffset = 0;
+
     public static AutoBase.AutoPoses allianceSide = AutoBase.AutoPoses.LEFT; //useful variable for selected alliance from auto
 
     //used to determine arm pose (auto is on rung, no auto is 0)
