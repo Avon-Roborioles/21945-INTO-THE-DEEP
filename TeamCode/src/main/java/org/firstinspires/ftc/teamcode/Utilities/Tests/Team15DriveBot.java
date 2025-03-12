@@ -32,7 +32,9 @@ public class Team15DriveBot extends LinearOpMode {
 
         ToggleButtonReader y_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.Y); //robot centric
         ToggleButtonReader a_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.A); //field centric
-        ToggleButtonReader b_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.B); //field centric
+        ToggleButtonReader b_button = new ToggleButtonReader(driverOp, GamepadKeys.Button.B); //reset imu
+        ToggleButtonReader d_up = new ToggleButtonReader(driverOp, GamepadKeys.Button.DPAD_UP); //wheelies
+        ToggleButtonReader d_right = new ToggleButtonReader(driverOp, GamepadKeys.Button.DPAD_RIGHT); //donut
 
 
         Motor leftFront = new Motor(hardwareMap,"leftFront");
