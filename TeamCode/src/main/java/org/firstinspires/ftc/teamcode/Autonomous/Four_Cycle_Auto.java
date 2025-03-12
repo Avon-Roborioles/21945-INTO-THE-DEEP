@@ -37,7 +37,7 @@ public class Four_Cycle_Auto extends AutoBase {
     boolean back2PathDone = false;
     boolean back3PathDone = false;
     boolean alignPathDone = false;
-    double backAmount = 6; //4.75
+    double backAmount = 4.75; //4.75
     double length = 0;
     double targetDistance = 0;
 
@@ -375,7 +375,7 @@ public class Four_Cycle_Auto extends AutoBase {
 
             if(AutoPose == AutoPoses.LEFT){
                 bot.setPose(PoseStorage.LeftStartPose);
-                bot.setLeftSidePID(true);
+                bot.setLeftSidePID(false);
                 // starting path & FSM
                 //TODO bot.setSamplePID(true);
                 currentState = State.SCORE_PASSIVE;
@@ -386,7 +386,7 @@ public class Four_Cycle_Auto extends AutoBase {
                 bot.followPath(scorePassive, true);
                 pathTimer.reset();
             } else if(AutoPose == AutoPoses.RIGHT){
-                bot.setLeftSidePID(false);
+                bot.setLeftSidePID(true);
                 bot.setPose(PoseStorage.RightStartPose); //different from bot.setPose()
                 // starting path & FSM
                 currentState = State.SCORE_PASSIVE;
@@ -536,9 +536,9 @@ public class Four_Cycle_Auto extends AutoBase {
                             if(!bot.isBusy()) {
                                 if(!alignPathDone){
                                     alignPathDone = true;
-                                    waitMilliSeconds(500); //time to stabilize vision reading
+                                    waitMilliSeconds(100); //time to stabilize vision reading
                                     length = -(vision.getMainAlignment() + 3);
-                                    buildStrafePath(vision.getMainAlignment());
+                                    buildStrafePath(0);
                                     waitMilliSeconds(100);
                                     bot.setMaxPower(0.5);
                                     bot.followPath(specimenAlignment);

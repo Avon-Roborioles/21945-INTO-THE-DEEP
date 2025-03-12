@@ -164,7 +164,6 @@ public class Drivetrain {
         specimenScoreRegion = new BoundedArea(57,-30+72,14+72,-20+72, BoundedArea.AreaType.REGION);
     }
 
-
     private void updateToggles(){
         y_button.readValue();
         a_button.readValue();

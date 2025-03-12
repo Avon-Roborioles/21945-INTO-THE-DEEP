@@ -205,7 +205,7 @@ public class Intake {
                     autoMode = false;
                 }
             } else {
-                if(!isFull() && time.seconds() > 1.5){
+                if(!isFull() && time.seconds() > 2.5){
                     autoMode = false;
                 }
             }

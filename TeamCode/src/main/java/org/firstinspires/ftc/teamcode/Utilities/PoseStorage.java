@@ -83,15 +83,15 @@ public class PoseStorage {
 
     public static Pose SpecimenPickup = new Pose(111,19,Math.toRadians(-3)); //done - 50, -56
 
-    public static Pose SpecimenScore = new Pose(75,42.5,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore = new Pose(75,43.5,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore2 = new Pose(70,45,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore2 = new Pose(70,46,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore3 = new Pose(65,45,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore3 = new Pose(65,46,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore4 = new Pose(60,45,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore4 = new Pose(60,46,Math.toRadians(180-1e-6)); //done
 
-    public static Pose SpecimenScore5 = new Pose(55,45,Math.toRadians(180-1e-6)); //done
+    public static Pose SpecimenScore5 = new Pose(55,46,Math.toRadians(180-1e-6)); //done
 
     public static Pose SpecimenScoreBackup = new Pose(72,37-5,Math.toRadians(180-1e-6)); //done
 

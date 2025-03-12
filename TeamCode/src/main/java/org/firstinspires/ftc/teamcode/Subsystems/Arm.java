@@ -143,21 +143,21 @@
             armTarget = armMotor.getCurrentPosition();
 
 
-            //if(PoseStorage.ranAuto){
+            if(PoseStorage.ranAuto){
                 //absolute positions
-//               groundPose = -3000;
-//               autoGround = -1560;
-//               maxArmPose = 3050;
-//
-//               maxExtendPose = 2410;
-//               minExtendPose = -1680;
-                groundPose -= PoseStorage.armOffset;
-                autoGround -= PoseStorage.armOffset;
-                maxArmPose -= PoseStorage.armOffset;
+               groundPose = -3000;
+               autoGround = -1560;
+               maxArmPose = 3050;
 
-                maxExtendPose -= PoseStorage.extendOffset;
-                minExtendPose -= PoseStorage.extendOffset;
-            //}
+               maxExtendPose = 2410;
+               minExtendPose = -1680;
+//                groundPose -= PoseStorage.armOffset;
+//                autoGround -= PoseStorage.armOffset;
+//                maxArmPose -= PoseStorage.armOffset;
+//
+//                maxExtendPose -= PoseStorage.extendOffset;
+//                minExtendPose -= PoseStorage.extendOffset;
+            }
 
             motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(armMotor.getCurrentPosition(),0), new MotionState(armTarget,0), MAX_VELOCITY,MAX_ACCELERATION);
 
@@ -345,12 +345,12 @@
 
 
             } else {
-                //armMode = Arm_Modes.HOLD_MODE;
-                if(currentArmPose < 6000){
-                    armPower = 0.04;
-                } else {
-                    armPower  = -0.04;
-                }
+                armMode = Arm_Modes.HOLD_MODE;
+//                if(currentArmPose < 6000){
+//                    armPower = 0.04;
+//                } else {
+//                    armPower  = -0.04;
+//                }
             }
 
             //manual extension control with limits
